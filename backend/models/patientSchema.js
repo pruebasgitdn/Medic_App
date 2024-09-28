@@ -9,6 +9,10 @@ const patientSchema = new mongoose.Schema({
     required: true,
     minLength: [3, "El nombre debe tener al menos 3 caracteres"],
   },
+  dot: {
+    type: Date,
+    required: true,
+  },
   apellido_pat: {
     type: String,
     required: true,

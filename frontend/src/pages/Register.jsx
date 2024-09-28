@@ -1,4 +1,6 @@
-import React from "react";
+import React, { useState } from "react";
+import { UploadOutlined } from "@ant-design/icons";
+
 import {
   Form,
   Input,
@@ -14,13 +16,41 @@ import { Link } from "react-router-dom";
 
 const { Option } = Select;
 
+
+//FORM DATA
+// const [nombre,setNombre] = useState("")
+// const [email,setEmail] = useState("")
+// const [apellido_pat,setApellido_pat] = useState("")
+// const [apellido_mat,setApellido_mat] = useState("")
+// const [password,setPassword] = useState("")
+// const [phone,setPhone] = useState("")
+// const [dot,setDot] = useState("")
+// const [nombre,setNombre] = useState("")
+// const [nombre,setNombre] = useState("")
+// const [nombre,setNombre] = useState("")
+// const [nombre,setNombre] = useState("")
+// const [nombre,setNombre] = useState("")
+// const [nombre,setNombre] = useState("")
+// const [nombre,setNombre] = useState("")
+
 const Register = () => {
+
+  const [form] = Form.useForm();
+
+  const handeRegister = async (values) => {
+    console.log(values)
+  }
+
+
   return (
     <Row className="register-container">
       {/* Columna del formulario */}
       <Col xs={24} md={16} className="form-column">
         <Card className="register-form-card">
-          <Form layout="vertical">
+          <Form layout="vertical"
+            form={form}
+            onFinish={handeRegister}
+          >
             <Row gutter={10}>
               <Col span={24}>
                 <h4>Información Personal</h4>
@@ -33,6 +63,13 @@ const Register = () => {
               <Col xs={24} md={12}>
                 <Form.Item label="Email" name="email">
                   <Input />
+                </Form.Item>
+              </Col>
+              <Col xs={24} md={12}>
+                <Form.Item label="Foto" name="photo">
+                <Upload>
+                    <Button icon={<UploadOutlined/>}> Foto</Button>
+                  </Upload>
                 </Form.Item>
               </Col>
               <Col xs={24} md={12}>
@@ -57,7 +94,7 @@ const Register = () => {
                 </Form.Item>
               </Col>
               <Col xs={24} md={12}>
-                <Form.Item label="Fecha de Nacimiento" name="fecha_nacimiento">
+                <Form.Item label="Fecha de Nacimiento" name="dot">
                   <DatePicker style={{ width: "100%" }} />
                 </Form.Item>
               </Col>
@@ -74,7 +111,7 @@ const Register = () => {
                 <h4>Información Medica</h4>
               </Col>
               <Col xs={24} md={12}>
-                <Form.Item label="Tipo de documento" name="ff">
+                <Form.Item label="Tipo de documento" name="document_type">
                   <Select>
                     <Option value="cc">CC</Option>
                     <Option value="nit">NIT</Option>
@@ -84,9 +121,9 @@ const Register = () => {
                 </Form.Item>
               </Col>
               <Col xs={24} md={12}>
-                <Form.Item label="Documento de identificacion" name="id">
+                <Form.Item label="Documento de identificacion" name="documet_file">
                   <Upload>
-                    <Button>Subir archivo</Button>
+                    <Button icon={<UploadOutlined/>}> Documento</Button>
                   </Upload>
                 </Form.Item>
               </Col>
@@ -125,10 +162,10 @@ const Register = () => {
               Registrar
             </Button>
             <div className="btnregister">
-              <Button type="dashed" htmlType="submit" block>
+              <Button type="dashed" block>
                 Inicio
               </Button>
-              <Button type="dashed" htmlType="submit" block>
+              <Button type="dashed"  block>
                 Login
               </Button>
             </div>
