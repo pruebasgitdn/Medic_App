@@ -15,20 +15,21 @@ const citaSchema = new mongoose.Schema({
     type: Date,
     required: true,
   },
-  hora: {
-    type: String,
-    required: true,
-  },
+
   motivo: {
     type: String,
     required: true,
     minLength: [10, "El motivo de la cita debe tener al menos 10 caracteres"],
+  },
+  detallesAdicionales: {
+    type: String,
   },
   estado: {
     type: String,
     enum: ["PENDIENTE", "REALIZADA", "CANCELADA"],
     default: "PENDIENTE",
   },
+
   detallesDiagnostico: {
     type: String,
   },

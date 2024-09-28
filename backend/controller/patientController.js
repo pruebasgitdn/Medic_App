@@ -238,3 +238,109 @@ export const logout = async (req, res, next) => {
       message: "Sesion de paciente cerrada correctamente!!",
     });
 };
+
+export const getHistory = async (req, res, next) => {
+  try {
+    // Obtener el paciente autenticado desde `req.user`
+    const patient = await Patient.findById(req.user.id).populate({
+      path: "reporte_historial.idDoctor", // Hace referencia a la colección de doctores
+      select: "nombre apellido_pat apellido_mat", // Los campos del doctor que quieres obtener
+    });
+
+    // Verificar si el paciente existe
+    if (!patient) {
+      return next(new ErrorHandler("Paciente no encontrado", 404));
+    }
+
+    // Devolver el historial de reportes del paciente
+    res.status(200).json({
+      success: true,
+      historial: patient.reporte_historial, // Acceder al campo de historial
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const EditProfile = async (req, res, next) => {
+  try {
+    const patientId = req.user.id; // ID del paciente autenticado
+
+    // Obtener los datos que el paciente desea actualizar
+    const {
+      nombre,
+      apellido_pat,
+      apellido_mat,
+      telefono,
+      email,
+      direccion,
+      genero,
+    } = req.body;
+
+    const { photo } = req.files || {};
+
+    // Buscar el paciente
+    const patient = await Patient.findById(patientId);
+
+    if (!patient) {
+      return next(new ErrorHandler("Paciente no encontrado", 404));
+    }
+
+    //Verificar por email usado
+    if (email !== patient.email) {
+      const emailExist = await Patient.findOne({ email });
+      if (emailExist) {
+        return next(
+          new ErrorHandler("Email ya se encuentra en uso / registrado")
+        );
+      }
+    }
+
+    // Actualizar la foto de perfil si se envió
+    if (photo) {
+      //cloud.uploaded.upload => metodo para subir, el .tempFilePath => que es la ruta temporal de la foto
+      const photoCloudinaryResponse = await cloudinary.uploader.upload(
+        photo.tempFilePath
+      );
+
+      if (!photoCloudinaryResponse || photoCloudinaryResponse.error) {
+        return next(
+          new ErrorHandler(
+            "Fallo al subir la nueva foto del paciente a Cloudinary",
+            500
+          )
+        );
+      }
+
+      // Borrar la foto anterior en Cloudinary si existe
+      if (patient.photo.public_id) {
+        //cloud.uploaded.destoy => metodo para eliminar, el .public_id => que es el id de la foto en cloudinaty
+        await cloudinary.uploader.destroy(patient.photo.public_id);
+      }
+
+      patient.photo = {
+        public_id: photoCloudinaryResponse.public_id,
+        url: photoCloudinaryResponse.secure_url,
+      };
+    }
+
+    // Actualizar los campos del paciente
+    patient.nombre = nombre || patient.nombre;
+    patient.apellido_pat = apellido_pat || patient.apellido_pat;
+    patient.apellido_mat = apellido_mat || patient.apellido_mat;
+    patient.telefono = telefono || patient.telefono;
+    patient.direccion = direccion || patient.direccion;
+    patient.genero = genero || patient.genero;
+
+    // Guardar los cambios
+    await patient.save();
+
+    res.status(200).json({
+      success: true,
+      message: "Perfil actualizado correctamente",
+      patient,
+    });
+  } catch (error) {
+    next(error);
+  }
+};

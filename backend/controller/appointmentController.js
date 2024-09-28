@@ -3,61 +3,71 @@ import { Cita } from "../models/citaSchema.js";
 import { Doctor } from "../models/doctorSchema.js";
 import { Patient } from "../models/patientSchema.js";
 
-//CREAR CITA DEL PACIENTE
+// PACIENTE AGENDA UNA CITA
 export const createAppointment = async (req, res, next) => {
-  //El paciente  necesita  crear cita
-  //Pasar paciente mediante la autenticacion middlware
-  //Verificar que el doctor si se encuentre registrado
   try {
-    const {
-      fecha,
-      hora,
-      motivo,
-      detallesDiagnostico,
-      recomendaciones,
-      nombre,
-      apellido_pat,
-    } = req.body;
+    //Extrear valores
+    const { fecha, motivo, idDoctor, detallesAdicionales } = req.body;
+    const idPaciente = req.user.id; // ID del paciente autenticado
 
-    if (
-      !fecha ||
-      !hora ||
-      !motivo ||
-      !detallesDiagnostico ||
-      !recomendaciones ||
-      !nombre ||
-      !apellido_pat
-    ) {
+    // Validar campos obligatorios
+    if (!fecha || !motivo || !idDoctor) {
       return next(
-        new ErrorHandler("Porfavor llena el formulario completo!", 400)
+        new ErrorHandler("Por favor, llena todos los campos obligatorios.", 400)
       );
     }
 
-    const doctor = await Doctor.find({
-      nombre: nombre,
-      apellido_pat: apellido_pat,
-    });
+    // Verificar que el doctor existe
+    const doctor = await Doctor.findById(idDoctor);
 
-    if (doctor.length === 0) {
-      return next(new ErrorHandler("Doctor no encontrado", 404));
+    if (!doctor) {
+      return next(new ErrorHandler("Doctor no encontrado.", 404));
     }
 
-    const idDoctor = doctor[0]._id;
-    const idPaciente = req.user.id;
+    // Verificar que no haya citas que se esten en el mismo horario
+    const startDate = new Date(fecha); // Fecha de inicio de la nueva cita
+    const endDate = new Date(startDate.getTime() + 40 * 60000); // Obtenemos la fecha de inicio y agregamos 40 minutos de duración a la cita para la duracion el final - 40 min
 
+    // Buscar citas que se esten en el horario del doctor
+    /* 
+    mongo operadores
+    $ne (not equal): no  excluir las 'CANCELADA'
+    $gte (grether than) masn que
+    $lt (less tahn) menos que
+    lo que hace un intervalo de busqueda en la fecha
+    */
+    const conflictAppointments = await Cita.find({
+      idDoctor,
+      estado: { $ne: "CANCELADA" }, // Ignorar las citas canceladas
+      fecha: {
+        $gte: startDate,
+        $lt: endDate,
+      },
+    });
+
+    if (conflictAppointments.length > 0) {
+      return next(
+        new ErrorHandler(
+          "El doctor ya tiene una cita agendada para esa hora.",
+          400
+        )
+      );
+    }
+
+    // Crear la cita
     const appointment = await Cita.create({
       idDoctor,
       idPaciente,
-      fecha,
-      hora,
+      fecha, //En la API meter CON FORMATO ISO 8601
       motivo,
-      detallesDiagnostico,
-      recomendaciones,
+      detallesAdicionales,
+      estado: "PENDIENTE", // Estado inicial
     });
-    res.status(200).json({
+
+    res.status(201).json({
       success: true,
+      message: "Cita creada exitosamente.",
       appointment,
-      message: "Cita CREADA!",
     });
   } catch (error) {
     next(error);
@@ -175,6 +185,67 @@ export const updateStatus = async (req, res, next) => {
       appointment,
     });
     */
+  } catch (error) {
+    next(error);
+  }
+};
+
+// DOCTOR RESPONDE LA CITA Y ACTUALIZA SU ESTADO Y EL HISTORIAL DEL PACIENTE
+export const respondAppointment = async (req, res, next) => {
+  try {
+    const doctorId = req.user.id; // ID del doctor autenticado
+    const { id } = req.params; // ID de la cita
+    const { estado, detallesDiagnostico, recomendaciones } = req.body;
+
+    // Buscar la cita por ID y doctor
+    const appointment = await Cita.findOne({
+      _id: id,
+      idDoctor: doctorId,
+    }).populate("idPaciente", "nombre apellido_pat email");
+
+    if (!appointment) {
+      return next(new ErrorHandler("Cita no encontrada o no autorizada", 404));
+    }
+
+    // Verificar si la cita ya ha sido marcada como "REALIZADA"
+    if (appointment.estado === "REALIZADA") {
+      return next(
+        new ErrorHandler("La cita ya ha sido marcada como realizada", 400)
+      );
+    }
+
+    // Actualizar el estado y detalles de la cita
+    appointment.estado = estado || "REALIZADA";
+    appointment.detallesDiagnostico = detallesDiagnostico;
+    appointment.recomendaciones = recomendaciones;
+    await appointment.save();
+
+    // Actualizar el historial del paciente
+    const patient = await Patient.findById(appointment.idPaciente);
+
+    if (!patient) {
+      return next(new ErrorHandler("Paciente no encontrado", 404));
+    }
+
+    const newReport = {
+      idDoctor: appointment.idDoctor,
+      idCita: appointment._id,
+      motivo: appointment.motivo,
+      fecha: appointment.fecha,
+      detallesDiagnostico: appointment.detallesDiagnostico,
+      recomendaciones: appointment.recomendaciones,
+    };
+
+    // Añadir el reporte al historial
+    patient.reporte_historial.push(newReport);
+    await patient.save();
+
+    res.status(200).json({
+      success: true,
+      message:
+        "Cita respondida y el historial del paciente ha sido actualizado.",
+      appointment,
+    });
   } catch (error) {
     next(error);
   }

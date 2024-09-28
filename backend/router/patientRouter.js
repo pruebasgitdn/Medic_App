@@ -5,6 +5,8 @@ import {
   getAllDoctors,
   getPatientDetails,
   logout,
+  getHistory,
+  EditProfile,
 } from "../controller/patientController.js";
 import { verifyPatientToken } from "../middlewares/authMiddleware.js";
 import {
@@ -20,5 +22,7 @@ router.get("/getDoctors", verifyPatientToken, getAllDoctors);
 router.get("/me", verifyPatientToken, getPatientDetails);
 router.get("/logout", verifyPatientToken, logout);
 router.get("/appointments", verifyPatientToken, checkAppointments);
+router.get("/gethistory", verifyPatientToken, getHistory);
+router.put("/editprofile", verifyPatientToken, EditProfile);
 
 export default router;
