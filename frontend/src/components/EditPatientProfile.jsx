@@ -44,13 +44,13 @@ const EditPatientProfile = () => {
       const formData = new FormData();
 
       //Append => agregando clave valor
-      formData.append("nombre", values.nombre);
-      formData.append("apellido_pat", values.apellido_pat);
-      formData.append("apellido_mat", values.apellido_mat);
-      formData.append("email", values.email);
-      formData.append("telefono", values.telefono);
-      formData.append("direccion", values.direccion);
-      formData.append("genero", values.genero);
+      formData.append("nombre", values?.nombre);
+      formData.append("apellido_pat", values?.apellido_pat);
+      formData.append("apellido_mat", values?.apellido_mat);
+      formData.append("email", values?.email);
+      formData.append("telefono", values?.telefono);
+      formData.append("direccion", values?.direccion);
+      formData.append("genero", values?.genero);
       if (photo) {
         formData.append("photo", photo);
       }
@@ -92,9 +92,8 @@ const EditPatientProfile = () => {
             <Form.Item
               name="nombre"
               label="Nombre"
-              rules={[
-                { required: true, message: "Por favor ingrese su nombre" },
-              ]}
+              rules={[{ min: 3, message: "Nombre mayor a 3 digitos" }]}
+              className="form-item"
             >
               <Input placeholder="Nombre" />
             </Form.Item>
@@ -103,18 +102,19 @@ const EditPatientProfile = () => {
             <Form.Item
               name="apellido_pat"
               label="Apellido Paterno"
-              rules={[
-                {
-                  required: true,
-                  message: "Por favor ingrese su apellido paterno",
-                },
-              ]}
+              className="form-item"
+              rules={[{ min: 3, message: "Apellido mayor a 3 digitos" }]}
             >
               <Input placeholder="Apellido Paterno" />
             </Form.Item>
 
             {/* Apellido Materno */}
-            <Form.Item name="apellido_mat" label="Apellido Materno">
+            <Form.Item
+              name="apellido_mat"
+              label="Apellido Materno"
+              className="form-item"
+              rules={[{ min: 3, message: "Apellido mayor a 3 digitos" }]}
+            >
               <Input placeholder="Apellido Materno" />
             </Form.Item>
 
@@ -122,13 +122,8 @@ const EditPatientProfile = () => {
             <Form.Item
               name="email"
               label="Email"
-              rules={[
-                {
-                  required: true,
-                  type: "email",
-                  message: "Por favor ingrese un email válido",
-                },
-              ]}
+              className="form-item"
+              rules={[{ type: "email", message: "Email valido" }]}
             >
               <Input placeholder="Email" />
             </Form.Item>
@@ -137,10 +132,12 @@ const EditPatientProfile = () => {
             <Form.Item
               name="telefono"
               label="Teléfono"
+              className="form-item"
               rules={[
+                { min: 10, message: "Numero mayor a 10 digitos" },
                 {
-                  required: true,
-                  message: "Por favor ingrese su número de teléfono",
+                  max: 12,
+                  message: "Maximo 12 digitos",
                 },
               ]}
             >
@@ -148,12 +145,17 @@ const EditPatientProfile = () => {
             </Form.Item>
 
             {/* Dirección */}
-            <Form.Item name="direccion" label="Dirección">
+            <Form.Item
+              name="direccion"
+              className="form-item"
+              label="Dirección"
+              rules={[{ min: 8, message: "Mayor a 8 digitos" }]}
+            >
               <Input placeholder="Dirección" />
             </Form.Item>
 
             {/* Género */}
-            <Form.Item name="genero" label="Género">
+            <Form.Item name="genero" className="form-item" label="Género">
               <Select placeholder="Seleccione su género">
                 <Option value="HOMBRE">Hombre</Option>
                 <Option value="MUJER">Mujer</Option>
@@ -161,17 +163,14 @@ const EditPatientProfile = () => {
               </Select>
             </Form.Item>
 
-            {/* Subir Foto */}
-            <Form.Item label="Subir Foto">
-              <Upload beforeUpload={handleFileUpload} showUploadList={false}>
-                <Button icon={<UploadOutlined />}>Seleccionar Archivo</Button>
-              </Upload>
-            </Form.Item>
-
+            {/* ARCHIVOS */}
             <Form.Item label="Archivos">
               <Row justify="space-between">
                 <Col xs={12} sm={12} md={12} lg={12}>
-                  <Form.Item label="Documento de Identidad">
+                  <Form.Item
+                    label="Documento de Identidad"
+                    className="form-item"
+                  >
                     <Upload
                       beforeUpload={handleFileUpload}
                       showUploadList={false}
@@ -190,7 +189,7 @@ const EditPatientProfile = () => {
                   </Form.Item>
                 </Col>
                 <Col xs={12} sm={12} md={12} lg={12}>
-                  <Form.Item label="Foto">
+                  <Form.Item label="Foto" className="form-item">
                     <Upload
                       beforeUpload={handleFileUpload}
                       showUploadList={false}

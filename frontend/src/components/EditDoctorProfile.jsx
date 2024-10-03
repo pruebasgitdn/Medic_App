@@ -72,7 +72,7 @@ const EditDoctorProfile = () => {
       setLoading(false);
       setUser(response.data.patient);
       toast.success("Cambio de datos exitoso");
-      navigate("/userpanel/profile"); // Redirigir a la página de perfil
+      navigate("/doctorpanel/profile"); // Redirigir a la página de perfil
     } catch (error) {
       setLoading(false);
       console.error("Error al actualizar el perfil:", error);
@@ -94,9 +94,8 @@ const EditDoctorProfile = () => {
             <Form.Item
               name="nombre"
               label="Nombre"
-              rules={[
-                { required: true, message: "Por favor ingrese su nombre" },
-              ]}
+              className="form-item"
+              rules={[{ min: 3, message: "Nombre mayor a 3 digitos" }]}
             >
               <Input placeholder="Nombre" />
             </Form.Item>
@@ -105,18 +104,19 @@ const EditDoctorProfile = () => {
             <Form.Item
               name="apellido_pat"
               label="Apellido Paterno"
-              rules={[
-                {
-                  required: true,
-                  message: "Por favor ingrese su apellido paterno",
-                },
-              ]}
+              className="form-item"
+              rules={[{ min: 3, message: "Apellido mayor a 3 digitos" }]}
             >
               <Input placeholder="Apellido Paterno" />
             </Form.Item>
 
             {/* Apellido Materno */}
-            <Form.Item name="apellido_mat" label="Apellido Materno">
+            <Form.Item
+              name="apellido_mat"
+              label="Apellido Materno"
+              className="form-item"
+              rules={[{ min: 3, message: "Apellido mayor a 3 digitos" }]}
+            >
               <Input placeholder="Apellido Materno" />
             </Form.Item>
 
@@ -124,13 +124,8 @@ const EditDoctorProfile = () => {
             <Form.Item
               name="email"
               label="Email"
-              rules={[
-                {
-                  required: true,
-                  type: "email",
-                  message: "Por favor ingrese un email válido",
-                },
-              ]}
+              className="form-item"
+              rules={[{ type: "email", message: "Email valido" }]}
             >
               <Input placeholder="Email" />
             </Form.Item>
@@ -139,10 +134,12 @@ const EditDoctorProfile = () => {
             <Form.Item
               name="telefono"
               label="Teléfono"
+              className="form-item"
               rules={[
+                { min: 10, message: "Numero mayor a 10 digitos" },
                 {
-                  required: true,
-                  message: "Por favor ingrese su número de teléfono",
+                  max: 12,
+                  message: "Maximo 12 digitos",
                 },
               ]}
             >
@@ -150,21 +147,31 @@ const EditDoctorProfile = () => {
             </Form.Item>
 
             {/* ESPECIALIDAD */}
-            <Form.Item name="especialidad" label="Especialidad">
+            <Form.Item
+              name="especialidad"
+              label="Especialidad"
+              rules={[{ min: 5, message: "Mayor a 5 digitos" }]}
+              className="form-item"
+            >
               <Input placeholder="Especialidad" />
             </Form.Item>
 
-            {/* Género */}
-            <Form.Item name="genero" label="Género">
+            {/* Género
+            <Form.Item name="genero" label="Género" className="form-item">
               <Select placeholder="Seleccione su género">
                 <Option value="HOMBRE">Hombre</Option>
                 <Option value="MUJER">Mujer</Option>
                 <Option value="OTRO">Otro</Option>
               </Select>
-            </Form.Item>
+            </Form.Item> */}
 
             {/* LICENCIA */}
-            <Form.Item name="licencianumero" label="Licencia">
+            <Form.Item
+              name="licencianumero"
+              label="Licencia"
+              className="form-item"
+              rules={[{ max: 6, message: "Maximo a 6 digitos" }]}
+            >
               <Input placeholder="Nmuero de licencia" />
             </Form.Item>
 
@@ -172,7 +179,7 @@ const EditDoctorProfile = () => {
             <Form.Item label="Archivos">
               <Row justify="space-between">
                 <Col xs={12} sm={12} md={12} lg={12}>
-                  <Form.Item label="Licencia">
+                  <Form.Item label="Licencia" className="form-item">
                     <Upload
                       beforeUpload={handleFileUpload}
                       showUploadList={false}
@@ -191,7 +198,7 @@ const EditDoctorProfile = () => {
                   </Form.Item>
                 </Col>
                 <Col xs={12} sm={12} md={12} lg={12}>
-                  <Form.Item label="Foto">
+                  <Form.Item label="Foto" className="form-item">
                     <Upload
                       beforeUpload={handleFileUpload}
                       showUploadList={false}

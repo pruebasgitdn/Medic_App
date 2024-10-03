@@ -3,6 +3,7 @@ import { Card, Button, Avatar, Row, Col } from "antd";
 import { EditOutlined, HistoryOutlined } from "@ant-design/icons";
 import { Link } from "react-router-dom";
 import { Context } from "../main";
+import { CalendarTwoTone, PhoneTwoTone, MailTwoTone } from "@ant-design/icons";
 
 const Profile = () => {
   const { user } = useContext(Context);
@@ -18,7 +19,7 @@ const Profile = () => {
           <Avatar
             size={150}
             style={{ marginBottom: "20px" }}
-            src={user?.photo?.url} // Usar la URL de la foto del usuario
+            src={user?.photo?.url ? user?.photo?.url : {}} // Usar la URL de la foto del usuario
           />
 
           {/* Información del Usuario */}
@@ -27,9 +28,18 @@ const Profile = () => {
             <h4>
               {user.nombre} {user.apellido_pat}
             </h4>
-            <p>{user.email}</p>
-            <p>{user.telefono}</p>
-            <p>15/23/2004</p>
+            <p>
+              <MailTwoTone />
+              {user.email}
+            </p>
+            <p>
+              <PhoneTwoTone />
+              {user.telefono}
+            </p>
+            <p>
+              <CalendarTwoTone />
+              {user ? new Date(user?.dot).toLocaleDateString() : "15/23/2004"}
+            </p>
           </div>
           {/* Botones de Acciones */}
           <div className="card_btn_user">

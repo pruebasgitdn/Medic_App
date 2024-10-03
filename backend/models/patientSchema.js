@@ -25,11 +25,9 @@ const patientSchema = new mongoose.Schema({
   photo: {
     public_id: {
       type: String,
-      required: [true, "Ingresa la foto."], // Mensaje de error personalizado
     },
     url: {
       type: String,
-      required: [true, "Ingresa la URL de la foto."], // Mensaje de error personalizado
     },
   },
   document_id: {
@@ -57,7 +55,7 @@ const patientSchema = new mongoose.Schema({
     required: true,
     minLength: [10, "El numero de telefono debe minimo 10 digitos"],
     maxLength: [
-      11,
+      13,
       "El numero de telefono debe contener exactamente 11 digitos",
     ],
   },
@@ -70,7 +68,7 @@ const patientSchema = new mongoose.Schema({
   direccion: {
     type: String,
     required: true,
-    minLength: [10, "La dirección debe contener al menos 10 caracteres"],
+    minLength: [8, "La dirección debe contener al menos 10 caracteres"],
   },
   nombre_contacto_emergencia: {
     type: String,

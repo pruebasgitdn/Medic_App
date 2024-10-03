@@ -1,5 +1,5 @@
 import React, { useContext, useState } from "react";
-import { Form, Input, Card, Button } from "antd";
+import { Form, Input, Card, Button, Alert } from "antd";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { toast, ToastContainer } from "react-toastify";
@@ -7,7 +7,7 @@ import "react-toastify/dist/ReactToastify.css";
 import { Context } from "../main";
 
 const Login = () => {
-  const { setUser, setIsAuthenticated } = useContext(Context);
+  const { setUser, setIsAuthenticated, setRole } = useContext(Context);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const navigate = useNavigate(); //navigate como Navigate mehtod
@@ -30,20 +30,23 @@ const Login = () => {
       //Si la respuesta es correcta
       if (response.status === 200) {
         //Data de user
+        toast.success("Inicio de sesión exitoso");
+
         const userData = response.data.user;
 
         //Actualizar contexto
         setUser(userData);
         setIsAuthenticated(true);
+        setRole("patient");
 
         // Almacena en localStorage o sessionStorage
         localStorage.setItem("user", JSON.stringify(userData));
         localStorage.setItem("isAuthenticated", "true");
         localStorage.setItem("role", "patient");
 
-        console.log(email, password);
-        toast.success("Inicio de sesión exitoso");
-        navigate("/userpanel");
+        console.log({ email, password });
+
+        navigate("/userpanel/profile");
       }
     } catch (error) {
       toast.error("Error en el inicio de sesión");
@@ -67,6 +70,7 @@ const Login = () => {
                   <h3>Ingresa tus datos</h3>
                   <Form.Item
                     label="Email"
+                    className="form-item"
                     name="email"
                     rules={[
                       {
@@ -84,6 +88,7 @@ const Login = () => {
 
                   <Form.Item
                     label="Contraseña"
+                    className="form-item"
                     name="password"
                     rules={[
                       {

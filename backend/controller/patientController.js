@@ -22,6 +22,7 @@ export const patientRegister = async (req, res, next) => {
       nombre,
       apellido_pat,
       apellido_mat,
+      dot,
       email,
       password,
       telefono,
@@ -38,40 +39,13 @@ export const patientRegister = async (req, res, next) => {
       identificacion_url,
     } = req.body;
 
-    const { photo, document_id } = req.files; //Extraemos los archivos
-
-    const allowedFormats = [
-      "image/png",
-      "image/jpeg",
-      "image/webp",
-      "image/jpg",
-    ]; //Formatos permitidos
-
-    //Validaciones para los archivos foto y documento
-    if (!photo || !allowedFormats.includes(photo.mimetype)) {
-      return next(
-        new ErrorHandler(
-          !photo
-            ? "Foto del paciente requerida!"
-            : "Formato de archivo no soportado!",
-          400
-        )
-      );
-    }
-
-    if (!document_id || !allowedFormats.includes(document_id.mimetype)) {
-      return next(
-        new ErrorHandler(
-          !document_id
-            ? "Foto documento del paciente requerida!"
-            : "Formato de archivo no soportado!",
-          400
-        )
-      );
-    }
+    const { photo } = req.files || {};
+    const { document_id } = req.files || {};
+    //Extraemos los archivos
 
     if (
       !nombre ||
+      !dot ||
       !apellido_mat ||
       !apellido_pat ||
       !email ||
@@ -137,6 +111,7 @@ export const patientRegister = async (req, res, next) => {
       nombre,
       apellido_pat,
       apellido_mat,
+      dot,
       photo: {
         public_id: photoCloudinaryResponse.public_id,
         url: photoCloudinaryResponse.secure_url,
@@ -331,6 +306,7 @@ export const EditProfile = async (req, res, next) => {
     patient.telefono = telefono || patient.telefono;
     patient.direccion = direccion || patient.direccion;
     patient.genero = genero || patient.genero;
+    patient.dot = "000";
 
     // Guardar los cambios
     await patient.save();

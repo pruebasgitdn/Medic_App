@@ -7,7 +7,7 @@ import "react-toastify/dist/ReactToastify.css";
 import { Context } from "../main";
 
 const DoctorLogin = () => {
-  const { setUser, setIsAuthenticated } = useContext(Context);
+  const { setUser, setIsAuthenticated, setRole } = useContext(Context);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const navigate = useNavigate(); //navigate como Navigate mehtod
@@ -35,6 +35,7 @@ const DoctorLogin = () => {
         //Actualizar contexto
         setUser(userData);
         setIsAuthenticated(true);
+        setRole("doctor");
 
         // Almacena en localStorage o sessionStorage
         localStorage.setItem("user", JSON.stringify(userData));
@@ -68,6 +69,7 @@ const DoctorLogin = () => {
                   <Form.Item
                     label="Email"
                     name="email"
+                    className="form-item"
                     rules={[
                       {
                         required: true,
@@ -85,6 +87,7 @@ const DoctorLogin = () => {
                   <Form.Item
                     label="Contraseña"
                     name="password"
+                    className="form-item"
                     rules={[
                       {
                         required: true,

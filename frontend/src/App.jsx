@@ -23,6 +23,7 @@ import DoctorLogin from "./pages/DoctorLogin";
 import DoctorPanel from "./components/DoctorPanel";
 import DoctorProfile from "./pages/DoctorProfile";
 import EditDoctorProfile from "./components/EditDoctorProfile";
+import DoctorAppointments from "./pages/DoctorAppointments";
 
 function App() {
   const { setUser, setIsAuthenticated, user, isAuthenticated, role, setRole } =
@@ -89,6 +90,7 @@ function App() {
             element={role === "doctor" ? <DoctorPanel /> : <Navigate to="/" />}
           >
             <Route path="profile" element={<DoctorProfile />} />
+            <Route path="appointments" element={<DoctorAppointments />} />
             <Route path="editprofile" element={<EditDoctorProfile />} />
           </Route>
         </Routes>

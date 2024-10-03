@@ -88,7 +88,7 @@ export const checkAppointments = async (req, res, next) => {
 
     if (!appointments || appointments.length === 0) {
       return next(
-        new ErrorHandler("No se encontraron citas para este paciente", 404)
+        new ErrorHandler("No se encontraron citas para este paciente", 200)
       );
     }
     res.status(200).json({
@@ -119,6 +119,37 @@ export const getDoctorAppointments = async (req, res, next) => {
     res.status(200).json({
       success: true,
       appointments,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+//PACIENTE CANCELA CITA
+export const cancelAppointment = async (req, res, next) => {
+  try {
+    const appointmentId = req.params.id; // ID de la cita de los parámetros  URL
+    const patientId = req.user.id; // ID del paciente autenticado
+
+    // Busca por ID y asegurar que pertenece al paciente autenticado
+    const appointment = await Cita.findOne({
+      _id: appointmentId,
+      idPaciente: patientId, // Verificar que el paciente sea el dueño de la cita
+      estado: { $ne: "CANCELADA" }, // No permitir cancelar si ya está cancelada
+    });
+
+    if (!appointment) {
+      return next(new ErrorHandler("Cita no encontrada o ya cancelada", 404));
+    }
+
+    // Actualizar el estado de la cita a "CANCELADA"
+    appointment.estado = "CANCELADA";
+    await appointment.save();
+
+    res.status(200).json({
+      success: true,
+      message: "La cita ha sido cancelada exitosamente.",
+      appointment,
     });
   } catch (error) {
     next(error);

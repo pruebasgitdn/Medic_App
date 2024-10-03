@@ -1,4 +1,6 @@
 import React, { useEffect, useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+
 import {
   Form,
   Input,
@@ -20,6 +22,7 @@ const AppointmentForm = () => {
   const [form] = Form.useForm();
   const [doctores, setDoctores] = useState([]);
   const [loading, setLoading] = useState(true);
+  const navigate = useNavigate(); //navigate como Navigate mehtod
 
   useEffect(() => {
     const fetchDoctors = async () => {
@@ -67,8 +70,9 @@ const AppointmentForm = () => {
       //Si hay exito en la peticion
       if (response.data.success) {
         form.resetFields(); //Resetear campos
+        message.success("Cita cancelada exitosamente");
+        navigate("/userpanel/appointments");
       }
-      await toast.success("Cita agendada!!"); //Notificar
     } catch (error) {
       console.error("Error al crear la cita:", error);
       toast.error(error.response?.data?.message || "Error al crear la cita."); // Notificación de error
@@ -90,7 +94,7 @@ const AppointmentForm = () => {
           rules={[
             { required: true, message: "Por favor, selecciona un doctor" },
           ]}
-          className=""
+          className="form-item"
         >
           <Select
             placeholder="Selecciona un doctor"
@@ -109,6 +113,7 @@ const AppointmentForm = () => {
         <Form.Item
           label="Fecha de la Cita"
           name="fecha"
+          className="form-item"
           rules={[
             { required: true, message: "Por favor, selecciona una fecha" },
           ]}
@@ -126,16 +131,18 @@ const AppointmentForm = () => {
             <Form.Item
               label="Motivo de la Cita"
               name="motivo"
+              className="form-item"
               rules={[
                 {
+                  min: 8,
                   required: true,
-                  message: "Por favor, describe el motivo de la cita",
+                  message: "Requerido, minimo 8 caracteres",
                 },
               ]}
             >
               <Input.TextArea
                 rows={4}
-                placeholder="Describe el motivo de la cita"
+                placeholder="Describe el motivo de la cita minimo 8 caracteres"
               />
             </Form.Item>
           </Col>
@@ -143,6 +150,7 @@ const AppointmentForm = () => {
             <Form.Item
               label="Notas adicionales"
               name="detallesAdicionales"
+              className="form-item"
               rules={[
                 {
                   required: true,

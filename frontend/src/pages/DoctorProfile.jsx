@@ -1,12 +1,21 @@
-import React, { useContext } from "react";
+import React, { useContext, useEffect } from "react";
 import { Card, Button, Avatar, Row, Col } from "antd";
-import { EditOutlined, HistoryOutlined } from "@ant-design/icons";
 import { Link } from "react-router-dom";
 import { Context } from "../main";
+import {
+  CalendarTwoTone,
+  PhoneTwoTone,
+  MailTwoTone,
+  EditOutlined,
+  HistoryOutlined,
+} from "@ant-design/icons";
 
 const DoctorProfile = () => {
   const { user } = useContext(Context);
 
+  useEffect(() => {
+    console.log(user);
+  }, [user]);
   return (
     <Row justify="center" align="middle" style={{ marginTop: "20px" }}>
       <Col xs={22} sm={18} md={12} lg={8}>
@@ -28,9 +37,21 @@ const DoctorProfile = () => {
               Dr. {user.nombre} {user.apellido_pat}
             </h4>
             <h4>Especialista: {user.especialidad}</h4>
-            <p>{user.email}</p>
-            <p>{user.telefono}</p>
-            <p>15/23/2004</p>
+            <h4>Numero de licencia: {user.numero_licencia}</h4>
+            <p>
+              <MailTwoTone />
+              {user.email}
+            </p>
+            <p>
+              <PhoneTwoTone />
+              {user.telefono}
+            </p>
+            <p>
+              <CalendarTwoTone />
+              {user && user.dot?.length > 0
+                ? new Date(user?.dot).toLocaleDateString()
+                : "15/23/2004"}
+            </p>
           </div>
           {/* Botones de Acciones */}
           <div className="card_btn_user">

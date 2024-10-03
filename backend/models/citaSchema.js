@@ -19,7 +19,7 @@ const citaSchema = new mongoose.Schema({
   motivo: {
     type: String,
     required: true,
-    minLength: [10, "El motivo de la cita debe tener al menos 10 caracteres"],
+    minLength: [8, "El motivo de la cita debe tener al menos 8 caracteres"],
   },
   detallesAdicionales: {
     type: String,

@@ -36,7 +36,6 @@ app.use(express.urlencoded({ extended: true })); //Manejo de datos HTML(Forms)
 app.use(
   fileUpload({
     useTempFiles: true, //archivos temporales
-    tempFileDir: "/tmp/", //folder de
   })
 );
 

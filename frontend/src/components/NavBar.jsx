@@ -1,6 +1,6 @@
 import React, { useContext } from "react";
 import { Link, Navigate, useNavigate } from "react-router-dom";
-import { Button, Layout, Menu } from "antd";
+import { Button, Layout, Menu, Alert } from "antd";
 import { Context } from "../main";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -24,6 +24,8 @@ const NavBar = () => {
       );
 
       if (response.status === 200) {
+        toast.success("Sesion cerrada correctamente");
+
         //Eliminar datos del contexto
         setUser(null);
         setIsAuthenticated(false);
@@ -35,8 +37,6 @@ const NavBar = () => {
         localStorage.removeItem("role");
 
         //Redirigir al login
-        toast.success("Sesion cerrada correctamente");
-
         navigate("/");
       } else {
         toast.error("Error al cerrar sesión");
@@ -50,7 +50,8 @@ const NavBar = () => {
     <div className="container_nav">
       <Menu mode="horizontal" className="navbar">
         <div className="nav_uno">
-          <img src="/logos/logomain.png" alt="Logo" width="140px" />
+          <img src="/logos/logomain.png" alt="Logo" className="logonav" />
+          <ToastContainer />
           <Menu.Item key="1">
             <Link to="/">Inicio</Link>
           </Menu.Item>
