@@ -24,6 +24,7 @@ import DoctorPanel from "./components/DoctorPanel";
 import DoctorProfile from "./pages/DoctorProfile";
 import EditDoctorProfile from "./components/EditDoctorProfile";
 import DoctorAppointments from "./pages/DoctorAppointments";
+import DoctorPatients from "./pages/DoctorPatients";
 
 function App() {
   const { setUser, setIsAuthenticated, user, isAuthenticated, role, setRole } =
@@ -92,6 +93,7 @@ function App() {
             <Route path="profile" element={<DoctorProfile />} />
             <Route path="appointments" element={<DoctorAppointments />} />
             <Route path="editprofile" element={<EditDoctorProfile />} />
+            <Route path="patients" element={<DoctorPatients />} />
           </Route>
         </Routes>
       </Router>

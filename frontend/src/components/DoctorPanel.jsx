@@ -26,21 +26,19 @@ const DoctorPanel = () => {
             <Link to="appointments">Atender Citas</Link>
           </Menu.Item>
           <Menu.Item key="3" icon={<UserOutlined />}>
-            <Link to="patients">Gestionar Pacientes</Link>
+            <Link to="/doctorpanel/patients">Pacientes</Link>
           </Menu.Item>
           <Menu.Item key="4" icon={<HistoryOutlined />}>
-            <Link to="history">Historial Pacientes</Link>
+            <Link to="history">Historial</Link>
           </Menu.Item>
           <Menu.Item key="5" icon={<InsertRowAboveOutlined />}>
-            <Link to="reports">Reporte de Estadísticas</Link>
+            <Link to="reports">Reporte Estadísticas</Link>
           </Menu.Item>
           {/* Otras opciones del menú */}
           <Menu.Item key="6" icon={<SettingOutlined />}>
             Notificaciones
           </Menu.Item>
-          <Menu.Item key="7" icon={<FileOutlined />}>
-            Ver Documentos
-          </Menu.Item>
+         
           <Menu.Item key="8" icon={<QuestionCircleOutlined />}>
             Solicitar Soporte
           </Menu.Item>
