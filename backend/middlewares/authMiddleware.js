@@ -95,7 +95,7 @@ export const verifyDoctorToken = (req, res, next) => {
       )
     );
   }
-
+  console.log(token);
   try {
     /*
     decoded informacion desencriptada del token 

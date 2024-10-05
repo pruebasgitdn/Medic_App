@@ -1,5 +1,5 @@
 import React, { useContext, useState } from "react";
-import { Form, Input, Card, Button, Alert } from "antd";
+import { Form, Input, Card, Button, Alert, message } from "antd";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { toast, ToastContainer } from "react-toastify";
@@ -30,7 +30,7 @@ const Login = () => {
       //Si la respuesta es correcta
       if (response.status === 200) {
         //Data de user
-        toast.success("Inicio de sesión exitoso");
+        message.success("Inicio de sesion exitoso!");
 
         const userData = response.data.user;
 
@@ -49,7 +49,7 @@ const Login = () => {
         navigate("/userpanel/profile");
       }
     } catch (error) {
-      toast.error("Error en el inicio de sesión");
+      message.error("Error en el inicio de sesión");
       console.error("Error:", error);
     }
   };

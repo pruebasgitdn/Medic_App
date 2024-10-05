@@ -226,7 +226,7 @@ export const respondAppointment = async (req, res, next) => {
   try {
     const doctorId = req.user.id; // ID del doctor autenticado
     const { id } = req.params; // ID de la cita
-    const { estado, detallesDiagnostico, recomendaciones } = req.body;
+    const { detallesDiagnostico, recomendaciones } = req.body;
 
     // Buscar la cita por ID y doctor
     const appointment = await Cita.findOne({
@@ -238,20 +238,26 @@ export const respondAppointment = async (req, res, next) => {
       return next(new ErrorHandler("Cita no encontrada o no autorizada", 404));
     }
 
-    // Verificar si la cita ya ha sido marcada como "REALIZADA"
-    if (appointment.estado === "REALIZADA") {
+    // SOLO CITAS PENDIENTES
+    if (
+      appointment.estado === "CANCELADA" ||
+      appointment.estado === "REALIZADA"
+    ) {
       return next(
-        new ErrorHandler("La cita ya ha sido marcada como realizada", 400)
+        new ErrorHandler(
+          "No se puede responder a esta cita porque ya ha sido cancelada o realizada",
+          400
+        )
       );
     }
 
     // Actualizar el estado y detalles de la cita
-    appointment.estado = estado || "REALIZADA";
+    appointment.estado = "REALIZADA";
     appointment.detallesDiagnostico = detallesDiagnostico;
     appointment.recomendaciones = recomendaciones;
     await appointment.save();
 
-    // Actualizar el historial del paciente
+    // Encontrar id del paciente para actualizar el historial
     const patient = await Patient.findById(appointment.idPaciente);
 
     if (!patient) {
@@ -273,8 +279,7 @@ export const respondAppointment = async (req, res, next) => {
 
     res.status(200).json({
       success: true,
-      message:
-        "Cita respondida y el historial del paciente ha sido actualizado.",
+      message: "Cita realizada y paciente actualizado.",
       appointment,
     });
   } catch (error) {

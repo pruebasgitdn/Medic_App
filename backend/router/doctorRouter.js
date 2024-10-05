@@ -1,5 +1,10 @@
 import express from "express";
-import { login, logout } from "../controller/doctorController.js";
+import {
+  EditProfile,
+  login,
+  logout,
+  Me,
+} from "../controller/doctorController.js";
 import {
   getDoctorAppointments,
   updateStatus,
@@ -10,6 +15,8 @@ const router = express.Router(); //Creando enrutador
 router.post("/login", login); //Ruta, middleware y manejador
 router.get("/logout", verifyDoctorToken, logout);
 router.get("/appointments", verifyDoctorToken, getDoctorAppointments);
+router.get("/me", verifyDoctorToken, Me);
+router.put("/editprofile", verifyDoctorToken, EditProfile);
 
 router.put("/update/:id", verifyDoctorToken, updateStatus);
 

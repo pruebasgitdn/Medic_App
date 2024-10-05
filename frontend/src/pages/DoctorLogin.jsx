@@ -1,5 +1,5 @@
 import React, { useContext, useState } from "react";
-import { Form, Input, Card, Button } from "antd";
+import { Form, Input, Card, Button, message } from "antd";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { toast, ToastContainer } from "react-toastify";
@@ -29,6 +29,8 @@ const DoctorLogin = () => {
 
       //Si la respuesta es correcta
       if (response.status === 200) {
+        message.success("Inicio de sesion exitoso!");
+
         //Data de user
         const userData = response.data.user;
 
@@ -43,7 +45,6 @@ const DoctorLogin = () => {
         localStorage.setItem("role", "doctor");
 
         console.log(email, password);
-        toast.success("Inicio de sesión exitoso");
         navigate("/doctorpanel");
       }
     } catch (error) {

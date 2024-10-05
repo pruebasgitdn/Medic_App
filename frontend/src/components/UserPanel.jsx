@@ -1,91 +1,54 @@
 import React, { useContext } from "react";
 import { Context } from "../main";
-import {
-  Layout,
-  Card,
-  Row,
-  Col,
-  Statistic,
-  Button,
-  Menu,
-  Calendar,
-} from "antd";
-const { Header, Sider, Content } = Layout;
+import { Layout, Menu } from "antd";
+const { Sider, Content } = Layout;
 import {
   UserOutlined,
   SettingOutlined,
   FileOutlined,
   QuestionCircleOutlined,
+  CalendarOutlined,
+  HistoryOutlined,
+  ProfileOutlined,
 } from "@ant-design/icons";
-import {
-  PieChart,
-  Pie,
-  Cell,
-  Tooltip,
-  Legend,
-  BarChart,
-  Bar,
-  XAxis,
-  YAxis,
-  CartesianGrid,
-} from "recharts";
-
-import {
-  BrowserRouter as Router,
-  Routes,
-  Route,
-  Link,
-  Outlet,
-} from "react-router-dom";
-import PatientHistory from "../pages/PatientHistory";
-import Profile from "../pages/Profile";
+import { Link, Outlet } from "react-router-dom";
 
 const UserPanel = () => {
-  const { isAuthenticated, user } = useContext(Context);
+  // const { isAuthenticated, user } = useContext(Context);
 
   return (
-    <Layout color="white">
-      <div className="lyt">
-        <Sider>
-          <Menu className="mm">
-            <Menu.Item key="6" icon={<SettingOutlined />}>
-              Notificaciones
-            </Menu.Item>
-            <Menu.Item key="7" icon={<FileOutlined />}>
-              Ver Documentos
-            </Menu.Item>
-            <Menu.Item key="8" icon={<QuestionCircleOutlined />}>
-              Solicitar Soporte
-            </Menu.Item>
-          </Menu>
-        </Sider>
-      </div>
+    <Layout>
+      <Sider collapsible theme="light">
+        <Menu mode="inline">
+          {/* Añadir enlaces de las rutas a los items del menú */}
+          <Menu.Item key="1" icon={<ProfileOutlined />}>
+            <Link to="profile">Perfil</Link>
+          </Menu.Item>
+          <Menu.Item key="2" icon={<CalendarOutlined />}>
+            <Link to="appointment">Agendar Cita</Link>
+          </Menu.Item>
+          <Menu.Item key="3" icon={<HistoryOutlined />}>
+            <Link to="history">Ver Historial</Link>
+          </Menu.Item>
+          <Menu.Item key="4" icon={<UserOutlined />}>
+            <Link to="appointments">Ver Citas</Link>
+          </Menu.Item>
+          {/* Otras opciones del menú */}
+          <Menu.Item key="6" icon={<SettingOutlined />}>
+            Notificaciones
+          </Menu.Item>
+          <Menu.Item key="7" icon={<FileOutlined />}>
+            Ver Documentos
+          </Menu.Item>
+          <Menu.Item key="8" icon={<QuestionCircleOutlined />}>
+            Solicitar Soporte
+          </Menu.Item>
+        </Menu>
+      </Sider>
+
       <Layout>
-        <Header className="profile-header">
-          {/* Enlaces para las rutas */}
-          <Link to="profile">
-            <Button type="primary" size="small" className="action-button">
-              Perfil
-            </Button>
-          </Link>
-          <Link to="appointment">
-            <Button type="primary" size="small" className="action-button">
-              Agendar Cita
-            </Button>
-          </Link>
-          <Link to="history">
-            <Button type="primary" size="small" className="action-button">
-              Ver Historial
-            </Button>
-          </Link>
-          <Link to="appointments">
-            <Button type="primary" size="small" className="action-button">
-              Ver Citas
-            </Button>
-          </Link>
-        </Header>
-        <Content className="profile-content">
-          {/* Outlet me renderiza las rutas hijas/anidadas en el app.jsx */}
+        <Content className="profile-content" style={{ padding: "24px" }}>
+          {/* Renderizado de las rutas hijas */}
           <Outlet />
         </Content>
       </Layout>

@@ -53,15 +53,7 @@ const Departaments = () => {
   return (
     <div className="container departments">
       <h2>Servicios</h2>
-      <Carousel
-        responsive={responsive}
-        removeArrowOnDeviceType={[
-          // "superLargeDesktop",
-          // "desktop",
-          "tablet",
-          "mobile",
-        ]}
-      >
+      <Carousel responsive={responsive}>
         {departments.map((depart, index) => {
           return (
             <Card

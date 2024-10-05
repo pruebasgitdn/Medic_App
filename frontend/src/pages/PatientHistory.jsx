@@ -65,9 +65,6 @@ const PatientHistory = () => {
                   className="card_adv"
                 >
                   <p>
-                    <strong>Motivo:</strong> {reporte.motivo}
-                  </p>
-                  <p>
                     <strong>Doctor:</strong>{" "}
                     {`${reporte.idDoctor.nombre} ${reporte.idDoctor.apellido_pat}`}
                   </p>
@@ -75,6 +72,10 @@ const PatientHistory = () => {
                     <strong>Fecha:</strong>{" "}
                     {new Date(reporte.fecha).toLocaleDateString()}
                   </p>
+                  <p>
+                    <strong>Motivo:</strong> {reporte.motivo}
+                  </p>
+
                   <p>
                     <strong>Detalles del Diagnóstico:</strong>{" "}
                     {reporte.detallesDiagnostico}

@@ -51,7 +51,7 @@
 }
 
 .container_nav {
-  margin-top: 90px; /* Ajusta según la altura del NavBar */
+  margin-top: 90px;
 }
 .nav_uno {
   display: inline-flex;
@@ -111,9 +111,9 @@
   margin: 15px;
 }
 .lyt {
-  background-color: floralwhite;
+  /* background-color: floralwhite;
   display: flex;
-  align-items: center;
+  align-items: center; */
 }
 .mm {
   display: flex;
@@ -420,6 +420,10 @@ h4 {
   color: #fffbfb;
 }
 
+.error_form {
+  color: #cf0000;
+  font-weight: 300;
+}
 .btn_cancelar {
 }
 /* .card {
@@ -574,5 +578,63 @@ h4 {
 }
 
 /**/
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.nav_dos {
+  display: flex;
+  align-items: center;
+}
+
+.mobile-menu {
+  display: none; /* Oculta el botón en pantallas grandes */
+}
+
+/* Mostrar el botón solo en pantallas pequeñas */
+@media (max-width: 730px) {
+  .navbar {
+    display: none; /* Oculta la barra de navegación */
+  }
+  .menu-button {
+    display: flex;
+    margin-left: auto;
+    margin-right: auto;
+    width: 80%;
+    margin-bottom: 10px;
+  }
+  .logonav {
+    display: flex;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 20px;
+    margin-bottom: 20px;
+  }
+  .mobile-menu {
+    flex-direction: column;
+    display: flex; /* Muestra el botón en pantallas pequeñas */
+  }
+
+  .container_nav {
+    margin-top: 0px;
+  }
+
+  .mobile-options {
+    display: flex;
+    flex-direction: column;
+    text-align: center;
+    gap: 10px;
+    background-color: white; /* Color de fondo del menú */
+    padding: 10px; /* Espaciado interno */
+  }
+
+  .mobile-options a {
+    margin: 5px 0; /* Espaciado entre los enlaces */
+    text-decoration: none; /* Sin subrayado */
+    color: black; /* Color de texto */
+  }
+}
 
 /**********************************************************************************************************************/

@@ -18,10 +18,6 @@ const doctorSchema = new mongoose.Schema({
     type: String,
     minLength: [3, "El apellido debe tener al menos 3 caracteres"],
   },
-  dot: {
-    type: Date,
-    required: true,
-  },
   photo: {
     public_id: {
       type: String,

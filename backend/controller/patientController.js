@@ -252,7 +252,7 @@ export const EditProfile = async (req, res, next) => {
       genero,
     } = req.body;
 
-    const { photo } = req.files || {};
+    const { photo, document_id } = req.files || {};
 
     // Buscar el paciente
     const patient = await Patient.findById(patientId);
@@ -299,6 +299,34 @@ export const EditProfile = async (req, res, next) => {
       };
     }
 
+    // Actualizar documento si se envió
+    if (document_id) {
+      //cloud.uploaded.upload => metodo para subir, el .tempFilePath => que es la ruta temporal de la foto
+      const documentCloudinaryResponse = await cloudinary.uploader.upload(
+        document_id.tempFilePath
+      );
+
+      if (!documentCloudinaryResponse || documentCloudinaryResponse.error) {
+        return next(
+          new ErrorHandler(
+            "Fallo al subir el documento del paciente a Cloudinary",
+            500
+          )
+        );
+      }
+
+      // Borrar documento anterior en Cloudinary si existe
+      if (patient.document_id.public_id) {
+        //cloud.uploaded.destoy => metodo para eliminar, el .public_id => que es el id de la foto en cloudinaty
+        await cloudinary.uploader.destroy(patient.document_id.public_id);
+      }
+
+      patient.document_id = {
+        public_id: documentCloudinaryResponse.public_id,
+        url: documentCloudinaryResponse.secure_url,
+      };
+    }
+
     // Actualizar los campos del paciente
     patient.nombre = nombre || patient.nombre;
     patient.apellido_pat = apellido_pat || patient.apellido_pat;
@@ -306,7 +334,6 @@ export const EditProfile = async (req, res, next) => {
     patient.telefono = telefono || patient.telefono;
     patient.direccion = direccion || patient.direccion;
     patient.genero = genero || patient.genero;
-    patient.dot = "000";
 
     // Guardar los cambios
     await patient.save();

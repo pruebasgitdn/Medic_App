@@ -158,7 +158,8 @@ const PatientAppointments = () => {
                 {new Date(cita.fecha).toLocaleDateString()}
               </p>
               <p>
-                <strong>Hora:</strong> {cita.hora}
+                <strong>Hora:</strong>{" "}
+                {new Date(cita.fecha).toLocaleTimeString()}
               </p>
               <p>
                 <strong>Detalles del Diagnóstico:</strong>{" "}

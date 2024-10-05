@@ -1,5 +1,16 @@
 import React, { useEffect, useContext, useState } from "react";
-import { Form, Input, Button, Select, Row, Col, Upload, Card } from "antd";
+import {
+  Form,
+  Input,
+  Button,
+  Select,
+  Row,
+  Col,
+  Upload,
+  Card,
+  Alert,
+  message,
+} from "antd";
 import { Context } from "../main";
 import { UploadOutlined } from "@ant-design/icons";
 import { useNavigate } from "react-router-dom";
@@ -15,11 +26,17 @@ const EditPatientProfile = () => {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
   const [photo, setPhoto] = useState(null); // Foto del paciente
+  const [document, setDocument] = useState(null); // Dcoumento del paciente
+  const [emailError, setEmailError] = useState("");
 
   // Función para manejar el archivo de foto
-  const handleFileUpload = (file) => {
+  const handlePhotoUpload = (file) => {
     setPhoto(file);
-    return false; // Esto evita que Ant Design intente subir el archivo automáticamente
+    return false;
+  };
+  const handleDocumentUpload = (file) => {
+    setDocument(file);
+    return false;
   };
 
   // Rellenar el formulario con la información del usuario actual
@@ -54,6 +71,9 @@ const EditPatientProfile = () => {
       if (photo) {
         formData.append("photo", photo);
       }
+      if (document) {
+        formData.append("document_id", document);
+      }
 
       // Enviar los datos al servidor
       const response = await axios.put(
@@ -67,17 +87,33 @@ const EditPatientProfile = () => {
         }
       );
 
+      message.success("Datos actualizados exitosamente");
       setLoading(false);
       setUser(response.data.patient);
-      toast.success("Cambio de datos exitoso");
       navigate("/userpanel/profile"); // Redirigir a la página de perfil
     } catch (error) {
       setLoading(false);
+
+      console.error("Error al actualizar el perfil:", error);
+      if (error.response && error.response.data) {
+        const { message } = error.response.data;
+
+        // Verificar si el mensaje es el de email duplicado
+        if (message === "Email ya se encuentra en uso / registrado") {
+          setEmailError("Email ya se encuentra en uso / registrado");
+        } else {
+          toast.error(message); // Mostrar otro mensaje de error general
+        }
+      } else {
+        toast.error("Error en la actualización del perfil");
+      }
       console.error("Error al actualizar el perfil:", error);
     }
   };
+
   return (
     <Row justify="center" align="middle" style={{ marginTop: "20px" }}>
+      <ToastContainer />
       <Col xs={24} sm={20} md={16} lg={12}>
         <Card title="Editar Perfil">
           <Form
@@ -127,6 +163,14 @@ const EditPatientProfile = () => {
             >
               <Input placeholder="Email" />
             </Form.Item>
+            {emailError &&
+            emailError === "Email ya se encuentra en uso / registrado" ? (
+              <>
+                <p className="error_form">{emailError}</p>
+              </>
+            ) : (
+              <></>
+            )}
 
             {/* Teléfono */}
             <Form.Item
@@ -168,11 +212,12 @@ const EditPatientProfile = () => {
               <Row justify="space-between">
                 <Col xs={12} sm={12} md={12} lg={12}>
                   <Form.Item
+                    name="document_id"
                     label="Documento de Identidad"
                     className="form-item"
                   >
                     <Upload
-                      beforeUpload={handleFileUpload}
+                      beforeUpload={handleDocumentUpload}
                       showUploadList={false}
                     >
                       <Button icon={<UploadOutlined />}>
@@ -189,9 +234,9 @@ const EditPatientProfile = () => {
                   </Form.Item>
                 </Col>
                 <Col xs={12} sm={12} md={12} lg={12}>
-                  <Form.Item label="Foto" className="form-item">
+                  <Form.Item name="photo" label="Foto" className="form-item">
                     <Upload
-                      beforeUpload={handleFileUpload}
+                      beforeUpload={handlePhotoUpload}
                       showUploadList={false}
                     >
                       <Button icon={<UploadOutlined />}>

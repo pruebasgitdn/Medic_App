@@ -38,58 +38,13 @@ const EditDoctorProfile = () => {
   }, [user, form]);
 
   const onFinish = async (values) => {
-    try {
-      setLoading(true);
-
-      //FormData para manejo de archivos y agrupacion
-      const formData = new FormData();
-
-      //Append => agregando clave valor
-      formData.append("nombre", values.nombre);
-      formData.append("apellido_pat", values.apellido_pat);
-      formData.append("apellido_mat", values.apellido_mat);
-      formData.append("email", values.email);
-      formData.append("telefono", values.telefono);
-      formData.append("especialidad", values.especialidad);
-      formData.append("numero_licencia", values.licencianumero);
-      formData.append("genero", values.genero);
-      if (photo) {
-        formData.append("photo", photo);
-      }
-
-      // Enviar los datos al servidor
-      const response = await axios.put(
-        "http://localhost:4000/api/patient/editprofile",
-        formData,
-        {
-          withCredentials: true, // Para asegurarse de que las cookies se manejen correctamente
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
-        }
-      );
-
-      setLoading(false);
-      setUser(response.data.patient);
-      toast.success("Cambio de datos exitoso");
-      navigate("/doctorpanel/profile"); // Redirigir a la página de perfil
-    } catch (error) {
-      setLoading(false);
-      console.error("Error al actualizar el perfil:", error);
-    }
+    console.log(values);
   };
   return (
     <Row justify="center" align="middle" style={{ marginTop: "20px" }}>
       <Col xs={24} sm={20} md={16} lg={12}>
         <Card title="Editar Perfil">
-          <Form
-            form={form}
-            layout="vertical"
-            initialValues={{
-              genero: "HOMBRE", // Valor por defecto
-            }}
-            onFinish={onFinish}
-          >
+          <Form form={form} layout="vertical" onFinish={onFinish}>
             {/* Nombre */}
             <Form.Item
               name="nombre"

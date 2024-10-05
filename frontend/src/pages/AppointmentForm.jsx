@@ -70,7 +70,7 @@ const AppointmentForm = () => {
       //Si hay exito en la peticion
       if (response.data.success) {
         form.resetFields(); //Resetear campos
-        message.success("Cita cancelada exitosamente");
+        message.success("Cita agendada exitosamente!!");
         navigate("/userpanel/appointments");
       }
     } catch (error) {
