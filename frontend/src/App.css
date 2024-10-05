@@ -35,12 +35,12 @@
   display: flex;
   flex-direction: column;
   padding: 20px;
-  width: 50vw;
+  width: 40vw;
 }
 
 .login-image {
   display: flex;
-  width: 50vw;
+  width: 20vw;
 }
 
 .col {
@@ -65,26 +65,7 @@
   width: 200px;
   height: 50px;
 }
-/* 
-.btnregister {
-  display: flex;
-  flex-direction: row;
-  gap: 20px;
-  margin: 10px;
-} */
 
-/* .register-form-card {
-  width: 90%; 
-  padding: 20px;
-  box-sizing: border-box;
-}*/
-/* 
-.image-column {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  overflow: hidden;
-} */
 
 .register-banner {
   width: 80%; /* Ajusta el ancho de la imagen */
@@ -616,7 +597,9 @@ h4 {
     flex-direction: column;
     display: flex; /* Muestra el botón en pantallas pequeñas */
   }
-
+  .login-image {
+    display: none;
+  }
   .container_nav {
     margin-top: 0px;
   }
@@ -635,6 +618,19 @@ h4 {
     text-decoration: none; /* Sin subrayado */
     color: black; /* Color de texto */
   }
+  .login-form {
+    display: flex;
+    flex-direction: column;
+    
+    width: 80vw;
+  }
 }
+
+@media (max-width: 979px) {
+  .login-image {
+    display: none;
+  }
+}
+
 
 /**********************************************************************************************************************/
