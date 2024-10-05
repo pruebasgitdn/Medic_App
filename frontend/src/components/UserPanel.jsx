@@ -37,9 +37,7 @@ const UserPanel = () => {
           <Menu.Item key="6" icon={<SettingOutlined />}>
             Notificaciones
           </Menu.Item>
-          <Menu.Item key="7" icon={<FileOutlined />}>
-            Ver Documentos
-          </Menu.Item>
+
           <Menu.Item key="8" icon={<QuestionCircleOutlined />}>
             Solicitar Soporte
           </Menu.Item>
