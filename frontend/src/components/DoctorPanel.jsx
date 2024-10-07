@@ -38,11 +38,6 @@ const DoctorPanel = () => {
           <Menu.Item key="6" icon={<SettingOutlined />}>
             Notificaciones
           </Menu.Item>
-<<<<<<< HEAD
-
-=======
-         
->>>>>>> 65954b106c7f7f7371fcd9ba652e74c2ec1e1e32
           <Menu.Item key="8" icon={<QuestionCircleOutlined />}>
             Solicitar Soporte
           </Menu.Item>

@@ -17,6 +17,13 @@
   flex-direction: column;
 }
 
+.btns_block {
+  display: flex;
+  flex-direction: column;
+}
+#w80 {
+  width: 80%;
+}
 .login-container {
   display: flex;
   overflow: hidden;
@@ -65,7 +72,6 @@
   width: 200px;
   height: 50px;
 }
-
 
 .register-banner {
   width: 80%; /* Ajusta el ancho de la imagen */
@@ -573,6 +579,78 @@ h4 {
 .mobile-menu {
   display: none; /* Oculta el botón en pantallas grandes */
 }
+#info_btn {
+  color: #000000;
+  background-color: rgb(208, 255, 0);
+  font-weight: bold;
+}
+#success_btn {
+  background-color: rgb(0, 255, 81);
+  font-weight: bold;
+  color: hsl(0, 0%, 100%);
+}
+.btns_flex {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+}
+.btns_flex div {
+  flex-wrap: wrap;
+}
+.doctorpatient_img {
+  display: flex;
+  justify-content: center;
+}
+.doctorpatient_img img {
+  border-radius: 20px;
+  width: 150px;
+  height: 150px;
+}
+.doctorpatient_aside {
+  display: flex;
+  justify-content: center;
+}
+
+.about-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.about-content {
+  max-width: 1000px;
+  display: flex;
+}
+
+.about-text {
+  text-align: center;
+  display: block;
+}
+
+.about-text h2 {
+  font-size: 28px;
+  margin-bottom: 20px;
+  color: #333;
+}
+
+.about-text p {
+  font-size: 16px;
+  line-height: 1.8;
+  color: #555;
+}
+
+.about-image {
+  width: 250px;
+  height: 250px;
+  display: flex;
+  margin-left: auto;
+  margin-right: auto;
+  padding: 15px;
+}
+
+.about-image img {
+  border-radius: 10px;
+}
 
 /* Mostrar el botón solo en pantallas pequeñas */
 @media (max-width: 730px) {
@@ -603,7 +681,9 @@ h4 {
   .container_nav {
     margin-top: 0px;
   }
-
+  .btns_flex {
+    flex-direction: column; /* Cambiar a fila en pantallas pequeñas */
+  }
   .mobile-options {
     display: flex;
     flex-direction: column;
@@ -621,7 +701,7 @@ h4 {
   .login-form {
     display: flex;
     flex-direction: column;
-    
+
     width: 80vw;
   }
 }
@@ -631,6 +711,5 @@ h4 {
     display: none;
   }
 }
-
 
 /**********************************************************************************************************************/

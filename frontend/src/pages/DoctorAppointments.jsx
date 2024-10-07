@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 
-import { Button, Card, Form, List, message, Input } from "antd";
+import { Button, Card, Form, List, message, Input, Row, Col } from "antd";
 
 const DoctorAppointments = () => {
   const [appointments, setAppointments] = useState([]);
@@ -72,7 +72,7 @@ const DoctorAppointments = () => {
       if (response.status === 200) {
         message.success("Cita Realiza con exito!!");
 
-        navigate("/doctorpanel/appointments");
+        navigate("/doctorpanel/history");
       }
     } catch (error) {
       message.error("Error en dar Respuesta al Paciente");
@@ -99,28 +99,41 @@ const DoctorAppointments = () => {
               <Card
                 title={`Paciente: ${appointment.idPaciente.nombre} ${appointment.idPaciente.apellido_pat}`}
               >
-                <p>
-                  <strong>Estado:</strong> {appointment.estado}
-                </p>
-                <p>
-                  <strong>Fecha:</strong>{" "}
-                  {new Date(appointment.fecha).toLocaleDateString()}
-                </p>
-                <p>
-                  <strong>Hora:</strong>{" "}
-                  {new Date(appointment.fecha).toLocaleTimeString([], {
-                    hour: "2-digit",
-                    minute: "2-digit",
-                  })}
-                </p>
-                <p>
-                  <strong>Motivo:</strong> {appointment.motivo}
-                </p>
-                <p>
-                  <strong>Detalles Adicionales:</strong>
-                  <br />
-                  {appointment?.detallesAdicionales}
-                </p>
+                <Row>
+                  <Col span={8}>
+                    <div className="doctorpatient_img">
+                      <img
+                        src={appointment.idPaciente.photo.url}
+                        alt="patient"
+                      />
+                    </div>
+                  </Col>
+                  <Col span={16}>
+                    <p>
+                      <strong>Estado:</strong> {appointment.estado}
+                    </p>
+                    <p>
+                      <strong>Fecha:</strong>{" "}
+                      {new Date(appointment.fecha).toLocaleDateString()}
+                    </p>
+                    <p>
+                      <strong>Hora:</strong>{" "}
+                      {new Date(appointment.fecha).toLocaleTimeString([], {
+                        hour: "2-digit",
+                        minute: "2-digit",
+                      })}
+                    </p>
+                    <p>
+                      <strong>Motivo:</strong> {appointment.motivo}
+                    </p>
+                    <p>
+                      <strong>Detalles Adicionales:</strong>
+                      <br />
+                      {appointment?.detallesAdicionales}
+                    </p>
+                  </Col>
+                </Row>
+
                 <hr />
                 <Form name="responsedr" form={form} onFinish={onFinish}>
                   <Form.Item

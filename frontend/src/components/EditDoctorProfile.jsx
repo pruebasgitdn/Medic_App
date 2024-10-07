@@ -1,5 +1,15 @@
 import React, { useEffect, useContext, useState } from "react";
-import { Form, Input, Button, Select, Row, Col, Upload, Card } from "antd";
+import {
+  Form,
+  Input,
+  Button,
+  Select,
+  Row,
+  Col,
+  Upload,
+  Card,
+  message,
+} from "antd";
 import { Context } from "../main";
 import { UploadOutlined } from "@ant-design/icons";
 import { useNavigate } from "react-router-dom";
@@ -13,13 +23,21 @@ const EditDoctorProfile = () => {
   const { user, setUser } = useContext(Context);
   const [form] = Form.useForm();
   const navigate = useNavigate();
+  const [emailError, setEmailError] = useState("");
   const [loading, setLoading] = useState(false);
   const [photo, setPhoto] = useState(null); // Foto del paciente
+  const [licencia, setLicencia] = useState(null);
 
   // Función para manejar el archivo de foto
-  const handleFileUpload = (file) => {
+  const handlePhotoUpload = (file) => {
     setPhoto(file);
-    return false; // Esto evita que Ant Design intente subir el archivo automáticamente
+    return false; //  evita  subir el archivo automáticamente
+  };
+
+  // Función para manejar el archivo de foto
+  const handleLicenseUpload = (file) => {
+    setLicencia(file);
+    return false;
   };
 
   // Rellenar el formulario con la información del usuario actual
@@ -33,11 +51,62 @@ const EditDoctorProfile = () => {
       telefono: user?.telefono,
       especialidad: user?.especialidad,
       genero: user?.genero,
-      licencianumero: user?.numero_licencia,
+      numero_licencia: user?.numero_licencia,
     });
   }, [user, form]);
 
   const onFinish = async (values) => {
+    try {
+      setLoading(true);
+
+      const formData = new FormData();
+
+      formData.append("nombre", values?.nombre);
+      formData.append("apellido_pat", values?.apellido_pat);
+      formData.append("apellido_mat", values?.apellido_mat);
+      formData.append("email", values?.email);
+      formData.append("especialidad", values?.especialidad);
+      formData.append("telefono", values?.telefono);
+      formData.append("numero_licencia", values?.numero_licencia);
+
+      if (photo) {
+        formData.append("photo", photo);
+      }
+
+      if (licencia) {
+        formData.append("licencia", licencia);
+      }
+
+      //Peticion
+      const response = await axios.put(
+        "http://localhost:4000/api/doctor/editprofile",
+        formData,
+        {
+          withCredentials: true, // Para asegurarse de que las cookies se manejen correctamente
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
+
+      message.success("Datos actualizados exitosamente");
+      setLoading(false);
+      setUser(response.data.doctor);
+      navigate("/doctorpanel/profile");
+    } catch (error) {
+      setLoading(false);
+      console.error("Error al actualizar el perfil:", error);
+
+      if (error.response && error.response.data) {
+        //Extraer mensaje del da respuesta
+        const { message } = error.response.data;
+        if (message === "Email ya se encuentra en uso / registrado") {
+          setEmailError(message);
+        } else {
+          toast.error(message);
+        }
+      }
+    }
     console.log(values);
   };
   return (
@@ -84,6 +153,14 @@ const EditDoctorProfile = () => {
             >
               <Input placeholder="Email" />
             </Form.Item>
+            {emailError &&
+            emailError === "Email ya se encuentra en uso / registrado" ? (
+              <>
+                <p className="error_form">{emailError}</p>
+              </>
+            ) : (
+              <></>
+            )}
 
             {/* Teléfono */}
             <Form.Item
@@ -111,18 +188,9 @@ const EditDoctorProfile = () => {
               <Input placeholder="Especialidad" />
             </Form.Item>
 
-            {/* Género
-            <Form.Item name="genero" label="Género" className="form-item">
-              <Select placeholder="Seleccione su género">
-                <Option value="HOMBRE">Hombre</Option>
-                <Option value="MUJER">Mujer</Option>
-                <Option value="OTRO">Otro</Option>
-              </Select>
-            </Form.Item> */}
-
             {/* LICENCIA */}
             <Form.Item
-              name="licencianumero"
+              name="numero_licencia"
               label="Licencia"
               className="form-item"
               rules={[{ max: 6, message: "Maximo a 6 digitos" }]}
@@ -134,9 +202,13 @@ const EditDoctorProfile = () => {
             <Form.Item label="Archivos">
               <Row justify="space-between">
                 <Col xs={12} sm={12} md={12} lg={12}>
-                  <Form.Item label="Licencia" className="form-item">
+                  <Form.Item
+                    name="licencia"
+                    label="Licencia"
+                    className="form-item"
+                  >
                     <Upload
-                      beforeUpload={handleFileUpload}
+                      beforeUpload={handleLicenseUpload}
                       showUploadList={false}
                     >
                       <Button icon={<UploadOutlined />}>
@@ -153,9 +225,9 @@ const EditDoctorProfile = () => {
                   </Form.Item>
                 </Col>
                 <Col xs={12} sm={12} md={12} lg={12}>
-                  <Form.Item label="Foto" className="form-item">
+                  <Form.Item name="photo" label="Foto" className="form-item">
                     <Upload
-                      beforeUpload={handleFileUpload}
+                      beforeUpload={handlePhotoUpload}
                       showUploadList={false}
                     >
                       <Button icon={<UploadOutlined />}>

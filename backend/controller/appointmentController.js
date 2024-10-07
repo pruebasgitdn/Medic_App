@@ -107,7 +107,7 @@ export const getDoctorAppointments = async (req, res, next) => {
 
     const appointments = await Cita.find({ idDoctor: doctorId }).populate(
       "idPaciente",
-      "nombre apellido_pat email "
+      "nombre apellido_pat email photo"
     );
 
     if (!appointments || appointments.length === 0) {

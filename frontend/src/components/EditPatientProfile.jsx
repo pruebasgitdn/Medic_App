@@ -102,7 +102,7 @@ const EditPatientProfile = () => {
         if (message === "Email ya se encuentra en uso / registrado") {
           setEmailError("Email ya se encuentra en uso / registrado");
         } else {
-          toast.error(message); // Mostrar otro mensaje de error general
+          toast.error(message);
         }
       } else {
         toast.error("Error en la actualización del perfil");
@@ -180,8 +180,8 @@ const EditPatientProfile = () => {
               rules={[
                 { min: 10, message: "Numero mayor a 10 digitos" },
                 {
-                  max: 12,
-                  message: "Maximo 12 digitos",
+                  max: 13,
+                  message: "Maximo 11 digitos",
                 },
               ]}
             >

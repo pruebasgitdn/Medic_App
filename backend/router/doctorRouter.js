@@ -1,6 +1,7 @@
 import express from "express";
 import {
   EditProfile,
+  getPatients,
   login,
   logout,
   Me,
@@ -17,7 +18,7 @@ router.get("/logout", verifyDoctorToken, logout);
 router.get("/appointments", verifyDoctorToken, getDoctorAppointments);
 router.get("/me", verifyDoctorToken, Me);
 router.put("/editprofile", verifyDoctorToken, EditProfile);
-
+router.get("/getpatients", verifyDoctorToken, getPatients);
 router.put("/update/:id", verifyDoctorToken, updateStatus);
 
 export default router;

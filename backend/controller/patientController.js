@@ -39,8 +39,8 @@ export const patientRegister = async (req, res, next) => {
       identificacion_url,
     } = req.body;
 
-    const { photo } = req.files || {};
-    const { document_id } = req.files || {};
+    const photo = req.files?.photo || {};
+    const document_id = req.files?.document_id;
     //Extraemos los archivos
 
     if (
@@ -67,6 +67,10 @@ export const patientRegister = async (req, res, next) => {
     const isRegistered = await Patient.findOne({ email });
     if (isRegistered) {
       return next(new ErrorHandler("Paciente con este email ya existe"));
+    }
+
+    if (!document_id) {
+      return res.status(400).send("Por favor sube tu ID documento.");
     }
 
     //Sube el archivo temporal de photo acloudinary

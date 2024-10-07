@@ -25,6 +25,8 @@ import DoctorProfile from "./pages/DoctorProfile";
 import EditDoctorProfile from "./components/EditDoctorProfile";
 import DoctorAppointments from "./pages/DoctorAppointments";
 import DoctorPatients from "./pages/DoctorPatients";
+import ContactForm from "./components/ContactForm";
+import DoctorHistory from "./pages/DoctorHistory";
 
 function App() {
   const { setUser, setIsAuthenticated, user, isAuthenticated, role, setRole } =
@@ -70,6 +72,7 @@ function App() {
           <Route path="/" element={<Home />} />
           <Route path="/patientlogin" element={<PatientLogin />} />
           <Route path="/about" element={<About />} />
+          <Route path="/contact" element={<ContactForm />} />
           <Route path="/patientregister" element={<Register />} />
           <Route path="/doctorlogin" element={<DoctorLogin />} />
 
@@ -94,6 +97,7 @@ function App() {
             <Route path="appointments" element={<DoctorAppointments />} />
             <Route path="editprofile" element={<EditDoctorProfile />} />
             <Route path="patients" element={<DoctorPatients />} />
+            <Route path="history" element={<DoctorHistory />} />
           </Route>
         </Routes>
       </Router>

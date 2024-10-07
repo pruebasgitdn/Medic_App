@@ -15,8 +15,10 @@ import {
   Select,
   Upload,
   InputNumber,
+  message,
 } from "antd";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 const { Option } = Select;
 
@@ -27,6 +29,7 @@ const Register = () => {
   const [document, setDocument] = useState(null);
   const { TextArea } = Input;
   const { Dragger } = Upload;
+  const navigate = useNavigate();
 
   const handleUploadPhoto = (file) => {
     setPhoto(file);
@@ -39,67 +42,70 @@ const Register = () => {
   };
 
   const handleRegister = async (values) => {
+    //FormData para manejo de archivos y agrupacion
+    const formData = new FormData();
+    const fechaformat = values.dot.format("YYYY-MM-DD"); //Fecha Formateada
+
+    const ff = fechaformat.toString();
+    const genero = values.genero.toUpperCase();
+
+    formData.append("nombre", values.nombre);
+    formData.append("email", values.email);
+    formData.append("apellido_pat", values.apellido_pat);
+    formData.append("apellido_mat", values.apellido_mat);
+    formData.append("password", values.contraseña);
+    formData.append("telefono", phone);
+    formData.append("dot", ff);
+    formData.append("genero", genero);
+    formData.append("identificacion_tipo", values.document_type);
+    formData.append("identificacion_numero", values.identificacion_numero);
+    formData.append(
+      "numero_contacto_emergencia",
+      values.numero_contacto_emergencia
+    );
+    formData.append("nombre_contacto_emergencia", values.contacto_emergencia);
+    formData.append("proovedor_seguros", values.proveedor_seguros);
+    formData.append("direccion", values.direccion);
+    formData.append("alergias", values.alergias);
+
+    //Previamente seteados en el upload
+    // Agregar los archivos al FormData (si están disponibles)
+    if (photo) {
+      console.log("Subiendo foto:", photo);
+
+      formData.append("photo", photo); // Archivo de foto
+    }
+    if (document) {
+      console.log("Subiendo documento:", document);
+
+      formData.append("document_id", document); // Documento de identidad
+    }
+    if (!document) {
+      message.error("Por favor sube tu documento de identificación");
+      return;
+    }
+    for (let [key, value] of formData.entries()) {
+      console.log(`${key}: ${value}`);
+    }
     try {
-      //FormData para manejo de archivos y agrupacion
-      const formData = new FormData();
-      const fechaformat = values.dot.format("YYYY-MM-DD"); //Fecha Formateada
-      const genero = values.genero.toUpperCase();
-
-      formData.append("nombre", values.nombre);
-      formData.append("email", values.email);
-      formData.append("apellido_pat", values.apellido_pat);
-      formData.append("apellido_mat", values.apellido_mat);
-      formData.append("password", values.contraseña);
-      formData.append("telefono", phone);
-      formData.append("dot", fechaformat);
-      formData.append("genero", genero);
-      formData.append("identificacion_tipo", values.document_type);
-      formData.append("identificacion_numero", values.identificacion_numero);
-      formData.append(
-        "numero_contacto_emergencia",
-        values.numero_contacto_emergencia
+      // Peticion
+      const response = await axios.post(
+        "http://localhost:4000/api/patient/register",
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
       );
-      formData.append("nombre_contacto_emergencia", values.contacto_emergencia);
-      formData.append("proovedor_seguros", values.proveedor_seguros);
-      formData.append("direccion", values.direccion);
-      formData.append("alergias", values.alergias);
-
-      //Previamente seteados en el upload
-      // Agregar los archivos al FormData (si están disponibles)
-      if (photo) {
-        console.log("Subiendo foto:", photo);
-
-        formData.append("photo", photo); // Archivo de foto
+      if (response.status === 200) {
+        message.success("Registro exitoso!!");
+        navigate("/");
       }
-      if (document) {
-        console.log("Subiendo documento:", document);
-
-        formData.append("document_id", document); // Documento de identidad
-      }
-      if (!document) {
-        toast.error("Por favor sube tu documento de identificación");
-        return;
-      }
-
-      //Peticion
-      // const response = await axios.post(
-      //   "http://localhost:4000/api/patient/register",
-      //   formData,
-      //   {
-      //     headers: {
-      //       "Content-Type": "multipart/form-data",
-      //     },
-      //   }
-      // );
-      // if (response.status === 200) {
-      //   toast.success("Registro exitoso!!");
-      // }
-
-      // toast.error("Error en el registro!!");
 
       // Mostrar los valores del FormData en la consola
       console.log("FormData values:");
-      console.log(genero);
+      console.log(values);
       for (let [key, value] of formData.entries()) {
         console.log(`${key}: ${value}`);
       }
@@ -166,7 +172,7 @@ const Register = () => {
 
               {/* INPUT FOTO */}
               <Col xs={24} md={12}>
-                <Form.Item label="Foto" className="form-item" rules={[{}]}>
+                <Form.Item label="Foto" className="form-item" name="photo">
                   <Dragger beforeUpload={handleUploadPhoto} name="photo">
                     <Button
                       className="form-upload-btn"
@@ -174,11 +180,6 @@ const Register = () => {
                     ></Button>
                     Arrastra o inserta tu documento
                   </Dragger>
-                  {/* <Button
-                      className="form-upload-btn"
-                      icon={<UploadOutlined />}
-                    ></Button>
-                    Arrastra o inserta tu foto */}
                 </Form.Item>
               </Col>
 
@@ -375,6 +376,7 @@ const Register = () => {
                 <Form.Item
                   label="Documento de Identificación"
                   className="form-item"
+                  name="document_id"
                   rules={[
                     {
                       required: true,
@@ -472,8 +474,8 @@ const Register = () => {
                   className="form-item"
                   rules={[
                     {
-                      min: 10,
-                      message: "¡Debe tener al menos 10 caracteres!",
+                      min: 6,
+                      message: "¡Debe tener al menos 6 caracteres!",
                     },
                     {
                       required: true,

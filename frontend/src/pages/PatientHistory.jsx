@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
-import { Card, List, Spin, Alert } from "antd";
+import { Card, List, Spin, Alert, Dropdown, Button } from "antd";
 import axios from "axios";
+import { DownOutlined } from "@ant-design/icons";
 
 const PatientHistory = () => {
   const [historial, setHistorial] = useState([]);
@@ -48,12 +49,34 @@ const PatientHistory = () => {
   // Mostrar mensaje de error en caso de fallo
   if (error) return <Alert message={error} type="error" />;
 
+  const items = [
+    {
+      key: "1",
+      label: <a>Recientes</a>,
+    },
+    {
+      key: "2",
+      label: <a>Antiguos</a>,
+    },
+  ];
+
   return (
     <div>
       {/* Si hay historial, mostrar la lista, de lo contrario un mensaje */}
       {historial.length > 0 ? (
         <div>
           <h2 className="nooverflow">Historial Médico</h2>
+
+          <Dropdown
+            menu={{
+              items,
+            }}
+          >
+            <Button>
+              Ordenar <DownOutlined />
+            </Button>
+          </Dropdown>
+
           <List
             grid={{ gutter: 16, column: 1 }} // Layout en una columna
             dataSource={historial}

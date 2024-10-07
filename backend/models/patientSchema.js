@@ -54,10 +54,6 @@ const patientSchema = new mongoose.Schema({
     type: String,
     required: true,
     minLength: [10, "El numero de telefono debe minimo 10 digitos"],
-    maxLength: [
-      13,
-      "El numero de telefono debe contener exactamente 11 digitos",
-    ],
   },
   genero: {
     type: String,
@@ -68,7 +64,7 @@ const patientSchema = new mongoose.Schema({
   direccion: {
     type: String,
     required: true,
-    minLength: [8, "La dirección debe contener al menos 10 caracteres"],
+    minLength: [6, "La dirección debe contener al menos 10 caracteres"],
   },
   nombre_contacto_emergencia: {
     type: String,
@@ -79,33 +75,13 @@ const patientSchema = new mongoose.Schema({
     type: String,
     required: true,
     minLength: [10, "El numero de telefono debe minimo 10 digitos"],
-    maxLength: [
-      11,
-      "El numero de telefono debe contener exactamente 11 digitos",
-    ],
   },
   proovedor_seguros: {
     type: String,
     required: true,
     minLength: [3, "Inserta Proovedor (min.3 caracteres)"],
   },
-  alergias: [
-    {
-      tipo: {
-        type: String,
-
-        minLength: [3, "El tipo de alergia debe tener al menos 3 caracteres"],
-      },
-      descripcion: {
-        type: String,
-
-        minLength: [
-          10,
-          "La descripción de la alergia debe tener al menos 10 caracteres",
-        ],
-      },
-    },
-  ],
+  alergias: [String],
   historial_medico: {
     type: String,
     minLength: [10, "El mensaje debe contener al menos 10 caracteres"],

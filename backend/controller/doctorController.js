@@ -2,6 +2,8 @@ import ErrorHandler from "../middlewares/errorMiddleware.js";
 import { Doctor } from "../models/doctorSchema.js";
 import { generateToken } from "../utils/jwtToken.js";
 import cloudinary from "cloudinary";
+import { Cita } from "../models/citaSchema.js";
+import { Patient } from "../models/patientSchema.js";
 
 /* 
 Iniciar Sesion
@@ -114,6 +116,7 @@ export const EditProfile = async (req, res, next) => {
         await cloudinary.uploader.destroy(doctor.photo.public_id);
       }
 
+      //Setear el campo con la respuesta de cloudinary
       doctor.photo = {
         public_id: photoCloudinaryResponse.public_id,
         url: photoCloudinaryResponse.secure_url,
@@ -142,6 +145,7 @@ export const EditProfile = async (req, res, next) => {
         await cloudinary.uploader.destroy(doctor.licencia.public_id);
       }
 
+      //Setear el campo con la respuesta de cloudinary
       doctor.licencia = {
         public_id: documentCloudinaryResponse.public_id,
         url: documentCloudinaryResponse.secure_url,
@@ -208,4 +212,26 @@ export const logout = async (req, res, next) => {
       succes: true,
       message: "Sesion de doctor cerrada correctamente!!",
     });
+};
+
+export const getPatients = async (req, res, next) => {
+  try {
+    //id autenticado
+    const doctorId = req.user.id;
+
+    // Obtener los IDs únicos de los idspacientes en las citas del doctor que coincidan con el campoidDoctor en cita del dr autentic...
+    const pacientesIds = await Cita.distinct("idPaciente", {
+      idDoctor: doctorId,
+    });
+
+    // Buscar detalles de todos los pacientes relacionados con esos IDs únicos
+    const pacientes = await Patient.find({ _id: { $in: pacientesIds } });
+
+    res.status(200).json({
+      success: true,
+      pacientes, // Lista de pacientes con toda su información obtenida directamente
+    });
+  } catch (error) {
+    next(error);
+  }
 };

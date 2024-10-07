@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import { Row, Col, Card, Spin, Alert, Button, message } from "antd";
+import { Row, Col, Card, Alert, Button, message, Dropdown } from "antd";
+import { DownOutlined } from "@ant-design/icons";
 
 const PatientAppointments = () => {
   const [historial, setHistorial] = useState([]);
@@ -79,11 +80,23 @@ const PatientAppointments = () => {
     console.log(id);
   };
 
+  const items = [
+    {
+      key: "1",
+      label: <a>Recientes</a>,
+    },
+    {
+      key: "2",
+      label: <a>Antiguos</a>,
+    },
+  ];
+
   return (
     <Row gutter={16}>
       {/* Sección de Citas Pendientes */}
       <Col span={12}>
         <h2 className="nooverflow">Citas Pendientes</h2>
+
         {citasPendientes.length > 0 ? (
           citasPendientes.map((cita, index) => (
             <Card
@@ -134,6 +147,16 @@ const PatientAppointments = () => {
       {/* Sección de Citas Realizadas */}
       <Col span={12}>
         <h2 className="nooverflow">Citas Realizadas</h2>
+
+        <Dropdown
+          menu={{
+            items,
+          }}
+        >
+          <Button>
+            Ordenar <DownOutlined />
+          </Button>
+        </Dropdown>
         {citasRealizadas.length > 0 ? (
           citasRealizadas.map((cita, index) => (
             <Card
