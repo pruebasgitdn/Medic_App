@@ -2,6 +2,7 @@ import { Message } from "../models/messageSchema.js";
 import ErrorHandler from "../middlewares/errorMiddleware.js";
 import { Doctor } from "../models/doctorSchema.js";
 import { Admin } from "../models/adminSchema.js";
+import { Patient } from "../models/patientSchema.js";
 import { generateToken } from "../utils/jwtToken.js";
 import cloudinary from "cloudinary";
 
@@ -45,10 +46,10 @@ export const login = async (req, res, next) => {
 };
 
 export const createAdmin = async (req, res, next) => {
-  const { nombre, email, password, role } = req.body;
+  const { nombre, email, password } = req.body;
   try {
     //req.files objeto que contiene los archivos enviados en una solicitud
-    const { photo } = req.files; //Extraemos el photo
+    const { photo } = req.files || {}; //Extraemos el photo
 
     const allowedFormats = ["image/png", "image/jpeg", "image/webp"]; //Formatos permitidos
 
@@ -66,7 +67,7 @@ export const createAdmin = async (req, res, next) => {
       );
     }
 
-    if (!nombre || !email || !password || !role || !photo) {
+    if (!nombre || !email || !password || !photo) {
       return next(
         new ErrorHandler("Porfavor llena todos los campos del form!!", 400)
       );
@@ -105,7 +106,6 @@ export const createAdmin = async (req, res, next) => {
         public_id: cloudinaryResponse.public_id,
         url: cloudinaryResponse.secure_url,
       },
-      role,
     });
     generateToken(admin, "Admin creado correctamente", 200, res);
   } catch (error) {
@@ -124,7 +124,6 @@ export const createDoctor = async (req, res, next) => {
       email,
       password,
       numero_licencia,
-      patientHistory,
     } = req.body; //Ectraer Valores
 
     const { photo, licencia } = req.files; //Extraemos los archivos
@@ -233,11 +232,11 @@ export const createDoctor = async (req, res, next) => {
         public_id: licenseCloudinaryResponse.public_id,
         url: licenseCloudinaryResponse.secure_url,
       },
-      patientHistory,
     });
     res.status(200).json({
       succes: true,
       message: "DOCTOR creado correctamente by Admin!!",
+      doctor,
     });
   } catch (error) {
     next(error);
@@ -249,6 +248,14 @@ export const getAllDoctors = async (req, res, next) => {
   res.status(200).json({
     success: true,
     doctors,
+  });
+};
+
+export const getAllPatients = async (req, res, next) => {
+  const patients = await Patient.find();
+  res.status(200).json({
+    success: true,
+    patients,
   });
 };
 
@@ -287,4 +294,74 @@ export const logout = async (req, res, next) => {
       succes: true,
       message: "Sesion de admin cerrada correctamente!!",
     });
+};
+
+export const EditProfile = async (req, res, next) => {
+  try {
+    const adminId = req.user.id; // ID del admin autenticado
+
+    // Obtener los datos que el admin desea actualizar
+    const { email } = req.body;
+
+    const { photo } = req.files || {};
+
+    // Buscar el paciente
+    const admin = await Admin.findById(adminId);
+
+    if (!admin) {
+      return next(new ErrorHandler("Paciente no encontrado", 404));
+    }
+
+    //Verificar por email usado
+    if (email !== admin.email) {
+      const emailExist = await Admin.findOne({ email });
+      if (emailExist) {
+        return next(
+          new ErrorHandler("Email ya se encuentra en uso / registrado")
+        );
+      }
+    }
+
+    // Actualizar la foto de perfil si se envió
+    if (photo) {
+      //cloud.uploaded.upload => metodo para subir, el .tempFilePath => que es la ruta temporal de la foto
+      const photoCloudinaryResponse = await cloudinary.uploader.upload(
+        photo.tempFilePath
+      );
+
+      if (!photoCloudinaryResponse || photoCloudinaryResponse.error) {
+        return next(
+          new ErrorHandler(
+            "Fallo al subir la nueva foto del paciente a Cloudinary",
+            500
+          )
+        );
+      }
+
+      // Borrar la foto anterior en Cloudinary si existe
+      if (admin.photo.public_id) {
+        //cloud.uploaded.destoy => metodo para eliminar, el .public_id => que es el id de la foto en cloudinaty
+        await cloudinary.uploader.destroy(admin.photo.public_id);
+      }
+
+      admin.photo = {
+        public_id: photoCloudinaryResponse.public_id,
+        url: photoCloudinaryResponse.secure_url,
+      };
+    }
+
+    // Actualizar los campos del admin
+    admin.email = email || admin.email;
+
+    // Guardar los cambios
+    await admin.save();
+
+    res.status(200).json({
+      success: true,
+      message: "Perfil actualizado correctamente",
+      admin,
+    });
+  } catch (error) {
+    next(error);
+  }
 };

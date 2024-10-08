@@ -333,6 +333,7 @@ export const EditProfile = async (req, res, next) => {
 
     // Actualizar los campos del paciente
     patient.nombre = nombre || patient.nombre;
+    patient.email = email || patient.email;
     patient.apellido_pat = apellido_pat || patient.apellido_pat;
     patient.apellido_mat = apellido_mat || patient.apellido_mat;
     patient.telefono = telefono || patient.telefono;

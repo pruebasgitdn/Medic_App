@@ -27,6 +27,14 @@ import DoctorAppointments from "./pages/DoctorAppointments";
 import DoctorPatients from "./pages/DoctorPatients";
 import ContactForm from "./components/ContactForm";
 import DoctorHistory from "./pages/DoctorHistory";
+import AdminLogin from "./pages/AdminLogin";
+import AdminPanel from "./components/AdminPanel";
+import AdminProfile from "./pages/AdminProfile";
+import EditAdminProfile from "./components/EditAdminProfile";
+import AdminNewAdmin from "./pages/AdminNewAdmin";
+import AdminDoctors from "./pages/AdminDoctors";
+import FormNewDoctor from "./components/FormNewDoctor";
+import AdminPatients from "./pages/AdminPatients";
 
 function App() {
   const { setUser, setIsAuthenticated, user, isAuthenticated, role, setRole } =
@@ -75,6 +83,7 @@ function App() {
           <Route path="/contact" element={<ContactForm />} />
           <Route path="/patientregister" element={<Register />} />
           <Route path="/doctorlogin" element={<DoctorLogin />} />
+          <Route path="/adminlogin" element={<AdminLogin />} />
 
           {/* RUTA PACIENTE/USER */}
           <Route
@@ -98,6 +107,18 @@ function App() {
             <Route path="editprofile" element={<EditDoctorProfile />} />
             <Route path="patients" element={<DoctorPatients />} />
             <Route path="history" element={<DoctorHistory />} />
+          </Route>
+
+          <Route
+            path="/adminpanel"
+            element={role === "admin" ? <AdminPanel /> : <Navigate to="/" />}
+          >
+            <Route path="profile" element={<AdminProfile />} />
+            <Route path="editprofile" element={<EditAdminProfile />} />
+            <Route path="newadmin" element={<AdminNewAdmin />} />
+            <Route path="newdoctor" element={<AdminDoctors />} />
+            <Route path="formdoctor" element={<FormNewDoctor />} />
+            <Route path="patients" element={<AdminPatients />} />
           </Route>
         </Routes>
       </Router>

@@ -7,9 +7,6 @@
   font-family: "Montserrat", sans-serif;
 }
 
-.inpts_login {
-}
-
 .btns_login {
   overflow: hidden;
   gap: 8px;
@@ -17,19 +14,26 @@
   flex-direction: column;
 }
 
+.adminperfil_btns {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
 .btns_block {
   display: flex;
   flex-direction: column;
+  gap: 10px;
 }
 #w80 {
   width: 80%;
 }
-.login-container {
+
+.center {
   display: flex;
-  overflow: hidden;
   justify-content: center;
   align-items: center;
 }
+
 .contain {
   object-fit: fill;
 }
@@ -39,10 +43,7 @@
 }
 
 .login-form {
-  display: flex;
-  flex-direction: column;
-  padding: 20px;
-  width: 40vw;
+  margin-top: 2%;
 }
 
 .login-image {
@@ -148,8 +149,9 @@
 }
 .fticons {
   display: flex;
-  justify-content: space-between;
+  justify-content: center;
   flex-direction: row;
+  gap: 2rem;
   padding: 1rem;
 }
 
@@ -159,7 +161,11 @@
   overflow: hidden;
 }
 .col {
-  text-align: center;
+  text-align: left;
+}
+.col li:hover {
+  background-color: #055eac;
+  border-radius: 10px;
 }
 .col h3 {
   overflow: hidden;
@@ -198,11 +204,6 @@ body {
   overflow: hidden;
 }
 
-@media (max-width: 700px) {
-  .container {
-    padding: 0 20px;
-  }
-}
 .hero {
   display: flex;
   gap: 30px;
@@ -245,39 +246,6 @@ body {
   overflow-y: hidden;
 }
 
-@keyframes moveUpDown {
-  0% {
-    transform: translateY(0);
-  }
-  100% {
-    transform: translateY(20px);
-  }
-}
-@media (max-width: 1186px) {
-  .hero .banner span {
-    right: -400px;
-  }
-  .hero .banner h1 {
-    font-size: 32px;
-  }
-}
-@media (max-width: 1085px) {
-  .hero .banner span {
-    right: -480px;
-    top: -315px;
-  }
-}
-@media (max-width: 925px) {
-  .hero {
-    flex-direction: column;
-  }
-  @media (max-width: 700px) {
-    .hero {
-      padding-bottom: 40px;
-    }
-  }
-}
-
 .btn_cnt {
   display: "flex";
   justify-content: center;
@@ -287,6 +255,13 @@ body {
 
 .img_div {
   width: 50%;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.img_div img {
+  width: 100%;
+  border-radius: 2%;
 }
 
 .biografia {
@@ -313,12 +288,6 @@ h4 {
   overflow: hidden;
 }
 
-.biography {
-  display: flex;
-  gap: 50px;
-  padding-top: 20px;
-  padding-bottom: 20px;
-}
 .card_adv {
   margin-top: 8px;
   font-size: small;
@@ -373,11 +342,6 @@ h4 {
 .biography .banner p:first-child {
   font-size: 24px;
   letter-spacing: 2px;
-}
-@media (max-width: 925px) {
-  .biography {
-    flex-direction: column-reverse;
-  }
 }
 
 .card_dpm {
@@ -464,12 +428,6 @@ h4 {
   margin-bottom: 2rem;
 }
 
-@media (max-width: 768px) {
-  .register-container {
-    flex-direction: column;
-  }
-}
-
 .register-form-card {
   display: flex;
   flex-direction: column; /* Permite que el contenido se ajuste en vertical */
@@ -539,10 +497,7 @@ h4 {
 }
 
 .form-secondary-btn {
-  width: 48%;
-  font-size: 14px;
-  color: #1890ff;
-  border-style: dashed;
+  width: 100%;
 }
 
 /* Columna de la imagen */
@@ -551,12 +506,6 @@ h4 {
   justify-content: center;
   align-items: center;
   padding: 20px;
-}
-
-@media (max-width: 768px) {
-  .image-column {
-    display: none;
-  }
 }
 
 .register-banner {
@@ -652,10 +601,163 @@ h4 {
   border-radius: 10px;
 }
 
+.icons_ftr {
+  font-size: 25px;
+}
+
+.img_footer {
+  width: 150px;
+}
+
+#adminlink {
+  color: #015657;
+  overflow: hidden;
+}
+#adminlink:hover {
+  color: white;
+  background-color: #007bff;
+  border-radius: 20px;
+  overflow: hidden;
+  padding: 10px;
+}
+.adminlink {
+  bottom: 2%;
+  position: absolute;
+  margin-left: 5%;
+  font-size: smaller;
+  overflow: hidden;
+  font-style: italic;
+}
+.login-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.loginadmin_container {
+  display: block;
+  justify-content: center;
+  align-items: center;
+}
+
+#adminlogin {
+  width: 80%;
+  margin: auto;
+  padding: 20px;
+}
+
+#btns_adminlogin {
+  padding: 20px;
+  font-size: medium;
+}
+.adminform {
+  display: flex;
+  flex-direction: column;
+  width: 35vw;
+}
+.adminform h3 {
+  text-align: center;
+  background-color: #001b38;
+  color: white;
+  border-radius: 5px;
+  font-size: small;
+  width: 100%;
+}
+.bt_loginadmin {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.admeditbnt {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.admindoctorsimg {
+  width: 50px;
+}
+
+@media (max-width: 700px) {
+  .container {
+    padding: 0 20px;
+  }
+}
+
+@keyframes moveUpDown {
+  0% {
+    transform: translateY(0);
+  }
+  100% {
+    transform: translateY(20px);
+  }
+}
+@media (max-width: 1186px) {
+  .hero .banner span {
+    right: -400px;
+  }
+  .hero .banner h1 {
+    font-size: 32px;
+  }
+}
+@media (max-width: 1085px) {
+  .hero .banner span {
+    right: -480px;
+    top: -315px;
+  }
+}
+@media (max-width: 925px) {
+  .hero {
+    flex-direction: column;
+  }
+  @media (max-width: 700px) {
+    .hero {
+      padding-bottom: 40px;
+    }
+  }
+}
+
+@media (max-width: 925px) {
+  .biography {
+    flex-direction: column-reverse;
+  }
+}
+
+@media (max-width: 768px) {
+  .register-container {
+    flex-direction: column;
+  }
+  .image-column {
+    display: none;
+  }
+}
+
 /* Mostrar el botón solo en pantallas pequeñas */
 @media (max-width: 730px) {
   .navbar {
     display: none; /* Oculta la barra de navegación */
+  }
+  .loginadmin_container {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    justify-content: center;
+    align-items: center;
+  }
+  .bt_loginadmin {
+    display: flex;
+    flex-wrap: wrap;
+    flex-direction: column;
+  }
+  .adminform {
+    width: 100%;
+  }
+  #btns_adminlogin {
+    width: 100%;
+  }
+  .bt_loginadmin {
+    width: 100%;
   }
   .menu-button {
     display: flex;
@@ -709,6 +811,28 @@ h4 {
 @media (max-width: 979px) {
   .login-image {
     display: none;
+  }
+}
+
+@media (max-width: 560px) {
+  .card_div {
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+}
+
+@media (max-width: 400px) {
+  .loginadmin_container {
+    display: flex;
+  }
+  .bt_loginadmin {
+    display: none;
+  }
+  .login-form {
+    display: flex;
+    flex-direction: column;
+
+    width: 80vw;
   }
 }
 

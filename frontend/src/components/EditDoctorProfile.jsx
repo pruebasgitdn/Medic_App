@@ -103,7 +103,7 @@ const EditDoctorProfile = () => {
         if (message === "Email ya se encuentra en uso / registrado") {
           setEmailError(message);
         } else {
-          toast.error(message);
+          message.error(message);
         }
       }
     }

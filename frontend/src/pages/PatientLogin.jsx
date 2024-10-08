@@ -1,9 +1,8 @@
 import React, { useContext, useState } from "react";
-import { Form, Input, Card, Button, Alert, message } from "antd";
+import { Form, Input, Card, Button, message } from "antd";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
-import { toast, ToastContainer } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
+
 import { Context } from "../main";
 
 const Login = () => {
@@ -55,81 +54,86 @@ const Login = () => {
   };
 
   return (
-    <div className="login-container">
-      <ToastContainer />
-
-      <div className="login-form">
-        <Card title={"Inicio de Sesion."}>
-          {/*
+    <>
+      <div className="login-container">
+        <div className="login-form">
+          <Card title={"Inicio de Sesion."}>
+            {/*
           onFinish => Onsubmit
           */}
-          <Form onFinish={handleLogin} name="loginform">
-            <div className="login-container">
-              <div className="login-form">
-                <div className="inpts_login">
-                  <h3>Ingresa tus datos</h3>
-                  <Form.Item
-                    label="Email"
-                    className="form-item"
-                    name="email"
-                    rules={[
-                      {
-                        required: true,
-                        message: "Porfavor ingresa tu email!",
-                      },
-                    ]}
-                  >
-                    <Input
-                      placeholder="ejm:eric"
-                      onChange={(e) => setEmail(e.target.value)}
-                      value={email}
-                    />
-                  </Form.Item>
+            <Form onFinish={handleLogin} name="loginform">
+              <div className="login-container">
+                <div className="login-form">
+                  <div className="inpts_login">
+                    <h3>Ingresa tus datos</h3>
+                    <Form.Item
+                      label="Email"
+                      className="form-item"
+                      name="email"
+                      rules={[
+                        {
+                          required: true,
+                          message: "Porfavor ingresa tu email!",
+                        },
+                      ]}
+                    >
+                      <Input
+                        placeholder="ejm:eric"
+                        onChange={(e) => setEmail(e.target.value)}
+                        value={email}
+                      />
+                    </Form.Item>
 
-                  <Form.Item
-                    label="Contraseña"
-                    className="form-item"
-                    name="password"
-                    rules={[
-                      {
-                        required: true,
-                        message: "Porfavor ingresa tu contraseña!",
-                      },
-                    ]}
-                  >
-                    <Input.Password
-                      placeholder="ejm: 52453"
-                      onChange={(e) => setPassword(e.target.value)}
-                      value={password}
-                    />
-                  </Form.Item>
-                </div>
+                    <Form.Item
+                      label="Contraseña"
+                      className="form-item"
+                      name="password"
+                      rules={[
+                        {
+                          required: true,
+                          message: "Porfavor ingresa tu contraseña!",
+                        },
+                      ]}
+                    >
+                      <Input.Password
+                        placeholder="ejm: 52453"
+                        onChange={(e) => setPassword(e.target.value)}
+                        value={password}
+                      />
+                    </Form.Item>
+                  </div>
 
-                <div className="btns_login">
-                  <Button
-                    form="loginform"
-                    type="primary"
-                    size="small"
-                    block
-                    htmlType="submit"
-                  >
-                    Ingresar
-                  </Button>
-                  <Link to="/patientregister">
-                    <Button type="dashed" size="small" block>
-                      Crear Cuenta
+                  <div className="btns_login">
+                    <Button
+                      form="loginform"
+                      type="primary"
+                      size="small"
+                      block
+                      htmlType="submit"
+                    >
+                      Ingresar
                     </Button>
-                  </Link>
+                    <Link to="/patientregister">
+                      <Button type="dashed" size="small" block>
+                        Crear Cuenta
+                      </Button>
+                    </Link>
+                  </div>
+                </div>
+                <div className="login-image">
+                  <img src="/asidelogin.png" alt="Login" className="contain" />
                 </div>
               </div>
-              <div className="login-image">
-                <img src="/asidelogin.png" alt="Login" className="contain" />
-              </div>
-            </div>
-          </Form>
-        </Card>
+            </Form>
+          </Card>
+        </div>
       </div>
-    </div>
+      <div className="adminlink">
+        <Link to="/adminlogin" id="adminlink">
+          Admin
+        </Link>
+      </div>
+    </>
   );
 };
 

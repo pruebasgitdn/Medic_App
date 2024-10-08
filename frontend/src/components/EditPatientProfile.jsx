@@ -15,8 +15,6 @@ import { Context } from "../main";
 import { UploadOutlined } from "@ant-design/icons";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
-import { toast, ToastContainer } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
 
 const { Option } = Select;
 
@@ -102,10 +100,10 @@ const EditPatientProfile = () => {
         if (message === "Email ya se encuentra en uso / registrado") {
           setEmailError("Email ya se encuentra en uso / registrado");
         } else {
-          toast.error(message);
+          message.error(message);
         }
       } else {
-        toast.error("Error en la actualización del perfil");
+        message.error("Error en la actualización del perfil");
       }
       console.error("Error al actualizar el perfil:", error);
     }
@@ -113,7 +111,6 @@ const EditPatientProfile = () => {
 
   return (
     <Row justify="center" align="middle" style={{ marginTop: "20px" }}>
-      <ToastContainer />
       <Col xs={24} sm={20} md={16} lg={12}>
         <Card title="Editar Perfil">
           <Form

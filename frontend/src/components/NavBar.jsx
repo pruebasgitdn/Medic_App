@@ -13,14 +13,45 @@ const NavBar = () => {
   const [menuVisible, setMenuVisible] = useState(false); // Estado para controlar la visibilidad del menú
 
   // Cerrar sesión
+  // const handleLogout = async () => {
+  //   try {
+  //     const response = await axios.get(
+  //       role === "doctor"
+  //         ? "http://localhost:4000/api/doctor/logout"
+  //         : "http://localhost:4000/api/patient/logout",
+  //       { withCredentials: true }
+  //     );
+
+  //     if (response.status === 200) {
+  //       message.info("Cierre de sesión exitoso!");
+  //       setUser(null);
+  //       setIsAuthenticated(false);
+  //       localStorage.removeItem("user");
+  //       localStorage.removeItem("isAuthenticated");
+  //       localStorage.removeItem("role");
+  //       navigate("/");
+  //     } else {
+  //       message.error("Error al cerrar sesión");
+  //     }
+  //   } catch (error) {
+  //     console.error("Error en el logout:", error);
+  //     message.error("Error al cerrar sesión");
+  //   }
+  // };
   const handleLogout = async () => {
     try {
-      const response = await axios.get(
-        role === "doctor"
-          ? "http://localhost:4000/api/doctor/logout"
-          : "http://localhost:4000/api/patient/logout",
-        { withCredentials: true }
-      );
+      let logoutUrl;
+
+      // Determina la URL de cierre de sesión dependiendo del rol
+      if (role === "doctor") {
+        logoutUrl = "http://localhost:4000/api/doctor/logout";
+      } else if (role === "admin") {
+        logoutUrl = "http://localhost:4000/api/admin/logout";
+      } else {
+        logoutUrl = "http://localhost:4000/api/patient/logout";
+      }
+
+      const response = await axios.get(logoutUrl, { withCredentials: true });
 
       if (response.status === 200) {
         message.info("Cierre de sesión exitoso!");
@@ -67,6 +98,8 @@ const NavBar = () => {
                   to={
                     role === "doctor"
                       ? "/doctorpanel/profile"
+                      : role === "admin"
+                      ? "/adminpanel/profile"
                       : "/userpanel/profile"
                   }
                 >
