@@ -14,8 +14,8 @@ import { Context } from "../main";
 import { UploadOutlined } from "@ant-design/icons";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
-import { toast, ToastContainer } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
+import "react-phone-number-input/style.css";
+import PhoneInput from "react-phone-number-input";
 
 const { Option } = Select;
 
@@ -168,14 +168,18 @@ const EditDoctorProfile = () => {
               label="Teléfono"
               className="form-item"
               rules={[
-                { min: 10, message: "Numero mayor a 10 digitos" },
+                { min: 10, message: "Minimo 10 digitos" },
                 {
-                  max: 12,
-                  message: "Maximo 12 digitos",
+                  max: 14,
+                  message: "Maximo 11 digitos",
                 },
               ]}
             >
-              <Input placeholder="Teléfono" />
+              <PhoneInput
+                defaultCountry={"CO"}
+                placeholder="Ingresa numero de telefono"
+              />
+              {/* <Input placeholder="Teléfono" /> */}
             </Form.Item>
 
             {/* ESPECIALIDAD */}

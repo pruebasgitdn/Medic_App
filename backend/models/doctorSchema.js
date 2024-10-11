@@ -36,7 +36,7 @@ const doctorSchema = new mongoose.Schema({
   telefono: {
     type: String,
     required: true,
-    minLength: [10, "El número de teléfono debe contener 11 dígitos"],
+    minLength: [10, "El número de teléfono debe contener al menos 10 dígitos"],
   },
   email: {
     type: String,

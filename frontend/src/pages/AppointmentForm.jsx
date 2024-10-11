@@ -82,97 +82,103 @@ const AppointmentForm = () => {
   };
 
   return (
-    <Card
-      title="Agendar Cita"
-      style={{ maxWidth: "600px", margin: "0 auto" }}
-      className="nooverflow"
+    <div
+      style={{
+        height: "100vh",
+      }}
     >
-      <Form form={form} layout="vertical" onFinish={onFinish}>
-        <Form.Item
-          label="Doctor"
-          name="doctor"
-          rules={[
-            { required: true, message: "Por favor, selecciona un doctor" },
-          ]}
-          className="form-item"
-        >
-          <Select
-            placeholder="Selecciona un doctor"
-            loading={loading}
-            className="nooverflow"
+      <Card
+        title="Agendar Cita"
+        style={{ maxWidth: "600px", margin: "0 auto" }}
+        className="nooverflow"
+      >
+        <Form form={form} layout="vertical" onFinish={onFinish}>
+          <Form.Item
+            label="Doctor"
+            name="doctor"
+            rules={[
+              { required: true, message: "Por favor, selecciona un doctor" },
+            ]}
+            className="form-item"
           >
-            {/* Al poner en value el ._id puedo acceder a todo el id del dr para mandar a la cira*/}
-            {doctores.map((doctor) => (
-              <Option key={doctor._id} value={doctor._id}>
-                {doctor.nombre} {doctor.apellido_pat}
-              </Option>
-            ))}
-          </Select>
-        </Form.Item>
-
-        <Form.Item
-          label="Fecha de la Cita"
-          name="fecha"
-          className="form-item"
-          rules={[
-            { required: true, message: "Por favor, selecciona una fecha" },
-          ]}
-        >
-          <DatePicker
-            format="YYYY-MM-DDTHH:mm:ssZ" //ISO
-            showTime
-            placeholder="Seleccione una fecha y hora"
-            style={{ width: "100%" }}
-          />
-        </Form.Item>
-
-        <Row gutter={16}>
-          <Col xs={24} sm={12}>
-            <Form.Item
-              label="Motivo de la Cita"
-              name="motivo"
-              className="form-item"
-              rules={[
-                {
-                  min: 8,
-                  required: true,
-                  message: "Requerido, minimo 8 caracteres",
-                },
-              ]}
+            <Select
+              placeholder="Selecciona un doctor"
+              loading={loading}
+              className="nooverflow"
             >
-              <Input.TextArea
-                rows={4}
-                placeholder="Describe el motivo de la cita minimo 8 caracteres"
-              />
-            </Form.Item>
-          </Col>
-          <Col xs={24} sm={12}>
-            <Form.Item
-              label="Notas adicionales"
-              name="detallesAdicionales"
-              className="form-item"
-              rules={[
-                {
-                  required: true,
-                  message: "Por favor, agrega algunas notas adicionales",
-                },
-              ]}
-            >
-              <Input.TextArea
-                rows={4}
-                placeholder="Agregar notas adicionales"
-              />
-            </Form.Item>
-          </Col>
-        </Row>
+              {/* Al poner en value el ._id puedo acceder a todo el id del dr para mandar a la cira*/}
+              {doctores.map((doctor) => (
+                <Option key={doctor._id} value={doctor._id}>
+                  {doctor.nombre} {doctor.apellido_pat}
+                </Option>
+              ))}
+            </Select>
+          </Form.Item>
 
-        <Form.Item>
-          <Button type="primary" htmlType="submit" style={{ width: "100%" }}>
-            Agendar Cita
-          </Button>
-        </Form.Item>
-      </Form>
-    </Card>
+          <Form.Item
+            label="Fecha de la Cita"
+            name="fecha"
+            className="form-item"
+            rules={[
+              { required: true, message: "Por favor, selecciona una fecha" },
+            ]}
+          >
+            <DatePicker
+              format="YYYY-MM-DDTHH:mm:ss" //ISO
+              showTime
+              placeholder="Seleccione una fecha y hora"
+              style={{ width: "100%" }}
+            />
+          </Form.Item>
+
+          <Row gutter={16}>
+            <Col xs={24} sm={12}>
+              <Form.Item
+                label="Motivo de la Cita"
+                name="motivo"
+                className="form-item"
+                rules={[
+                  {
+                    min: 8,
+                    required: true,
+                    message: "Requerido, minimo 8 caracteres",
+                  },
+                ]}
+              >
+                <Input.TextArea
+                  rows={4}
+                  placeholder="Describe el motivo de la cita minimo 8 caracteres"
+                />
+              </Form.Item>
+            </Col>
+            <Col xs={24} sm={12}>
+              <Form.Item
+                label="Notas adicionales"
+                name="detallesAdicionales"
+                className="form-item"
+                rules={[
+                  {
+                    required: true,
+                    message: "Por favor, agrega algunas notas adicionales",
+                  },
+                ]}
+              >
+                <Input.TextArea
+                  rows={4}
+                  placeholder="Agregar notas adicionales"
+                />
+              </Form.Item>
+            </Col>
+          </Row>
+
+          <Form.Item>
+            <Button type="primary" htmlType="submit" style={{ width: "100%" }}>
+              Agendar Cita
+            </Button>
+          </Form.Item>
+        </Form>
+      </Card>
+    </div>
   );
 };
 

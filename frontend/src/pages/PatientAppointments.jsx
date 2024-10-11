@@ -1,12 +1,15 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import { Row, Col, Card, Alert, Button, message, Dropdown } from "antd";
+import { Row, Col, Card, Alert, Button, message, Dropdown, Select } from "antd";
 import { DownOutlined } from "@ant-design/icons";
+const { Option } = Select;
 
 const PatientAppointments = () => {
   const [historial, setHistorial] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [pendientes, setPendientes] = useState("recent");
+  const [realizadas, setRealizadas] = useState("recent");
 
   useEffect(() => {
     const fetchHistory = async () => {
@@ -42,13 +45,22 @@ const PatientAppointments = () => {
     fetchHistory();
   }, []);
 
-  //CITAS PENDIENTES Y REALIZADAS
-  const citasPendientes = historial.filter(
-    (cita) => cita.estado === "PENDIENTE"
-  );
-  const citasRealizadas = historial.filter(
-    (cita) => cita.estado === "REALIZADA"
-  );
+  // Filtrar citas por estado y ordenar dependiento del estado 'pendientes' o 'realizadas' que se setean con el set... de dropdown onclik set
+  const sortedPendientes = historial
+    .filter((cita) => cita.estado === "PENDIENTE")
+    .sort((a, b) =>
+      pendientes === "recent"
+        ? new Date(b.fecha) - new Date(a.fecha)
+        : new Date(a.fecha) - new Date(b.fecha)
+    );
+
+  const sortedRealizadas = historial
+    .filter((cita) => cita.estado === "REALIZADA")
+    .sort((a, b) =>
+      realizadas === "recent"
+        ? new Date(b.fecha) - new Date(a.fecha)
+        : new Date(a.fecha) - new Date(b.fecha)
+    );
 
   if (loading) return <p>Cargando citas...</p>;
   if (error) return <p>{error}</p>;
@@ -80,25 +92,21 @@ const PatientAppointments = () => {
     console.log(id);
   };
 
-  const items = [
-    {
-      key: "1",
-      label: <a>Recientes</a>,
-    },
-    {
-      key: "2",
-      label: <a>Antiguos</a>,
-    },
-  ];
-
   return (
     <Row gutter={16}>
       {/* Sección de Citas Pendientes */}
       <Col span={12}>
         <h2 className="nooverflow">Citas Pendientes</h2>
-
-        {citasPendientes.length > 0 ? (
-          citasPendientes.map((cita, index) => (
+        <Select
+          defaultValue={pendientes}
+          style={{ width: 200, marginBottom: "16px" }}
+          onChange={(value) => setPendientes(value)}
+        >
+          <Option value="recent">Recientes</Option>
+          <Option value="oldest">Antiguas</Option>
+        </Select>
+        {sortedPendientes.length > 0 ? (
+          sortedPendientes.map((cita, index) => (
             <Card
               key={index}
               title={`Cita ${index + 1}`}
@@ -148,17 +156,17 @@ const PatientAppointments = () => {
       <Col span={12}>
         <h2 className="nooverflow">Citas Realizadas</h2>
 
-        <Dropdown
-          menu={{
-            items,
-          }}
+        <Select
+          defaultValue={realizadas}
+          style={{ width: 200, marginBottom: "16px" }}
+          onChange={(value) => setRealizadas(value)}
         >
-          <Button>
-            Ordenar <DownOutlined />
-          </Button>
-        </Dropdown>
-        {citasRealizadas.length > 0 ? (
-          citasRealizadas.map((cita, index) => (
+          <Option value="recent">Recientes</Option>
+          <Option value="oldest">Antiguas</Option>
+        </Select>
+
+        {sortedRealizadas.length > 0 ? (
+          sortedRealizadas.map((cita, index) => (
             <Card
               key={index}
               title={`Cita ${index + 1}`}

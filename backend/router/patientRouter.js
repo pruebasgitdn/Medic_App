@@ -13,6 +13,11 @@ import {
   checkAppointments,
   createAppointment,
 } from "../controller/appointmentController.js";
+import {
+  createSupport,
+  getPatientTickets,
+  getPatSupports,
+} from "../controller/supportController.js";
 
 const router = express.Router(); //Creando enrutador
 
@@ -24,5 +29,7 @@ router.get("/logout", verifyPatientToken, logout);
 router.get("/appointments", verifyPatientToken, checkAppointments);
 router.get("/gethistory", verifyPatientToken, getHistory);
 router.put("/editprofile", verifyPatientToken, EditProfile);
+router.post("/support", verifyPatientToken, createSupport);
+router.get("/mysupports", verifyPatientToken, getPatientTickets);
 
 export default router;

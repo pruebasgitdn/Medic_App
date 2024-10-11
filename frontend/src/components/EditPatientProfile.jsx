@@ -11,13 +11,15 @@ import {
   Alert,
   message,
 } from "antd";
+import "react-phone-number-input/style.css";
+import PhoneInput from "react-phone-number-input";
 import { Context } from "../main";
 import { UploadOutlined } from "@ant-design/icons";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 
 const { Option } = Select;
-
+const { TextArea } = Input;
 const EditPatientProfile = () => {
   const { user, setUser } = useContext(Context);
   const [form] = Form.useForm();
@@ -40,6 +42,13 @@ const EditPatientProfile = () => {
   // Rellenar el formulario con la información del usuario actual
   useEffect(() => {
     //Del manejo del form del useForm de ant, nos permite rellenar los inputs con el nombre del input y valor
+
+    if (user?.alergias === "undefined") {
+      form.setFieldValue({
+        alergias: "",
+      });
+    }
+
     form.setFieldsValue({
       nombre: user?.nombre,
       apellido_pat: user?.apellido_pat,
@@ -66,6 +75,7 @@ const EditPatientProfile = () => {
       formData.append("telefono", values?.telefono);
       formData.append("direccion", values?.direccion);
       formData.append("genero", values?.genero);
+      formData.append("alergias", values?.alergias);
       if (photo) {
         formData.append("photo", photo);
       }
@@ -107,6 +117,7 @@ const EditPatientProfile = () => {
       }
       console.error("Error al actualizar el perfil:", error);
     }
+    // console.log(values);
   };
 
   return (
@@ -175,14 +186,17 @@ const EditPatientProfile = () => {
               label="Teléfono"
               className="form-item"
               rules={[
-                { min: 10, message: "Numero mayor a 10 digitos" },
+                { min: 10, message: "Minimo 10 digitos" },
                 {
-                  max: 13,
+                  max: 14,
                   message: "Maximo 11 digitos",
                 },
               ]}
             >
-              <Input placeholder="Teléfono" />
+              <PhoneInput
+                defaultCountry={"CO"}
+                placeholder="Ingresa numero de telefono"
+              />
             </Form.Item>
 
             {/* Dirección */}
@@ -193,6 +207,15 @@ const EditPatientProfile = () => {
               rules={[{ min: 8, message: "Mayor a 8 digitos" }]}
             >
               <Input placeholder="Dirección" />
+            </Form.Item>
+
+            <Form.Item
+              name="alergias"
+              label="Alergias"
+              className="form-item"
+              rules={[{ min: 3, message: "Minimo 3 caracteres" }]}
+            >
+              <TextArea rows={3} />
             </Form.Item>
 
             {/* Género */}

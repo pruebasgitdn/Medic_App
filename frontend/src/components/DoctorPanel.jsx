@@ -3,13 +3,12 @@ import { Layout, Menu } from "antd";
 const { Sider, Content } = Layout;
 import {
   UserOutlined,
-  SettingOutlined,
-  FileOutlined,
-  QuestionCircleOutlined,
   InsertRowAboveOutlined,
   CalendarOutlined,
   HistoryOutlined,
-  ProfileOutlined,
+  TeamOutlined,
+  NotificationOutlined,
+  ToolOutlined,
 } from "@ant-design/icons";
 import { Link, Outlet } from "react-router-dom";
 
@@ -19,13 +18,13 @@ const DoctorPanel = () => {
       <Sider collapsible theme="light">
         <Menu mode="inline">
           {/* Añadir enlaces de las rutas a los items del menú */}
-          <Menu.Item key="1" icon={<ProfileOutlined />}>
+          <Menu.Item key="1" icon={<UserOutlined />}>
             <Link to="profile">Perfil</Link>
           </Menu.Item>
           <Menu.Item key="2" icon={<CalendarOutlined />}>
             <Link to="appointments">Atender Citas</Link>
           </Menu.Item>
-          <Menu.Item key="3" icon={<UserOutlined />}>
+          <Menu.Item key="3" icon={<TeamOutlined />}>
             <Link to="/doctorpanel/patients">Pacientes</Link>
           </Menu.Item>
           <Menu.Item key="4" icon={<HistoryOutlined />}>
@@ -35,11 +34,11 @@ const DoctorPanel = () => {
             <Link to="reports">Reporte Estadísticas</Link>
           </Menu.Item>
           {/* Otras opciones del menú */}
-          <Menu.Item key="6" icon={<SettingOutlined />}>
+          <Menu.Item key="6" icon={<NotificationOutlined />}>
             Notificaciones
           </Menu.Item>
-          <Menu.Item key="8" icon={<QuestionCircleOutlined />}>
-            Solicitar Soporte
+          <Menu.Item key="8" icon={<ToolOutlined />}>
+            <Link to="support">Soporte</Link>
           </Menu.Item>
         </Menu>
       </Sider>

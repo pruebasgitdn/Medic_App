@@ -1,12 +1,15 @@
 import React, { useEffect, useState } from "react";
-import { Card, List, Spin, Alert, Dropdown, Button } from "antd";
+import { Card, List, Spin, Alert, Dropdown, Button, Select } from "antd";
 import axios from "axios";
 import { DownOutlined } from "@ant-design/icons";
+
+const { Option } = Select;
 
 const PatientHistory = () => {
   const [historial, setHistorial] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [orden, setOrden] = useState("recent");
 
   useEffect(() => {
     const fetchHistory = async () => {
@@ -35,6 +38,7 @@ const PatientHistory = () => {
         }
       } catch (err) {
         setError("Error al obtener el historial del paciente");
+        console.log(err);
       } finally {
         setLoading(false);
       }
@@ -43,22 +47,19 @@ const PatientHistory = () => {
     fetchHistory();
   }, []);
 
+  const sortedHistorial = () => {
+    return historial.sort((a, b) =>
+      orden === "recent"
+        ? new Date(b.fecha) - new Date(a.fecha)
+        : new Date(a.fecha) - new Date(b.fecha)
+    );
+  };
+
   // Mostrar indicador de carga mientras se obtienen los datos
   if (loading) return <Spin tip="Cargando historial médico..." />;
 
   // Mostrar mensaje de error en caso de fallo
   if (error) return <Alert message={error} type="error" />;
-
-  const items = [
-    {
-      key: "1",
-      label: <a>Recientes</a>,
-    },
-    {
-      key: "2",
-      label: <a>Antiguos</a>,
-    },
-  ];
 
   return (
     <div>
@@ -67,26 +68,21 @@ const PatientHistory = () => {
         <div>
           <h2 className="nooverflow">Historial Médico</h2>
 
-          <Dropdown
-            menu={{
-              items,
-            }}
+          <Select
+            defaultValue={orden}
+            style={{ width: 200, marginBottom: "16px" }}
+            onChange={(value) => setOrden(value)}
           >
-            <Button>
-              Ordenar <DownOutlined />
-            </Button>
-          </Dropdown>
+            <Option value="recent">Recientes</Option>
+            <Option value="oldest">Antiguos</Option>
+          </Select>
 
           <List
             grid={{ gutter: 16, column: 1 }} // Layout en una columna
-            dataSource={historial}
+            dataSource={sortedHistorial()}
             renderItem={(reporte, index) => (
               <List.Item>
-                <Card
-                  title={`Reporte ${index + 1}`}
-                  bordered={false}
-                  className="card_adv"
-                >
+                <Card title={`Reporte ${index + 1}`} className="card_adv">
                   <p>
                     <strong>Doctor:</strong>{" "}
                     {`${reporte.idDoctor.nombre} ${reporte.idDoctor.apellido_pat}`}

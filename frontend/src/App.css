@@ -462,7 +462,9 @@ h4 {
   border-radius: 4px;
   flex-grow: 1;
 }
-
+#txt_center {
+  text-align: center;
+}
 .form-upload {
   display: flex;
   justify-content: space-between;
@@ -538,10 +540,19 @@ h4 {
   font-weight: bold;
   color: hsl(0, 0%, 100%);
 }
+#addsupport {
+  margin-top: 10px;
+  margin-bottom: 25px;
+}
 .btns_flex {
   display: flex;
   justify-content: center;
   gap: 20px;
+  margin: 5px;
+}
+
+.colgap {
+  margin-bottom: 10px;
 }
 .btns_flex div {
   flex-wrap: wrap;
@@ -669,6 +680,9 @@ h4 {
   gap: 10px;
 }
 
+.card_admsop {
+  width: 100%;
+}
 .admeditbnt {
   display: flex;
   flex-direction: column;

@@ -53,7 +53,7 @@ const patientSchema = new mongoose.Schema({
   telefono: {
     type: String,
     required: true,
-    minLength: [10, "El numero de telefono debe minimo 10 digitos"],
+    minLength: [10, "El numero de telefono debe contener minimo 10 digitos"],
   },
   genero: {
     type: String,

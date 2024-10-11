@@ -174,7 +174,17 @@ const Register = () => {
 
               {/* INPUT FOTO */}
               <Col xs={24} md={12}>
-                <Form.Item label="Foto" className="form-item" name="photo">
+                <Form.Item
+                  label="Foto"
+                  className="form-item"
+                  name="photo"
+                  rules={[
+                    {
+                      required: true,
+                      message: "¡Por favor sube tu archivo / documento !",
+                    },
+                  ]}
+                >
                   <Dragger beforeUpload={handleUploadPhoto} name="photo">
                     <Button
                       className="form-upload-btn"
@@ -265,7 +275,7 @@ const Register = () => {
 
                     {
                       //11 porque el +57 = 3 + 10
-                      max: 13,
+                      max: 14,
                       message:
                         "¡El número de teléfono debe tener máximo 11 dígitos!",
                     },
@@ -277,7 +287,7 @@ const Register = () => {
                 >
                   <PhoneInput
                     defaultCountry="CO"
-                    placeholder="Enter phone number"
+                    placeholder="Ingresa numero de telefono"
                     value={phone}
                     onChange={setPhone}
                   />
@@ -408,11 +418,11 @@ const Register = () => {
                   rules={[
                     {
                       min: 10,
-                      message: "¡Debe tener al menos 4 caracteres!",
+                      message: "¡Minimo 10 caracteres!",
                     },
                     {
                       //11 porque el +57 = 3 + 10
-                      max: 13,
+                      max: 12,
                       message:
                         "¡El número de teléfono debe tener máximo 11 dígitos!",
                     },

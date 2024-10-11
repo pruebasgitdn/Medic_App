@@ -3,11 +3,6 @@ import validator from "validator";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 
-/*
-public_id: Almacena el identificador único generado por el servicio externo (como Cloudinary) cuando subes la imagen. 
-
-url: Almacena la URL directa de la imagen, para mostrar la imagen en la interfaz de usuario.
-*/
 const adminSchema = new mongoose.Schema({
   nombre: {
     type: String,

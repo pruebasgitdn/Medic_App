@@ -1,21 +1,12 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import { Card, Alert, Dropdown, Button } from "antd";
-import { DownOutlined } from "@ant-design/icons";
+import { Card, Alert, Dropdown, Button, Select } from "antd";
+
+const { Option } = Select;
 
 const DoctorHistory = () => {
+  const [order, setOrder] = useState("recent");
   const [data, setData] = useState([""]);
-
-  const items = [
-    {
-      key: "1",
-      label: <a>Recientes</a>,
-    },
-    {
-      key: "2",
-      label: <a>Antiguos</a>,
-    },
-  ];
 
   useEffect(() => {
     const fetchAppointments = async () => {
@@ -39,22 +30,30 @@ const DoctorHistory = () => {
 
   // Filtramos las citas que están en estado 'REALIZADA'
   const citasRealizadas = data.filter((cita) => cita.estado === "REALIZADA");
-  console.log(citasRealizadas);
 
+  const ordenarCitas = (a, b) => {
+    if (order === "recent") {
+      return new Date(a.fecha) - new Date(b.fecha); // De más reciente a más antiguo
+    } else {
+      return new Date(b.fecha) - new Date(a.fecha); // De más antiguo a más reciente
+    }
+  };
+
+  // Ordenar las citas
+  const citasOrdenadas = [...citasRealizadas].sort(ordenarCitas);
   return (
     <div>
       <h2>Historial de Citas Realizadas</h2>
-      <Dropdown
-        menu={{
-          items,
-        }}
+      <Select
+        value={order}
+        onChange={(value) => setOrder(value)}
+        style={{ width: 200, marginBottom: "16px" }}
       >
-        <Button>
-          Ordenar <DownOutlined />
-        </Button>
-      </Dropdown>
-      {citasRealizadas.length > 0 ? (
-        citasRealizadas.map((cita, index) => (
+        <Option value="recent">Recientes</Option>
+        <Option value="oldest">Antiguas</Option>
+      </Select>
+      {citasOrdenadas.length > 0 ? (
+        citasOrdenadas.map((cita, index) => (
           <Card
             key={index}
             title={`Paciente: ${cita.idPaciente.nombre} ${cita.idPaciente.apellido_pat} `}
@@ -63,18 +62,15 @@ const DoctorHistory = () => {
               <strong>Fecha:</strong>{" "}
               {new Date(cita.fecha).toLocaleDateString()}
             </p>
-
             <p>
               <strong>Hora:</strong> {new Date(cita.fecha).toLocaleTimeString()}
             </p>
             <p>
               <strong>Motivo:</strong> {cita.motivo}
             </p>
-
             <p>
               <strong>Detalles:</strong> {cita.detallesAdicionales}
             </p>
-
             <p>
               <strong>Diagnóstico:</strong> {cita.detallesDiagnostico}
             </p>

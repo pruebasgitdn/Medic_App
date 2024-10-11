@@ -253,7 +253,7 @@ const FormNewDoctor = () => {
 
                     {
                       //11 porque el +57 = 3 + 10
-                      max: 13,
+                      max: 14,
                       message:
                         "¡El número de teléfono debe tener máximo 11 dígitos!",
                     },
@@ -283,8 +283,8 @@ const FormNewDoctor = () => {
                   className="form-item"
                   rules={[
                     {
-                      min: 5,
-                      message: "Minimo 5 caracteres",
+                      max: 6,
+                      message: "Maximo 6 caracteres",
                     },
                     {
                       required: true,

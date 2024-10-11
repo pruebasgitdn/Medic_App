@@ -35,6 +35,12 @@ import AdminNewAdmin from "./pages/AdminNewAdmin";
 import AdminDoctors from "./pages/AdminDoctors";
 import FormNewDoctor from "./components/FormNewDoctor";
 import AdminPatients from "./pages/AdminPatients";
+import AdminAppointments from "./pages/AdminAppointments";
+import AdminMessages from "./pages/AdminMessages";
+import SupportForm from "./components/SupportForm";
+import AdminSupport from "./pages/AdminSupport";
+import PatientSupport from "./pages/PatientSupport";
+import DoctorSupports from "./pages/DoctorSupports";
 
 function App() {
   const { setUser, setIsAuthenticated, user, isAuthenticated, role, setRole } =
@@ -95,6 +101,8 @@ function App() {
             <Route path="appointment" element={<AppointmentForm />} />
             <Route path="appointments" element={<PatientAppointments />} />
             <Route path="editprofile" element={<EditPatientProfile />} />
+            {/* <Route path="supportt" element={<SupportForm />} /> */}
+            <Route path="support" element={<PatientSupport />} />
           </Route>
 
           {/* RUTA DEL DOCTOR */}
@@ -107,6 +115,8 @@ function App() {
             <Route path="editprofile" element={<EditDoctorProfile />} />
             <Route path="patients" element={<DoctorPatients />} />
             <Route path="history" element={<DoctorHistory />} />
+            {/* <Route path="support" element={<SupportForm />} /> */}
+            <Route path="support" element={<DoctorSupports />} />
           </Route>
 
           <Route
@@ -119,6 +129,9 @@ function App() {
             <Route path="newdoctor" element={<AdminDoctors />} />
             <Route path="formdoctor" element={<FormNewDoctor />} />
             <Route path="patients" element={<AdminPatients />} />
+            <Route path="appointments" element={<AdminAppointments />} />
+            <Route path="messages" element={<AdminMessages />} />
+            <Route path="support" element={<AdminSupport />} />
           </Route>
         </Routes>
       </Router>

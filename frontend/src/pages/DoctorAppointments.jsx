@@ -2,8 +2,19 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 
-import { Button, Card, Form, List, message, Input, Row, Col } from "antd";
+import {
+  Button,
+  Card,
+  Form,
+  List,
+  message,
+  Input,
+  Row,
+  Col,
+  Select,
+} from "antd";
 
+const { Option } = Select;
 const DoctorAppointments = () => {
   const [appointments, setAppointments] = useState([]);
   const [detallesDiagnostico, setDetallesDiagnostico] = useState("");
@@ -11,6 +22,7 @@ const DoctorAppointments = () => {
   const [recomendaciones, setRecomendaciones] = useState("");
   const { TextArea } = Input;
   const [form] = Form.useForm();
+  const [order, setOrder] = useState("recent");
   const navigate = useNavigate(); //navigate como Navigate mehtod
 
   useEffect(() => {
@@ -80,10 +92,27 @@ const DoctorAppointments = () => {
     }
   };
 
+  const ordenarCitas = (a, b) => {
+    if (order === "recent") {
+      return new Date(a.fecha) - new Date(b.fecha); // De más reciente a más antiguo
+    } else {
+      return new Date(b.fecha) - new Date(a.fecha); // De más antiguo a más reciente
+    }
+  };
+  const citasOrdenadas = [...appointments].sort(ordenarCitas);
+
   return (
     <div>
       <h2 className="nooverflow">Citas Proximas y Agendadas</h2>
-      {appointments.length > 0 ? (
+      <Select
+        value={order}
+        onChange={(value) => setOrder(value)}
+        style={{ width: 200, marginBottom: "16px" }}
+      >
+        <Option value="recent">Recientes</Option>
+        <Option value="oldest">Antiguas</Option>
+      </Select>
+      {citasOrdenadas.length > 0 ? (
         <List
           itemLayout="vertical"
           size="large"
@@ -93,7 +122,7 @@ const DoctorAppointments = () => {
             },
             pageSize: 10,
           }}
-          dataSource={appointments}
+          dataSource={citasOrdenadas}
           renderItem={(appointment) => (
             <List.Item key={appointment._id}>
               <Card

@@ -39,8 +39,8 @@ export const patientRegister = async (req, res, next) => {
       identificacion_url,
     } = req.body;
 
-    const photo = req.files?.photo || {};
-    const document_id = req.files?.document_id;
+    // const { photo } = req.files || {};
+    const { document_id, photo } = req.files;
     //Extraemos los archivos
 
     if (
@@ -222,8 +222,8 @@ export const getHistory = async (req, res, next) => {
   try {
     // Obtener el paciente autenticado desde `req.user`
     const patient = await Patient.findById(req.user.id).populate({
-      path: "reporte_historial.idDoctor", // Hace referencia a la colección de doctores
-      select: "nombre apellido_pat apellido_mat", // Los campos del doctor que quieres obtener
+      path: "reporte_historial.idDoctor",
+      select: "nombre apellido_pat apellido_mat",
     });
 
     // Verificar si el paciente existe
@@ -234,7 +234,7 @@ export const getHistory = async (req, res, next) => {
     // Devolver el historial de reportes del paciente
     res.status(200).json({
       success: true,
-      historial: patient.reporte_historial, // Acceder al campo de historial
+      historial: patient.reporte_historial,
     });
   } catch (error) {
     next(error);
@@ -254,6 +254,7 @@ export const EditProfile = async (req, res, next) => {
       email,
       direccion,
       genero,
+      alergias,
     } = req.body;
 
     const { photo, document_id } = req.files || {};
@@ -339,6 +340,7 @@ export const EditProfile = async (req, res, next) => {
     patient.telefono = telefono || patient.telefono;
     patient.direccion = direccion || patient.direccion;
     patient.genero = genero || patient.genero;
+    patient.alergias = alergias || patient.alergias;
 
     // Guardar los cambios
     await patient.save();
