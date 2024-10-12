@@ -70,6 +70,9 @@ const SupportForm = () => {
     <Row className="register-container">
       <Col xs={24} md={12}>
         <Card className="register-form-card">
+        <div>
+          such ni vokas
+        </div>
           <Form
             form={form}
             layout="vertical"
