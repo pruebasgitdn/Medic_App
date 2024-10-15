@@ -21,11 +21,11 @@ const doctorSchema = new mongoose.Schema({
   photo: {
     public_id: {
       type: String,
-      required: [true, "Ingresa la foto."], // Mensaje de error personalizado
+      required: [true, "Ingresa la foto."], 
     },
     url: {
       type: String,
-      required: [true, "Ingresa la URL de la foto."], // Mensaje de error personalizado
+      required: [true, "Ingresa la URL de la foto."], 
     },
   },
   especialidad: {

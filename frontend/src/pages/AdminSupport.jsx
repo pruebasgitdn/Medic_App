@@ -115,7 +115,7 @@ const AdminSupport = () => {
       <Row gutter={16}>
         <Col span={12}>
           {doctorSupports.length === 0 ? (
-            <p>No se encontraron registros para soportes de doctores.</p>
+            <p className="nooverflow">No se encontraron registros para soportes de doctores.</p>
           ) : (
             <>
               <h3 className="nooverflow" id="txt_center">
@@ -203,7 +203,7 @@ const AdminSupport = () => {
         </Col>
         <Col span={12}>
           {patientSupports.length === 0 ? (
-            <p>No se encontraron registros para soportes de pacientes.</p>
+            <p className="nooverflow">No se encontraron registros para soportes de pacientes.</p>
           ) : (
             <>
               <h3 className="nooverflow" id="txt_center">
