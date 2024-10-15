@@ -235,3 +235,63 @@ export const getPatients = async (req, res, next) => {
     next(error);
   }
 };
+
+export const AddAllergie = async (req, res, next) => {
+  try {
+    const { id } = req.params; //ID DEL PACIENTE
+    const { alergia } = req.body;
+
+    if (!alergia) {
+      return next(new ErrorHandler("Ingresa la alergia", 400));
+    }
+
+    // Buscar el paciente por ID
+    const paciente = await Patient.findById(id);
+    if (!paciente) {
+      return next(new ErrorHandler("Paciente no encontrado", 404));
+    }
+    if (paciente.alergias.includes(alergia)) {
+      return next(new ErrorHandler("Ya está registrada", 401));
+    }
+
+    // Añadir alergia
+    paciente.alergias.push(alergia);
+
+    await paciente.save();
+
+    res.status(200).json({
+      success: true,
+      message: "Alergia añadida correctamente",
+      alergias: paciente.alergias, //lista actualizada
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+// Controlador para eliminar una alergia del paciente
+export const deleteAllergie = async (req, res) => {
+  try {
+    const { id, index } = req.params; //URL
+
+    const patient = await Patient.findById(id);
+    if (!patient) {
+      return next(new ErrorHandler("Paciente no encontrado", 404));
+    }
+
+    patient.alergias.splice(index, 1);
+    await patient.save();
+
+    res
+      .status(200)
+      .json({
+        success: true,
+        message: "Alergia eliminada correctamente",
+        alergias: patient.alergias,
+      });
+  } catch (error) {
+    res
+      .status(500)
+      .json({ success: false, message: "Error del servidor", error });
+  }
+};

@@ -1,12 +1,29 @@
 import React, { useEffect, useState } from "react";
-import { Card, message, List, Row, Col, Button, Modal } from "antd";
+import {
+  Card,
+  message,
+  List,
+  Row,
+  Col,
+  Button,
+  Modal,
+  Form,
+  Input,
+} from "antd";
+
+import { DeleteFilled } from "@ant-design/icons";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 const DoctorPatients = () => {
   const [patients, setPatients] = useState([]);
+  const [alergia, setAlergias] = useState("");
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [isReportModalOpen, setIsReportModalOpen] = useState(false); // Estado para el nuevo modal
+  const [isReportModalOpen, setIsReportModalOpen] = useState(false); // Estado para los 2 modales
   const [selectedPatient, setSelectedPatient] = useState(null); // Estado para el paciente seleccionado
+  const { TextArea } = Input;
+  const [form] = Form.useForm();
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchAppointment = async () => {
@@ -42,13 +59,63 @@ const DoctorPatients = () => {
   };
 
   const handleOk = () => {
+    setIsReportModalOpen(false);
+  };
+  const handleAlergieOk = () => {
     setIsModalOpen(false);
-    setIsReportModalOpen(false); // Cierra ambos modales
   };
 
   const handleCancel = () => {
     setIsModalOpen(false);
     setIsReportModalOpen(false); // Cierra ambos modales
+  };
+
+  const handleForm = async () => {
+    try {
+      const response = await axios.put(
+        `http://localhost:4000/api/doctor/newallergie/${selectedPatient._id}`,
+        { alergia },
+        {
+          withCredentials: true,
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
+      if (response.status === 200) {
+        message.success("Dato enviado correctamente!");
+        navigate("/doctorpanel/profile");
+        console.log(selectedPatient._id);
+        console.log(alergia);
+      }
+    } catch (error) {
+      message.error("Error al enviar los datos");
+      console.log(error);
+    }
+  };
+
+  const deleteAllergie = async (item, index) => {
+    try {
+      const response = await axios.put(
+        `http://localhost:4000/api/doctor/delleteallergie/${item._id}/${index}`,
+        {},
+        {
+          withCredentials: true,
+        }
+      );
+
+      if (response.data.success) {
+        message.success("Alergia eliminada correctamente");
+
+        navigate("/doctorpanel/profile");
+      } else {
+        message.error(response.data.message);
+      }
+    } catch (error) {
+      message.error("Error al eliminar la alergia");
+      console.log(error);
+    }
   };
 
   return (
@@ -134,21 +201,70 @@ const DoctorPatients = () => {
       <Modal
         title="Alergias del paciente"
         open={isModalOpen}
-        onOk={handleOk}
+        onOk={handleAlergieOk}
         cancelText="Salir"
+        okText="OK"
         onCancel={handleCancel}
       >
         {selectedPatient &&
         selectedPatient.alergias &&
         selectedPatient.alergias.length > 0 ? (
           <ul>
-            {selectedPatient.alergias.map((alergiaObj) => (
-              <li key={alergiaObj._id}> - {alergiaObj}</li>
+            {selectedPatient.alergias.map((alergiaObj, index) => (
+              <li key={alergiaObj._id} id="li_alergias">
+                {" "}
+                <b>{index + 1}.</b> {alergiaObj}
+                <Button
+                  danger
+                  onClick={() => deleteAllergie(selectedPatient, index)}
+                >
+                  <DeleteFilled />
+                </Button>
+              </li>
             ))}
           </ul>
         ) : (
-          <p>No hay alergias registradas.</p>
+          <p>
+            <b>No hay alergias registradas.</b>
+          </p>
         )}
+        <hr />
+        <br />
+        <h4>Reportar novedad</h4>
+        <p id="p_novedad">
+          En caso de alguna novedad o anomalía en las alergias del paciente,
+          notifiquelo acá:{" "}
+        </p>
+        <Form onFinish={handleForm} form={form}>
+          <Form.Item
+            label="¿ Alguna novedad ?:"
+            name="alergias"
+            className="form-item"
+            rules={[
+              {
+                min: 5,
+                message: "Minimo 5 caracteres",
+              },
+              {
+                message: "Alergias del paciente.",
+              },
+              {
+                required: true,
+                message: "No se vale vacio",
+              },
+            ]}
+          >
+            <TextArea
+              onChange={(text) => setAlergias(text.target.value)}
+              rows={3}
+              placeholder="...."
+              maxLength={80}
+            />
+          </Form.Item>
+          <Button block type="primary" htmlType="submit">
+            Enviar
+          </Button>
+        </Form>
       </Modal>
 
       {/* Modal  historial */}
@@ -177,7 +293,9 @@ const DoctorPatients = () => {
             ))}
           </ul>
         ) : (
-          <p>No hay reportes en el historial.</p>
+          <p>
+            <b>No hay reportes en el historial.</b>
+          </p>
         )}
       </Modal>
     </div>

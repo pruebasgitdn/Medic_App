@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import { Card, Alert, Dropdown, Button, Select } from "antd";
+import { List, Card, Alert, Select, Row, Col } from "antd";
 
 const { Option } = Select;
 
 const DoctorHistory = () => {
   const [order, setOrder] = useState("recent");
-  const [data, setData] = useState([""]);
+  const [data, setData] = useState([]);
 
   useEffect(() => {
     const fetchAppointments = async () => {
@@ -22,7 +22,6 @@ const DoctorHistory = () => {
       } catch (error) {
         console.error("Error al obtener las citas:", error);
       }
-      console.log(data);
     };
 
     fetchAppointments();
@@ -33,52 +32,77 @@ const DoctorHistory = () => {
 
   const ordenarCitas = (a, b) => {
     if (order === "recent") {
-      return new Date(a.fecha) - new Date(b.fecha); // De más reciente a más antiguo
+      return new Date(b.fecha) - new Date(a.fecha); // De más reciente a más antiguo
     } else {
-      return new Date(b.fecha) - new Date(a.fecha); // De más antiguo a más reciente
+      return new Date(a.fecha) - new Date(b.fecha); // De más antiguo a más reciente
     }
   };
 
   // Ordenar las citas
   const citasOrdenadas = [...citasRealizadas].sort(ordenarCitas);
+
   return (
     <div>
       <h2>Historial de Citas Realizadas</h2>
       <Select
         value={order}
         onChange={(value) => setOrder(value)}
-        style={{ width: 200, marginBottom: "16px" }}
+        style={{ marginBottom: 16 }}
       >
         <Option value="recent">Recientes</Option>
         <Option value="oldest">Antiguas</Option>
       </Select>
       {citasOrdenadas.length > 0 ? (
-        citasOrdenadas.map((cita, index) => (
-          <Card
-            key={index}
-            title={`Paciente: ${cita.idPaciente.nombre} ${cita.idPaciente.apellido_pat} `}
-          >
-            <p>
-              <strong>Fecha:</strong>{" "}
-              {new Date(cita.fecha).toLocaleDateString()}
-            </p>
-            <p>
-              <strong>Hora:</strong> {new Date(cita.fecha).toLocaleTimeString()}
-            </p>
-            <p>
-              <strong>Motivo:</strong> {cita.motivo}
-            </p>
-            <p>
-              <strong>Detalles:</strong> {cita.detallesAdicionales}
-            </p>
-            <p>
-              <strong>Diagnóstico:</strong> {cita.detallesDiagnostico}
-            </p>
-            <p>
-              <strong>Recomendaciones:</strong> {cita.recomendaciones}
-            </p>
-          </Card>
-        ))
+        <List
+          itemLayout="vertical"
+          size="large"
+          pagination={{
+            onChange: (page) => {
+              console.log(page);
+            },
+            pageSize: 10,
+          }}
+          dataSource={citasOrdenadas}
+          renderItem={(cita) => (
+            <List.Item>
+              <Card
+                title={`Paciente: ${cita.idPaciente.nombre} ${cita.idPaciente.apellido_pat}`}
+              >
+                <Row gutter={20}>
+                  <Col>
+                    <img
+                      src={cita.idPaciente.photo.url}
+                      alt=""
+                      id="dr_pt_history"
+                    />
+                  </Col>
+                  <Col>
+                    <p>
+                      <strong>Fecha:</strong>{" "}
+                      {new Date(cita.fecha).toLocaleDateString()}
+                    </p>
+                    <p>
+                      <strong>Hora:</strong>{" "}
+                      {new Date(cita.fecha).toLocaleTimeString()}
+                    </p>
+                    <p>
+                      <strong>Motivo:</strong> {cita.motivo}
+                    </p>
+                    <p>
+                      <strong>Detalles:</strong> {cita.detallesAdicionales}
+                    </p>
+                    <p>
+                      <strong>Diagnóstico:</strong> {cita.detallesDiagnostico}
+                    </p>
+                    <p>
+                      <strong>Recomendaciones:</strong> {cita.recomendaciones}
+                    </p>
+                  </Col>
+                </Row>
+              </Card>
+            </List.Item>
+          )}
+        />
       ) : (
         <Alert message="No tienes citas realizadas." type="info" />
       )}

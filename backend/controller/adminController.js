@@ -11,12 +11,11 @@ import cloudinary from "cloudinary";
 Iniciar Sesion
 Cerrar Sesion
 Crear Admin
-Eliminar Cuenta (Propia)
 EditarPerfil
 EliminarUsuario
 EliminarDoctor
 EliminarCitas
-
+Eliminar Cuenta (Propia)
 */
 
 export const login = async (req, res, next) => {

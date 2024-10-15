@@ -44,7 +44,7 @@ const AdminLogin = () => {
         localStorage.setItem("role", "admin");
 
         console.log(email, password);
-        navigate("/adminpanel");
+        navigate("/adminpanel/profile");
       }
     } catch (error) {
       message.error("Error en el inicio de sesión");

@@ -1,5 +1,7 @@
 import express from "express";
 import {
+  AddAllergie,
+  deleteAllergie,
   EditProfile,
   getPatients,
   login,
@@ -23,4 +25,6 @@ router.put("/editprofile", verifyDoctorToken, EditProfile);
 router.get("/getpatients", verifyDoctorToken, getPatients);
 router.post("/support", verifyDoctorToken, DocCreateSupport);
 router.get("/mysupports", verifyDoctorToken, getDoctorTickets);
+router.put("/newallergie/:id", verifyDoctorToken, AddAllergie);
+router.put("/delleteallergie/:id/:index", verifyDoctorToken, deleteAllergie);
 export default router;

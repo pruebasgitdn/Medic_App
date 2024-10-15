@@ -42,13 +42,6 @@ const EditPatientProfile = () => {
   // Rellenar el formulario con la información del usuario actual
   useEffect(() => {
     //Del manejo del form del useForm de ant, nos permite rellenar los inputs con el nombre del input y valor
-
-    if (user?.alergias === "undefined") {
-      form.setFieldValue({
-        alergias: "",
-      });
-    }
-
     form.setFieldsValue({
       nombre: user?.nombre,
       apellido_pat: user?.apellido_pat,
@@ -57,6 +50,7 @@ const EditPatientProfile = () => {
       telefono: user?.telefono,
       direccion: user?.direccion,
       genero: user?.genero,
+      alergias: user?.alergias,
     });
   }, [user, form]);
 

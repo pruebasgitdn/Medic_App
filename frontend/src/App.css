@@ -427,6 +427,9 @@ h4 {
   margin-top: 1rem;
   margin-bottom: 2rem;
 }
+#p_novedad {
+  font-size: small;
+}
 
 .register-form-card {
   display: flex;
@@ -532,11 +535,25 @@ h4 {
 }
 #info_btn {
   color: #000000;
-  background-color: rgb(208, 255, 0);
+  background-color: rgb(219, 105, 11);
   font-weight: bold;
+  color: #ffffff;
 }
+#li_alergias {
+  display: flex;
+  justify-content: space-between;
+}
+#dr_pt_history {
+  border-radius: 10px;
+  width: 130px;
+  height: 150px;
+}
+/* #ct_hech_dr {
+  display: flex;
+  flex-direction: ;
+} */
 #success_btn {
-  background-color: rgb(0, 255, 81);
+  background-color: rgb(12, 129, 49);
   font-weight: bold;
   color: hsl(0, 0%, 100%);
 }

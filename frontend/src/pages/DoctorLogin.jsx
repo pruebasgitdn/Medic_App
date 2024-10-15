@@ -44,7 +44,7 @@ const DoctorLogin = () => {
         localStorage.setItem("role", "doctor");
 
         console.log(email, password);
-        navigate("/doctorpanel");
+        navigate("/doctorpanel/profile");
       }
     } catch (error) {
       message.error("Error en el inicio de sesión");
