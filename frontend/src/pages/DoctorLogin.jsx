@@ -110,7 +110,7 @@ const DoctorLogin = () => {
                       block
                       htmlType="submit"
                     >
-                      Ingresar
+                      Ingresar.
                     </Button>
                     <Link to="/patientregister">
                       <Button type="dashed" size="small" block>
