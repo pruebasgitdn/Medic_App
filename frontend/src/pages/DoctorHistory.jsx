@@ -66,36 +66,41 @@ const DoctorHistory = () => {
           renderItem={(cita) => (
             <List.Item>
               <Card
-                title={`Paciente: ${cita.idPaciente.nombre} ${cita.idPaciente.apellido_pat}`}
+                title={`Paciente: ${cita?.idPaciente?.nombre || "N/A"} ${
+                  cita?.idPaciente?.apellido_pat || "N/A"
+                }`}
               >
                 <Row gutter={20}>
                   <Col>
                     <img
-                      src={cita.idPaciente.photo.url}
-                      alt=""
+                      src={cita?.idPaciente?.photo?.url || {}}
+                      alt="patientimage"
                       id="dr_pt_history"
                     />
                   </Col>
                   <Col>
                     <p>
                       <strong>Fecha:</strong>{" "}
-                      {new Date(cita.fecha).toLocaleDateString()}
+                      {new Date(cita?.fecha).toLocaleDateString() || "N/A"}
                     </p>
                     <p>
                       <strong>Hora:</strong>{" "}
-                      {new Date(cita.fecha).toLocaleTimeString()}
+                      {new Date(cita?.fecha).toLocaleTimeString() || "N/A"}
                     </p>
                     <p>
-                      <strong>Motivo:</strong> {cita.motivo}
+                      <strong>Motivo:</strong> {cita?.motivo || "N/A"}
                     </p>
                     <p>
-                      <strong>Detalles:</strong> {cita.detallesAdicionales}
+                      <strong>Detalles:</strong>{" "}
+                      {cita?.detallesAdicionales || "N/A"}
                     </p>
                     <p>
-                      <strong>Diagnóstico:</strong> {cita.detallesDiagnostico}
+                      <strong>Diagnóstico:</strong>{" "}
+                      {cita?.detallesDiagnostico || "N/A"}
                     </p>
                     <p>
-                      <strong>Recomendaciones:</strong> {cita.recomendaciones}
+                      <strong>Recomendaciones:</strong>{" "}
+                      {cita?.recomendaciones || "N/A"}
                     </p>
                   </Col>
                 </Row>

@@ -12,6 +12,7 @@ import { getDoctorAppointments } from "../controller/appointmentController.js";
 import { verifyDoctorToken } from "../middlewares/authMiddleware.js";
 import {
   createSupport,
+  deleteSupportById,
   DocCreateSupport,
   getDoctorTickets,
 } from "../controller/supportController.js";
@@ -27,4 +28,5 @@ router.post("/support", verifyDoctorToken, DocCreateSupport);
 router.get("/mysupports", verifyDoctorToken, getDoctorTickets);
 router.put("/newallergie/:id", verifyDoctorToken, AddAllergie);
 router.put("/delleteallergie/:id/:index", verifyDoctorToken, deleteAllergie);
+router.delete("/deletesupport/:id", verifyDoctorToken, deleteSupportById);
 export default router;

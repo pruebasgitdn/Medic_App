@@ -15,7 +15,7 @@ import "react-phone-number-input/style.css";
 import PhoneInput from "react-phone-number-input";
 import { Context } from "../main";
 import { UploadOutlined } from "@ant-design/icons";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 
 const EditPatientProfile = () => {
@@ -286,11 +286,16 @@ const EditPatientProfile = () => {
             </Form.Item>
 
             {/* Botón de enviar */}
-            <Form.Item>
+            <div className="btns_block">
               <Button type="primary" htmlType="submit" loading={loading} block>
                 Actualizar Perfil
               </Button>
-            </Form.Item>
+              <Link to="/userpanel/profile">
+                <Button type="outlined" block>
+                  Cancelar
+                </Button>
+              </Link>
+            </div>
           </Form>
         </Card>
       </Col>

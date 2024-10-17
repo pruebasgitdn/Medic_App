@@ -10,6 +10,7 @@ import {
   Col,
   Card,
   Modal,
+  Popconfirm,
   List,
 } from "antd";
 import { UploadOutlined } from "@ant-design/icons";
@@ -107,6 +108,30 @@ const DoctorSupports = () => {
       setLoading(false);
       console.error("Error al enviar el formulario:", error);
       message.error("Error en la solicitud, intente nuevamente");
+    }
+  };
+
+  const handleDeleteTicket = async (id) => {
+    try {
+      setLoading(true);
+      const response = await axios.delete(
+        `http://localhost:4000/api/doctor/deletesupport/${id}`,
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+          withCredentials: true,
+        }
+      );
+
+      if (response.status === 200) {
+        message.success("Soporte eliminado correctamente.");
+        navigate("/doctorpanel/profile");
+      }
+      setLoading(false);
+    } catch (error) {
+      console.error("Error al eliminar el soporte:", error);
+      message.error("No se pudo eliminar el soporte.");
     }
   };
 
@@ -217,6 +242,25 @@ const DoctorSupports = () => {
                           </p>
                         </>
                       )}
+                    </div>
+                    <br />
+                    <div className="nooverflow">
+                      <Popconfirm
+                        title="¿Estás seguro de que quieres eliminar esta solicitud?"
+                        onConfirm={() => handleDeleteTicket(pendiente._id)}
+                        okText="Sí"
+                        cancelText="No"
+                      >
+                        <Button
+                          danger
+                          block
+                          size="small"
+                          type="primary"
+                          loading={loading}
+                        >
+                          Cancelar Solicitud
+                        </Button>
+                      </Popconfirm>
                     </div>
                   </Card>
                 )}

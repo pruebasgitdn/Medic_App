@@ -7,7 +7,7 @@ import {
   Alert,
   Button,
   message,
-  Dropdown,
+  Popconfirm,
   Select,
   List,
 } from "antd";
@@ -144,15 +144,16 @@ const PatientAppointments = () => {
               </p>
 
               <div className="nooverflow">
-                <Button
-                  danger
-                  block
-                  size="small"
-                  type="primary"
-                  onClick={() => handleCancel(cita)}
+                <Popconfirm
+                  title="¿Estás seguro de que quieres eliminar esta cita?"
+                  okText="Sí"
+                  onConfirm={() => handleCancel(cita)}
+                  cancelText="No"
                 >
-                  Cancelar cita
-                </Button>
+                  <Button danger block size="small" type="primary">
+                    Cancelar cita
+                  </Button>
+                </Popconfirm>
               </div>
             </Card>
           ))

@@ -15,6 +15,7 @@ import {
 } from "../controller/appointmentController.js";
 import {
   createSupport,
+  deleteSupportById,
   getPatientTickets,
   getPatSupports,
 } from "../controller/supportController.js";
@@ -31,5 +32,6 @@ router.get("/gethistory", verifyPatientToken, getHistory);
 router.put("/editprofile", verifyPatientToken, EditProfile);
 router.post("/support", verifyPatientToken, createSupport);
 router.get("/mysupports", verifyPatientToken, getPatientTickets);
+router.delete("/deletesupport/:id", verifyPatientToken, deleteSupportById);
 
 export default router;

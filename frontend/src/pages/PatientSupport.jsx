@@ -9,6 +9,7 @@ import {
   Row,
   Col,
   Card,
+  Popconfirm,
   Modal,
   List,
 } from "antd";
@@ -108,6 +109,27 @@ const PatientSupport = () => {
     }
   };
 
+  const handleDeleteTicket = async (id) => {
+    try {
+      setLoading(true);
+      const response = await axios.delete(
+        `http://localhost:4000/api/patient/deletesupport/${id}`,
+        {
+          withCredentials: true,
+        }
+      );
+
+      if (response.status === 200) {
+        message.success("Soporte eliminado correctamente.");
+        navigate("/userpanel/profile");
+      }
+      setLoading(false);
+    } catch (error) {
+      console.error("Error al eliminar el soporte:", error);
+      message.error("No se pudo eliminar el soporte.");
+    }
+  };
+
   console.log(pendientes);
   console.log(supports);
 
@@ -193,6 +215,11 @@ const PatientSupport = () => {
                       <b>Descripcion: </b>
                       {pendiente.description}
                     </p>
+                    <p id="smcenter">
+                      <b>Creado el: </b>
+                      {new Date(pendiente.createdAt).toLocaleDateString()}
+                    </p>
+
                     <div id="div_img_supp">
                       {pendiente?.file?.url ? (
                         <>
@@ -209,6 +236,25 @@ const PatientSupport = () => {
                           </p>
                         </>
                       )}
+                    </div>
+                    <br />
+                    <div className="nooverflow">
+                      <Popconfirm
+                        title="¿Estás seguro de que quieres eliminar esta solicitud?"
+                        onConfirm={() => handleDeleteTicket(pendiente._id)}
+                        okText="Sí"
+                        cancelText="No"
+                      >
+                        <Button
+                          danger
+                          block
+                          size="small"
+                          type="primary"
+                          loading={loading}
+                        >
+                          Cancelar Solicitud
+                        </Button>
+                      </Popconfirm>
                     </div>
                   </Card>
                 )}
@@ -245,6 +291,10 @@ const PatientSupport = () => {
                       <b>Respuesta: </b>
                       <br />
                       {resuelto.respuestaAdmin}
+                    </p>
+                    <p id="smcenter">
+                      <b>Creado el: </b>
+                      {new Date(resuelto.createdAt).toLocaleDateString()}
                     </p>
                     <div id="div_img_supp">
                       {resuelto?.file?.url ? (

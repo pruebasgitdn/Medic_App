@@ -83,7 +83,6 @@ const DoctorAppointments = () => {
       );
       if (response.status === 200) {
         message.success("Cita Realiza con exito!!");
-
         navigate("/doctorpanel/history");
       }
     } catch (error) {
@@ -126,37 +125,42 @@ const DoctorAppointments = () => {
           renderItem={(appointment) => (
             <List.Item key={appointment._id}>
               <Card
-                title={`Paciente: ${appointment.idPaciente.nombre} ${appointment.idPaciente.apellido_pat}`}
+                title={`Paciente: ${appointment?.idPaciente?.nombre || "N/A"} ${
+                  appointment?.idPaciente?.apellido_pat || "N/A"
+                }`}
               >
                 <Row>
                   <Col span={12}>
                     <div className="doctorpatient_img">
                       <img
-                        src={appointment.idPaciente.photo.url}
+                        src={appointment?.idPaciente?.photo?.url || {}}
                         alt="patient"
                       />
                       <div className="flex_col">
                         <p>
-                          <strong>Estado:</strong> {appointment.estado}
+                          <strong>Estado:</strong>{" "}
+                          {appointment?.estado || "N/A"}
                         </p>
                         <p>
                           <strong>Fecha:</strong>{" "}
-                          {new Date(appointment.fecha).toLocaleDateString()}
+                          {new Date(appointment?.fecha).toLocaleDateString() ||
+                            "N/A"}
                         </p>
                         <p>
                           <strong>Hora:</strong>{" "}
-                          {new Date(appointment.fecha).toLocaleTimeString([], {
+                          {new Date(appointment?.fecha).toLocaleTimeString([], {
                             hour: "2-digit",
                             minute: "2-digit",
-                          })}
+                          }) || "N/A"}
                         </p>
                         <p>
-                          <strong>Motivo:</strong> {appointment.motivo}
+                          <strong>Motivo:</strong>{" "}
+                          {appointment?.motivo || "N/A"}
                         </p>
                         <p>
                           <strong>Detalles Adicionales:</strong>
                           <br />
-                          {appointment?.detallesAdicionales}
+                          {appointment?.detallesAdicionales || "N/A"}
                         </p>
                       </div>
                     </div>
@@ -169,8 +173,11 @@ const DoctorAppointments = () => {
                         rules={[
                           {
                             max: 150,
-                            required: true,
                             message: "Requerido, y máximo 150 caracteres",
+                          },
+                          {
+                            required: true,
+                            message: "Requerido",
                           },
                         ]}
                       >
@@ -188,8 +195,11 @@ const DoctorAppointments = () => {
                         rules={[
                           {
                             max: 150,
-                            required: true,
                             message: "Requerido, y máximo 150 caracteres",
+                          },
+                          {
+                            required: true,
+                            message: "Requerido",
                           },
                         ]}
                       >
@@ -202,6 +212,7 @@ const DoctorAppointments = () => {
                       <div className="btns_responder">
                         <Button
                           block
+                          size="small"
                           htmlType="submit"
                           type="primary"
                           className="btn_responder"
@@ -209,7 +220,7 @@ const DoctorAppointments = () => {
                         >
                           Responder
                         </Button>
-                        <Button danger type="primary" block>
+                        <Button danger size="small" type="primary" block>
                           Cancelar Cita
                         </Button>
                       </div>

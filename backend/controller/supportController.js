@@ -240,9 +240,10 @@ export const getDoctorTickets = async (req, res, next) => {
 
 // Controlador para eliminar un soporte por ID
 export const deleteSupportById = async (req, res, next) => {
-  const { id } = req.params; //  ID de  de la URL
+  const { id } = req.params; // ID del soporte desde la URL
 
   try {
+    // Buscar y eliminar el soporte
     const support = await Support.findByIdAndDelete(id);
 
     if (!support) {
@@ -252,9 +253,15 @@ export const deleteSupportById = async (req, res, next) => {
       });
     }
 
+    // Verificar si el soporte existe y tiene pulbicid
+    if (support.file && support.file.public_id) {
+      // Eliminar el archivo de Cloudinary usando el public_id
+      await cloudinary.uploader.destroy(support.file.public_id);
+    }
+
     res.status(200).json({
       success: true,
-      message: "Soporte eliminado correctamente.",
+      message: "Soporte e imagen eliminados correctamente.",
     });
   } catch (error) {
     next(error);

@@ -45,6 +45,7 @@ const PatientHistory = () => {
 
     fetchHistory();
   }, []);
+  console.log(historial);
 
   const sortedHistorial = () => {
     return historial.sort((a, b) =>
@@ -102,8 +103,7 @@ const PatientHistory = () => {
                   </p>
 
                   <p>
-                    <strong>Detalles del Diagnóstico:</strong>{" "}
-                    {reporte.detallesDiagnostico}
+                    <strong>Diagnóstico:</strong> {reporte.detallesDiagnostico}
                   </p>
                 </Card>
               </List.Item>

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 import {
   Form,
@@ -115,22 +115,6 @@ const AppointmentForm = () => {
             </Select>
           </Form.Item>
 
-          <Form.Item
-            label="Fecha de la Cita"
-            name="fecha"
-            className="form-item"
-            rules={[
-              { required: true, message: "Por favor, selecciona una fecha" },
-            ]}
-          >
-            <DatePicker
-              format="YYYY-MM-DDTHH:mm:ss" //ISO
-              showTime
-              placeholder="Seleccione una fecha y hora"
-              style={{ width: "100%" }}
-            />
-          </Form.Item>
-
           <Row gutter={16}>
             <Col xs={24} sm={12}>
               <Form.Item
@@ -170,6 +154,22 @@ const AppointmentForm = () => {
               </Form.Item>
             </Col>
           </Row>
+          <Form.Item
+            label="Fecha de la Cita"
+            name="fecha"
+            className="form-item"
+            id="containerpicker"
+            rules={[
+              { required: true, message: "Por favor, selecciona una fecha" },
+            ]}
+          >
+            <DatePicker
+              format="YYYY-MM-DDTHH:mm:ss" //ISO
+              showTime
+              placeholder="Seleccione una fecha y hora"
+              style={{ width: "100%" }}
+            />
+          </Form.Item>
 
           <Form.Item>
             <Button type="primary" htmlType="submit" style={{ width: "100%" }}>

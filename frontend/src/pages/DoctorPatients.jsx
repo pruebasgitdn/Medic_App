@@ -125,47 +125,46 @@ const DoctorPatients = () => {
         <List
           itemLayout="vertical"
           size="large"
-          pagination={{
-            onChange: (page) => {
-              console.log(page);
-            },
-            pageSize: 10,
-          }}
           dataSource={patients}
           renderItem={(patient) => (
             <List.Item key={patient._id}>
               <Card
-                title={`Paciente: ${patient.nombre} ${patient.apellido_pat}`}
+                title={`Paciente: ${patient.nombre || "N/A"} ${
+                  patient.apellido_pat || "N/A"
+                }`}
               >
                 <Row gutter={[16, 16]}>
                   <Col xs={24} sm={8}>
                     <div className="doctorpatient_img">
-                      <img src={patient.photo.url} alt="patient" />
+                      <img
+                        src={patient?.photo?.url || "default-image-url"}
+                        alt="patient"
+                      />
                     </div>
                   </Col>
                   <Col xs={24} sm={16}>
                     <div className="aside">
                       <p>
                         <strong>Email: </strong>
-                        {patient?.email}
+                        {patient?.email || "N/A"}
                         <br />
                         <strong>Direccion: </strong>
-                        {patient?.direccion}
+                        {patient?.direccion || "N/A"}
                         <br />
                         <strong>Telefono: </strong>
-                        {patient?.telefono}
+                        {patient?.telefono || "N/A"}
                         <br />
                         <strong>Proveedor de seguros: </strong>
-                        {patient?.proovedor_seguros}
+                        {patient?.proovedor_seguros || "N/A"}
                         <br />
                       </p>
                       <hr />
                       <p>
                         <strong>Contacto de emergencia: </strong>
-                        {patient?.nombre_contacto_emergencia}
+                        {patient?.nombre_contacto_emergencia || "N/A"}
                         <br />
                         <strong>Numero: </strong>
-                        {patient?.numero_contacto_emergencia}
+                        {patient?.numero_contacto_emergencia || "N/A"}
                         <br />
                         <br />
                         <div className="btns_flex">

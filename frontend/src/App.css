@@ -24,6 +24,10 @@
   flex-direction: column;
   gap: 10px;
 }
+#containerpicker {
+  overflow: visible;
+  z-index: 1050; /* o un valor más alto si es necesario */
+}
 #w80 {
   width: 80%;
 }
@@ -561,14 +565,14 @@ h4 {
   width: 130px;
   height: 150px;
 }
-/* #ct_hech_dr {
-  display: flex;
-  flex-direction: ;
-} */
 #success_btn {
   background-color: rgb(12, 129, 49);
   font-weight: bold;
   color: hsl(0, 0%, 100%);
+}
+#smcenter {
+  font-size: small;
+  font-style: italic;
 }
 #addsupport {
   margin-top: 10px;
