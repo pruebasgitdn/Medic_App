@@ -24,7 +24,7 @@ const FormNewDoctor = () => {
   const [phone, setPhone] = useState("");
   const [photo, setPhoto] = useState(null); // Foto del paciente
   const [licencia, setLicencia] = useState(null);
-  const [emailError, setEmailError] = useState("");
+  // const [emailError, setEmailError] = useState("");
   const navigate = useNavigate();
 
   const { Dragger } = Upload;
@@ -91,16 +91,17 @@ const FormNewDoctor = () => {
       }
     } catch (error) {
       console.log(error);
-      message.error("Error al registrar admin");
-      if (error.response && error.response.data) {
-        //Extraer mensaje del da respuesta
-        const { message } = error.response.data;
-        if (message === "Doctor con este email ya existe") {
-          setEmailError(message);
-        } else {
-          message.error(message);
-        }
+      message.error("Error al registrar doctor");
+      if (
+        error.response &&
+        error.response.data &&
+        error.response.data.message
+      ) {
+        message.error(error.response.data.message);
+      } else {
+        message.error("Error al añadir doctor");
       }
+      console.error("Error:", error);
     }
 
     console.log(values);
@@ -163,14 +164,14 @@ const FormNewDoctor = () => {
                 >
                   <Input className="form-input" />
                 </Form.Item>
-                {emailError &&
+                {/* {emailError &&
                 emailError === "Administrador con este email ya existe" ? (
                   <>
                     <p className="error_form">{emailError}</p>
                   </>
                 ) : (
                   <></>
-                )}
+                )} */}
               </Col>
 
               {/* INPUT APELLIDO PATERNO */}
@@ -341,17 +342,7 @@ const FormNewDoctor = () => {
 
               {/* INPUT FOTO */}
               <Col xs={24} md={12}>
-                <Form.Item
-                  label="Foto"
-                  className="form-item"
-                  name="photo"
-                  rules={[
-                    {
-                      required: true,
-                      message: "¡Por favor ingresa tu foto!",
-                    },
-                  ]}
-                >
+                <Form.Item label="Foto" className="form-item" name="photo">
                   <Dragger name="photo" beforeUpload={handleUploadPhoto}>
                     <Button
                       className="form-upload-btn"

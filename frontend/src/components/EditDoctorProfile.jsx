@@ -16,7 +16,7 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import "react-phone-number-input/style.css";
 import PhoneInput from "react-phone-number-input";
-
+import { Link } from "react-router-dom";
 const { Option } = Select;
 
 const EditDoctorProfile = () => {
@@ -27,6 +27,7 @@ const EditDoctorProfile = () => {
   const [loading, setLoading] = useState(false);
   const [photo, setPhoto] = useState(null); // Foto del paciente
   const [licencia, setLicencia] = useState(null);
+  const { Dragger } = Upload;
 
   // Función para manejar el archivo de foto
   const handlePhotoUpload = (file) => {
@@ -111,7 +112,7 @@ const EditDoctorProfile = () => {
   };
   return (
     <Row justify="center" align="middle" style={{ marginTop: "20px" }}>
-      <Col xs={24} sm={20} md={16} lg={12}>
+      <Col xs={24} sm={22} md={18} lg={16}>
         <Card title="Editar Perfil">
           <Form form={form} layout="vertical" onFinish={onFinish}>
             {/* Nombre */}
@@ -124,83 +125,100 @@ const EditDoctorProfile = () => {
               <Input placeholder="Nombre" />
             </Form.Item>
 
-            {/* Apellido Paterno */}
-            <Form.Item
-              name="apellido_pat"
-              label="Apellido Paterno"
-              className="form-item"
-              rules={[{ min: 3, message: "Apellido mayor a 3 digitos" }]}
-            >
-              <Input placeholder="Apellido Paterno" />
-            </Form.Item>
+            <Row>
+              <Col xs={12} sm={12} md={12} lg={12}>
+                {/* Apellido Paterno */}
+                <Form.Item
+                  name="apellido_pat"
+                  label="Apellido Paterno"
+                  className="form-item"
+                  rules={[{ min: 3, message: "Apellido mayor a 3 digitos" }]}
+                >
+                  <Input placeholder="Apellido Paterno" />
+                </Form.Item>
+              </Col>
+              <Col xs={12} sm={12} md={12} lg={12}>
+                {/* Apellido Materno */}
+                <Form.Item
+                  name="apellido_mat"
+                  label="Apellido Materno"
+                  className="form-item"
+                  rules={[{ min: 3, message: "Apellido mayor a 3 digitos" }]}
+                >
+                  <Input placeholder="Apellido Materno" />
+                </Form.Item>
+              </Col>
+            </Row>
 
-            {/* Apellido Materno */}
-            <Form.Item
-              name="apellido_mat"
-              label="Apellido Materno"
-              className="form-item"
-              rules={[{ min: 3, message: "Apellido mayor a 3 digitos" }]}
-            >
-              <Input placeholder="Apellido Materno" />
-            </Form.Item>
+            <Row>
+              <Col xs={12} sm={12} md={12} lg={12}>
+                {/* Email */}
+                <Form.Item
+                  name="email"
+                  label="Email"
+                  className="form-item"
+                  rules={[{ type: "email", message: "Email valido" }]}
+                >
+                  <Input placeholder="Email" />
+                </Form.Item>
+                {emailError &&
+                emailError === "Email ya se encuentra en uso / registrado" ? (
+                  <>
+                    <p className="error_form">{emailError}</p>
+                  </>
+                ) : (
+                  <></>
+                )}
+              </Col>
 
-            {/* Email */}
-            <Form.Item
-              name="email"
-              label="Email"
-              className="form-item"
-              rules={[{ type: "email", message: "Email valido" }]}
-            >
-              <Input placeholder="Email" />
-            </Form.Item>
-            {emailError &&
-            emailError === "Email ya se encuentra en uso / registrado" ? (
-              <>
-                <p className="error_form">{emailError}</p>
-              </>
-            ) : (
-              <></>
-            )}
+              <Col xs={12} sm={12} md={12} lg={12}>
+                {/* Teléfono */}
+                <Form.Item
+                  name="telefono"
+                  label="Teléfono"
+                  className="form-item"
+                  rules={[
+                    { min: 10, message: "Minimo 10 digitos" },
+                    {
+                      max: 14,
+                      message: "Maximo 11 digitos",
+                    },
+                  ]}
+                >
+                  <PhoneInput
+                    defaultCountry={"CO"}
+                    placeholder="Ingresa numero de telefono"
+                  />
+                  {/* <Input placeholder="Teléfono" /> */}
+                </Form.Item>
+              </Col>
+            </Row>
 
-            {/* Teléfono */}
-            <Form.Item
-              name="telefono"
-              label="Teléfono"
-              className="form-item"
-              rules={[
-                { min: 10, message: "Minimo 10 digitos" },
-                {
-                  max: 14,
-                  message: "Maximo 11 digitos",
-                },
-              ]}
-            >
-              <PhoneInput
-                defaultCountry={"CO"}
-                placeholder="Ingresa numero de telefono"
-              />
-              {/* <Input placeholder="Teléfono" /> */}
-            </Form.Item>
+            <Row>
+              <Col xs={12} sm={12} md={12} lg={12}>
+                {/* ESPECIALIDAD */}
+                <Form.Item
+                  name="especialidad"
+                  label="Especialidad"
+                  rules={[{ min: 5, message: "Mayor a 5 digitos" }]}
+                  className="form-item"
+                >
+                  <Input placeholder="Especialidad" />
+                </Form.Item>
+              </Col>
 
-            {/* ESPECIALIDAD */}
-            <Form.Item
-              name="especialidad"
-              label="Especialidad"
-              rules={[{ min: 5, message: "Mayor a 5 digitos" }]}
-              className="form-item"
-            >
-              <Input placeholder="Especialidad" />
-            </Form.Item>
-
-            {/* LICENCIA */}
-            <Form.Item
-              name="numero_licencia"
-              label="Licencia"
-              className="form-item"
-              rules={[{ max: 6, message: "Maximo a 6 digitos" }]}
-            >
-              <Input placeholder="Nmuero de licencia" />
-            </Form.Item>
+              <Col xs={12} sm={12} md={12} lg={12}>
+                {/* LICENCIA */}
+                <Form.Item
+                  name="numero_licencia"
+                  label="Licencia"
+                  className="form-item"
+                  rules={[{ max: 6, message: "Maximo a 6 digitos" }]}
+                >
+                  <Input placeholder="Nmuero de licencia" />
+                </Form.Item>
+              </Col>
+            </Row>
 
             {/* ARCHIVOS */}
             <Form.Item label="Archivos">
@@ -211,14 +229,11 @@ const EditDoctorProfile = () => {
                     label="Licencia"
                     className="form-item"
                   >
-                    <Upload
-                      beforeUpload={handleLicenseUpload}
-                      showUploadList={false}
-                    >
+                    <Dragger beforeUpload={handleLicenseUpload} name="licencia">
                       <Button icon={<UploadOutlined />}>
                         Seleccionar Licencia
                       </Button>
-                    </Upload>
+                    </Dragger>
                     {user?.licencia?.url && (
                       <img
                         src={user.licencia.url}
@@ -230,14 +245,14 @@ const EditDoctorProfile = () => {
                 </Col>
                 <Col xs={12} sm={12} md={12} lg={12}>
                   <Form.Item name="photo" label="Foto" className="form-item">
-                    <Upload
-                      beforeUpload={handlePhotoUpload}
-                      showUploadList={false}
-                    >
-                      <Button icon={<UploadOutlined />}>
+                    <Dragger beforeUpload={handlePhotoUpload} name="photo">
+                      <Button
+                        className="form-upload-btn"
+                        icon={<UploadOutlined />}
+                      >
                         Seleccionar Foto
                       </Button>
-                    </Upload>
+                    </Dragger>
                     {user?.photo?.url && (
                       <img
                         src={user.photo.url}
@@ -252,9 +267,20 @@ const EditDoctorProfile = () => {
 
             {/* Botón de enviar */}
             <Form.Item>
-              <Button type="primary" htmlType="submit" loading={loading} block>
-                Actualizar Perfil
-              </Button>
+              <div className="btns_block">
+                <Button
+                  type="primary"
+                  htmlType="submit"
+                  loading={loading}
+                  block
+                >
+                  Actualizar Perfil
+                </Button>
+
+                <Link to="/doctorpanel/profile">
+                  <Button block>Cancelar</Button>
+                </Link>
+              </div>
             </Form.Item>
           </Form>
         </Card>

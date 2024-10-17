@@ -29,6 +29,7 @@ const AdminPatients = () => {
   const [loading, setLoading] = useState(false);
   const [form] = Form.useForm();
   const navigate = useNavigate();
+  const { Dragger } = Upload;
 
   // Función para manejar el archivo de foto
   const handlePhotoUpload = (file) => {
@@ -52,6 +53,7 @@ const AdminPatients = () => {
 
   useEffect(() => {
     //Rellenar form con el tan seteado
+
     form.setFieldsValue({
       nombre: selectedPatient?.nombre,
       apellido_pat: selectedPatient?.apellido_pat,
@@ -78,7 +80,7 @@ const AdminPatients = () => {
     };
 
     fetchPatients();
-  }, [form, selectedPatient]);
+  }, [selectedPatient, form]);
 
   // Configuración de las columnas para la tabla
   const columns = [
@@ -86,8 +88,12 @@ const AdminPatients = () => {
       title: "Foto",
       dataIndex: "photo",
       key: "photo",
-      render: (photo) => (
-        <img src={photo.url} alt="Doctor" className="admindoctorsimg" />
+      render: (_, photo) => (
+        <img
+          src={photo.url || "placeholder-image-url"}
+          alt="Patient Image"
+          className="admindoctorsimg"
+        />
       ),
     },
     {
@@ -99,27 +105,32 @@ const AdminPatients = () => {
       title: "Apellido",
       dataIndex: "apellido_pat",
       key: "apellido_pat",
+      render: (text) => text || "N/A",
     },
     {
       title: "Tipo ID",
       dataIndex: "identificacion_tipo",
       key: "identificacion_tipo",
+      render: (text) => text || "N/A",
     },
     {
       title: "#ID",
       dataIndex: "identificacion_numero",
       key: "identificacion_numero",
+      render: (text) => text || "N/A",
     },
 
     {
       title: "Teléfono",
       dataIndex: "telefono",
       key: "telefono",
+      render: (text) => text || "N/A",
     },
     {
       title: "Email",
       dataIndex: "email",
       key: "email",
+      render: (text) => text || "N/A",
     },
 
     {
@@ -263,7 +274,7 @@ const AdminPatients = () => {
                   className="form-item"
                   rules={[{ min: 3, message: "Apellido mayor a 3 digitos" }]}
                 >
-                  <Input placeholder="Apellido Paterno" />
+                  <Input placeholder="Apellido Patern" />
                 </Form.Item>
               </Col>
 
@@ -342,14 +353,17 @@ const AdminPatients = () => {
                     label="Documento de Identidad"
                     className="form-item"
                   >
-                    <Upload
-                      showUploadList={false}
+                    <Dragger
+                      name="document_id"
                       beforeUpload={handleDocumentUpload}
                     >
-                      <Button icon={<UploadOutlined />}>
-                        Seleccionar Documento
+                      <Button
+                        className="form-upload-btn"
+                        icon={<UploadOutlined />}
+                      >
+                        Documento
                       </Button>
-                    </Upload>
+                    </Dragger>
                     {selectedPatient.document_id?.url && (
                       <img
                         src={selectedPatient.document_id.url}
@@ -361,14 +375,14 @@ const AdminPatients = () => {
                 </Col>
                 <Col xs={12} sm={12} md={12} lg={12}>
                   <Form.Item name="photo" label="Foto" className="form-item">
-                    <Upload
-                      showUploadList={false}
-                      beforeUpload={handlePhotoUpload}
-                    >
-                      <Button icon={<UploadOutlined />}>
+                    <Dragger name="photo" beforeUpload={handlePhotoUpload}>
+                      <Button
+                        className="form-upload-btn"
+                        icon={<UploadOutlined />}
+                      >
                         Seleccionar Foto
                       </Button>
-                    </Upload>
+                    </Dragger>
                     {selectedPatient?.photo?.url && (
                       <img
                         src={selectedPatient.photo.url}

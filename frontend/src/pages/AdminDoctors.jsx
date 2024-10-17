@@ -28,6 +28,7 @@ const AdminDoctors = () => {
   const [licencia, setLicencia] = useState(null);
   const [emailError, setEmailError] = useState("");
   const navigate = useNavigate();
+  const { Dragger } = Upload;
 
   useEffect(() => {
     form.setFieldsValue({
@@ -172,46 +173,56 @@ const AdminDoctors = () => {
       title: "Foto",
       dataIndex: "photo",
       key: "photo",
-      render: (photo) => (
-        <img src={photo.url} alt="Doctor" className="admindoctorsimg" />
+      render: (_, photo) => (
+        <img
+          src={photo.url || "placeholder-image-url"}
+          alt="Doctor"
+          className="admindoctorsimg"
+        />
       ),
     },
     {
       title: "Nombre",
       dataIndex: "nombre",
       key: "nombre",
+      render: (text) => text || "N/A",
     },
     {
       title: "Apellido",
       dataIndex: "apellido_pat",
       key: "apellido_pat",
+      render: (text) => text || "N/A",
     },
 
     {
       title: "Especialidad",
       dataIndex: "especialidad",
       key: "especialidad",
+      render: (text) => text || "N/A",
     },
     {
       title: "Teléfono",
       dataIndex: "telefono",
       key: "telefono",
+      render: (text) => text || "N/A",
     },
     {
       title: "Email",
       dataIndex: "email",
       key: "email",
+      render: (text) => text || "N/A",
     },
     {
       title: "Número de Licencia",
       dataIndex: "numero_licencia",
       key: "numero_licencia",
+      render: (text) => text || "N/A",
     },
 
     {
       title: "Acciones",
       key: "acciones",
-      render: (doctor) => (
+      render: (_, doctor) => (
         <div className="adminperfil_btns">
           <Button type="link" onClick={() => handleEdit(doctor)}>
             Editar
@@ -324,7 +335,6 @@ const AdminDoctors = () => {
                 defaultCountry={"CO"}
                 placeholder="Ingresa numero de telefono"
               />
-              {/* <Input placeholder="Teléfono" /> */}
             </Form.Item>
 
             {/* ESPECIALIDAD */}
@@ -356,14 +366,14 @@ const AdminDoctors = () => {
                     label="Licencia"
                     className="form-item"
                   >
-                    <Upload
-                      showUploadList={false}
-                      beforeUpload={handleLicenseUpload}
-                    >
-                      <Button icon={<UploadOutlined />}>
-                        Seleccionar Licencia
+                    <Dragger name="licencia" beforeUpload={handleLicenseUpload}>
+                      <Button
+                        className="form-upload-btn"
+                        icon={<UploadOutlined />}
+                      >
+                        Licencia
                       </Button>
-                    </Upload>
+                    </Dragger>
                     {selectedDoctor?.licencia?.url && (
                       <img
                         src={selectedDoctor.licencia.url}
@@ -375,14 +385,14 @@ const AdminDoctors = () => {
                 </Col>
                 <Col xs={12} sm={12} md={12} lg={12}>
                   <Form.Item name="photo" label="Foto" className="form-item">
-                    <Upload
-                      showUploadList={false}
-                      beforeUpload={handlePhotoUpload}
-                    >
-                      <Button icon={<UploadOutlined />}>
+                    <Dragger name="photo" beforeUpload={handlePhotoUpload}>
+                      <Button
+                        className="form-upload-btn"
+                        icon={<UploadOutlined />}
+                      >
                         Seleccionar Foto
                       </Button>
-                    </Upload>
+                    </Dragger>
                     {selectedDoctor?.photo?.url && (
                       <img
                         src={selectedDoctor.photo.url}

@@ -6,6 +6,7 @@ import { Patient } from "../models/patientSchema.js";
 import { generateToken } from "../utils/jwtToken.js";
 import { Cita } from "../models/citaSchema.js";
 import cloudinary from "cloudinary";
+import bcrypt from "bcrypt";
 
 /* 
 Iniciar Sesion
@@ -27,13 +28,12 @@ export const login = async (req, res, next) => {
       return next(new ErrorHandler("Admin no encontrado", 400));
     }
 
-    // // Verificar Contraseña
-    // const isMatch = await bcrypt.compare(password, patient.password);
-
-    // Verificar la contraseña sin encriptar
-    if (password !== admin.password) {
+    //  Verificar Contraseña
+    const isMatch = await admin.comparePassword(password);
+    if (!isMatch) {
       return res.status(400).json({ message: "Credenciales incorrectas" });
     }
+
     generateToken(
       admin,
       "Incio de Sesio Exitoso, credenciales melas",
@@ -47,66 +47,68 @@ export const login = async (req, res, next) => {
 
 export const createAdmin = async (req, res, next) => {
   const { nombre, email, password } = req.body;
+
   try {
-    //req.files objeto que contiene los archivos enviados en una solicitud
-    const { photo } = req.files || {}; //Extraemos el photo
+    const { photo } = req.files || {}; // Extraemos photo si existe
 
-    const allowedFormats = ["image/png", "image/jpeg", "image/webp"]; //Formatos permitidos
+    // Formatos permitidos
+    const allowedFormats = ["image/png", "image/jpeg", "image/webp"];
 
-    /*
-    Si no existe la photo o  si la photo no incluye el tipo de formatos permitidos entonces el manejador de error hace lo siguigiente: si foto no exste entonces foto del dr requerido de otro modo (si la photo no incluye el tipo de formatos permitidos) entonces formtato archivo no sportado, err 400
-    */
-    if (!photo || !allowedFormats.includes(photo.mimetype)) {
+    // Validar campos requeridos (nombre, email, password)
+    if (!nombre || !email || !password) {
       return next(
         new ErrorHandler(
-          !photo
-            ? "Foto del doctor requerida!"
-            : "Formato de archivo no soportado!",
+          "Por favor, llena todos los campos del formulario",
           400
         )
       );
     }
 
-    if (!nombre || !email || !password || !photo) {
-      return next(
-        new ErrorHandler("Porfavor llena todos los campos del form!!", 400)
-      );
-    }
-
-    //Verificar si esta registrado
+    // Verificar si ya está registrado
     const isRegistered = await Admin.findOne({ email });
     if (isRegistered) {
       return next(new ErrorHandler("Administrador con este email ya existe"));
     }
 
-    //Sube el archivo temporal de photo
-    const cloudinaryResponse = await cloudinary.uploader.upload(
-      photo.tempFilePath
-    );
+    // Inicializamos el objeto para la photo con valores por defecto
+    let photoData = null;
 
-    //Si no se obtiene la respuesta o ocurrre un error entonces...
-    if (!cloudinaryResponse || cloudinaryResponse.error) {
-      console.error(
-        "Error cloudinary:",
-        cloudinaryResponse.error || "Error desconocido cloudinary"
+    // Si la photo existe, validar formato y subirla a Cloudinary
+    if (photo) {
+      if (!allowedFormats.includes(photo.mimetype)) {
+        return next(new ErrorHandler("Formato de archivo no soportado!", 400));
+      }
+
+      // Subir la foto a Cloudinary
+      const cloudinaryResponse = await cloudinary.uploader.upload(
+        photo.tempFilePath
       );
-      return next(
-        new ErrorHandler(
-          "Fallo al subir la imagen del doctor a cloudinary",
-          500
-        )
-      );
+
+      if (!cloudinaryResponse || cloudinaryResponse.error) {
+        console.error(
+          "Error en Cloudinary:",
+          cloudinaryResponse.error || "Error desconocido en Cloudinary"
+        );
+        return next(
+          new ErrorHandler("Fallo al subir la imagen a Cloudinary", 500)
+        );
+      }
+
+      // Guardar datos de la photo si se subió correctamente
+      photoData = {
+        public_id: cloudinaryResponse.public_id,
+        url: cloudinaryResponse.secure_url,
+      };
     }
 
+    // Crear el admin con la photo si existe, si no, simplemente sin la photo
     const admin = await Admin.create({
       nombre,
       email,
       password,
-      photo: {
-        public_id: cloudinaryResponse.public_id,
-        url: cloudinaryResponse.secure_url,
-      },
+      ...(photoData && { photo: photoData }), // Solo incluir la photo si existe
     });
+
     generateToken(admin, "Admin creado correctamente", 200, res);
   } catch (error) {
     next(error);
@@ -124,39 +126,30 @@ export const createDoctor = async (req, res, next) => {
       email,
       password,
       numero_licencia,
-    } = req.body; //Ectraer Valores
+    } = req.body; // Extraer valores
 
-    const { photo, licencia } = req.files; //Extraemos los archivos
+    const { photo, licencia } = req.files || {}; // Extraemos los archivos
 
     const allowedFormats = [
       "image/png",
       "image/jpeg",
       "image/webp",
       "image/jpg",
-    ]; //Formatos permitidos
+    ]; // Formatos permitidos
 
-    //Validaciones para los archivos foto y documento
-    if (!photo || !allowedFormats.includes(photo.mimetype)) {
-      return next(
-        new ErrorHandler(
-          !photo
-            ? "Foto del doctor requerida!"
-            : "Formato de archivo no soportado!",
-          400
-        )
-      );
-    }
+    // Validaciones para los archivos licencia
     if (!licencia || !allowedFormats.includes(licencia.mimetype)) {
       return next(
         new ErrorHandler(
           !licencia
             ? "Licencia del doctor requerida!"
-            : "Formato de archivo no soportado!",
+            : "Formato de archivo no soportado para la licencia!",
           400
         )
       );
     }
 
+    // Validar campos requeridos
     if (
       !nombre ||
       !apellido_pat ||
@@ -168,36 +161,17 @@ export const createDoctor = async (req, res, next) => {
       !numero_licencia
     ) {
       return next(
-        new ErrorHandler("Porfavor llena todos los campos del form!!", 400)
+        new ErrorHandler("Por favor llena todos los campos del form!!", 400)
       );
     }
 
-    //Verificar si esta registrado
+    // Verificar si está registrado
     const isRegistered = await Doctor.findOne({ email });
     if (isRegistered) {
       return next(new ErrorHandler("Doctor con este email ya existe"));
     }
 
-    //Sube el archivo temporal de photo acloudinary
-    const photoCloudinaryResponse = await cloudinary.uploader.upload(
-      photo.tempFilePath
-    );
-
-    //Si no se obtiene la respuesta o ocurrre un error entonces...
-    if (!photoCloudinaryResponse || photoCloudinaryResponse.error) {
-      console.error(
-        "Error cloudinary:",
-        photoCloudinaryResponse.error || "Error desconocido cloudinary"
-      );
-      return next(
-        new ErrorHandler(
-          "Fallo al subir la foto del paciente a cloudinary",
-          500
-        )
-      );
-    }
-
-    //Sube el archivo temporal de document acloudinary
+    // Subir el archivo temporal de licencia a Cloudinary
     const licenseCloudinaryResponse = await cloudinary.uploader.upload(
       licencia.tempFilePath
     );
@@ -209,20 +183,50 @@ export const createDoctor = async (req, res, next) => {
       );
       return next(
         new ErrorHandler(
-          "Fallo al subir el documento de ID del paciente a cloudinary",
+          "Fallo al subir el documento de ID del paciente a Cloudinary",
           500
         )
       );
     }
 
+    // Subir la foto si se proporcionó
+    let photoData = null;
+    if (photo) {
+      if (!allowedFormats.includes(photo.mimetype)) {
+        return next(
+          new ErrorHandler("Formato de archivo no soportado para la foto!", 400)
+        );
+      }
+
+      const photoCloudinaryResponse = await cloudinary.uploader.upload(
+        photo.tempFilePath
+      );
+
+      if (!photoCloudinaryResponse || photoCloudinaryResponse.error) {
+        console.error(
+          "Error cloudinary:",
+          photoCloudinaryResponse.error || "Error desconocido cloudinary"
+        );
+        return next(
+          new ErrorHandler(
+            "Fallo al subir la foto del doctor a Cloudinary",
+            500
+          )
+        );
+      }
+
+      photoData = {
+        public_id: photoCloudinaryResponse.public_id,
+        url: photoCloudinaryResponse.secure_url,
+      };
+    }
+
+    // Crear el doctor
     const doctor = await Doctor.create({
       nombre,
       apellido_pat,
       apellido_mat,
-      photo: {
-        public_id: photoCloudinaryResponse.public_id,
-        url: photoCloudinaryResponse.secure_url,
-      },
+      photo: photoData, // Se puede guardar como null si no se proporcionó
       especialidad,
       telefono,
       email,
@@ -233,9 +237,10 @@ export const createDoctor = async (req, res, next) => {
         url: licenseCloudinaryResponse.secure_url,
       },
     });
+
     res.status(200).json({
-      succes: true,
-      message: "DOCTOR creado correctamente by Admin!!",
+      success: true,
+      message: "DOCTOR creado correctamente por Admin!!",
       doctor,
     });
   } catch (error) {
@@ -301,7 +306,7 @@ export const EditProfile = async (req, res, next) => {
     const adminId = req.user.id; // ID del admin autenticado
 
     // Obtener los datos que el admin desea actualizar
-    const { email } = req.body;
+    const { email, password } = req.body;
 
     const { photo } = req.files || {};
 
@@ -352,6 +357,7 @@ export const EditProfile = async (req, res, next) => {
 
     // Actualizar los campos del admin
     admin.email = email || admin.email;
+    admin.password = password || admin.password;
 
     // Guardar los cambios
     await admin.save();

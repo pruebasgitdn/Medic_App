@@ -111,8 +111,16 @@ const Register = () => {
         console.log(`${key}: ${value}`);
       }
     } catch (error) {
-      message.error("Error al registrar  perfil");
-      console.log("Error al actualizar el perfil: ", error);
+      if (
+        error.response &&
+        error.response.data &&
+        error.response.data.message
+      ) {
+        message.error(error.response.data.message);
+      } else {
+        message.error("Error en el registro");
+      }
+      console.error("Error:", error);
     }
 
     console.log(values);
@@ -174,17 +182,7 @@ const Register = () => {
 
               {/* INPUT FOTO */}
               <Col xs={24} md={12}>
-                <Form.Item
-                  label="Foto"
-                  className="form-item"
-                  name="photo"
-                  rules={[
-                    {
-                      required: true,
-                      message: "¡Por favor sube tu archivo / documento !",
-                    },
-                  ]}
-                >
+                <Form.Item label="Foto" className="form-item" name="photo">
                   <Dragger beforeUpload={handleUploadPhoto} name="photo">
                     <Button
                       className="form-upload-btn"

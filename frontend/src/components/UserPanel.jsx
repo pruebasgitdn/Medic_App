@@ -32,11 +32,6 @@ const UserPanel = () => {
           <Menu.Item key="4" icon={<EyeOutlined />}>
             <Link to="appointments">Ver Citas</Link>
           </Menu.Item>
-          {/* Otras opciones del menú */}
-          <Menu.Item key="6" icon={<NotificationOutlined />}>
-            Notificaciones
-          </Menu.Item>
-
           <Menu.Item key="8" icon={<ToolOutlined />}>
             <Link to="support">Solicitar Soporte</Link>
           </Menu.Item>

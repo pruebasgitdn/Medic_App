@@ -183,13 +183,12 @@ export const login = async (req, res, next) => {
       return next(new ErrorHandler("Doctor no encontrado", 400));
     }
 
-    // // Verificar Contraseña
-    // const isMatch = await bcrypt.compare(password, patient.password);
-
-    // Verificar la contraseña sin encriptar
-    if (password !== doctor.password) {
+    // Verificar Contraseña
+    const isMatch = await doctor.comparePassword(password);
+    if (!isMatch) {
       return res.status(400).json({ message: "Credenciales incorrectas" });
     }
+
     generateToken(
       doctor,
       "Incio de Sesio Exitoso, credenciales melas",
@@ -282,13 +281,11 @@ export const deleteAllergie = async (req, res) => {
     patient.alergias.splice(index, 1);
     await patient.save();
 
-    res
-      .status(200)
-      .json({
-        success: true,
-        message: "Alergia eliminada correctamente",
-        alergias: patient.alergias,
-      });
+    res.status(200).json({
+      success: true,
+      message: "Alergia eliminada correctamente",
+      alergias: patient.alergias,
+    });
   } catch (error) {
     res
       .status(500)

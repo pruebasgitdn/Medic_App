@@ -22,11 +22,9 @@ const adminSchema = new mongoose.Schema({
   photo: {
     public_id: {
       type: String,
-      required: [true, "Ingresa la foto."], // Mensaje de error personalizado
     },
     url: {
       type: String,
-      required: [true, "Ingresa la URL de la foto."], // Mensaje de error personalizado
     },
   },
   role: {
@@ -48,7 +46,7 @@ adminSchema.pre("save", async function (next) {
 });
 
 //Comparar contraseñas hasheadas
-adminSchema.methods.comaprePassword = async function (enteredPassword) {
+adminSchema.methods.comparePassword = async function (enteredPassword) {
   return await bcrypt.compare(enteredPassword, this.password);
 };
 

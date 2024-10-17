@@ -55,7 +55,7 @@ const DoctorProfile = () => {
           </div>
           {/* Botones de Acciones */}
           <div className="card_btn_user">
-            <Link to="/userpanel/history">
+            <Link to="/doctorpanel/history">
               <Button
                 type="primary"
                 icon={<HistoryOutlined />}

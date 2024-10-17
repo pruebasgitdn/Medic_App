@@ -10,6 +10,7 @@ import {
   Col,
   Card,
   Modal,
+  List,
 } from "antd";
 import { UploadOutlined } from "@ant-design/icons";
 import { useNavigate } from "react-router-dom";
@@ -172,54 +173,101 @@ const PatientSupport = () => {
           <Col span={12}>
             <h3>Solicitudes Pendientes</h3>
             {pendientes.length > 0 ? (
-              pendientes.map((p) => (
-                <>
-                  <Card key={p.id} className="colgap">
+              <List
+                itemLayout="vertical"
+                size="large"
+                pagination={{
+                  onChange: (page) => {
+                    console.log(page);
+                  },
+                  pageSize: 10,
+                }}
+                dataSource={pendientes}
+                renderItem={(pendiente) => (
+                  <Card key={pendiente.id} className="colgap">
                     <p>
                       <b>Asunto: </b>
-                      {p.asunto}
+                      {pendiente.asunto}
                     </p>
                     <p>
                       <b>Descripcion: </b>
-                      {p.description}
+                      {pendiente.description}
                     </p>
+                    <div id="div_img_supp">
+                      {pendiente?.file?.url ? (
+                        <>
+                          <img
+                            src={pendiente?.file?.url}
+                            id="img_supp"
+                            alt=""
+                          />
+                        </>
+                      ) : (
+                        <>
+                          <p className="nooverflow" id="no_img_supp">
+                            No se proporcionó la imagen.
+                          </p>
+                        </>
+                      )}
+                    </div>
                   </Card>
-                </>
-              ))
+                )}
+              />
             ) : (
-              <p>No hay solicitudes pendientes</p>
+              <p className="nooverflow">No hay solicitudes pendientes</p>
             )}
           </Col>
           <Col span={12}>
             <h3>Solicitudes Resueltas</h3>
             {resueltos.length > 0 ? (
-              resueltos.map((r) => (
-                <Card key={r.id} className="colgap">
-                  <p>
-                    <b>Asunto: </b>
-                    {r.asunto}
-                  </p>
-                  <p>
-                    <b>Descripcion: </b>
-                    {r.description}
-                  </p>
-                  <hr />
-                  <p>
-                    <b>Respuesta: </b>
-                    <br />
-                    {r.respuestaAdmin}
-                  </p>
-                </Card>
-              ))
+              <List
+                itemLayout="vertical"
+                size="large"
+                pagination={{
+                  onChange: (page) => {
+                    console.log(page);
+                  },
+                  pageSize: 10,
+                }}
+                dataSource={resueltos}
+                renderItem={(resuelto) => (
+                  <Card key={resuelto.id} className="colgap">
+                    <p>
+                      <b>Asunto: </b>
+                      {resuelto.asunto}
+                    </p>
+                    <p>
+                      <b>Descripcion: </b>
+                      {resuelto.description}
+                    </p>
+                    <hr />
+                    <p>
+                      <b>Respuesta: </b>
+                      <br />
+                      {resuelto.respuestaAdmin}
+                    </p>
+                    <div id="div_img_supp">
+                      {resuelto?.file?.url ? (
+                        <>
+                          <img src={resuelto?.file?.url} id="img_supp" alt="" />
+                        </>
+                      ) : (
+                        <>
+                          <p className="nooverflow" id="no_img_supp">
+                            No se proporcionó la imagen.
+                          </p>
+                        </>
+                      )}
+                    </div>
+                  </Card>
+                )}
+              />
             ) : (
-              <p>No hay solicitudes resueltas</p>
+              <p className="nooverflow">No hay solicitudes resueltas</p>
             )}
           </Col>
         </Row>
       </div>
-      {/* Mostrar solicitudes pendientes */}
-
-      {/* Mostrar solicitudes resueltas */}
     </div>
   );
 };

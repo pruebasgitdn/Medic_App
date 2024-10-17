@@ -48,7 +48,15 @@ const Login = () => {
         navigate("/userpanel/profile");
       }
     } catch (error) {
-      message.error("Error en el inicio de sesión");
+      if (
+        error.response &&
+        error.response.data &&
+        error.response.data.message
+      ) {
+        message.error(error.response.data.message);
+      } else {
+        message.error("Error en el inicio de sesión");
+      }
       console.error("Error:", error);
     }
   };

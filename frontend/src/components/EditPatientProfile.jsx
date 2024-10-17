@@ -18,8 +18,6 @@ import { UploadOutlined } from "@ant-design/icons";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 
-const { Option } = Select;
-const { TextArea } = Input;
 const EditPatientProfile = () => {
   const { user, setUser } = useContext(Context);
   const [form] = Form.useForm();
@@ -28,6 +26,9 @@ const EditPatientProfile = () => {
   const [photo, setPhoto] = useState(null); // Foto del paciente
   const [document, setDocument] = useState(null); // Dcoumento del paciente
   const [emailError, setEmailError] = useState("");
+  const { Dragger } = Upload;
+  const { Option } = Select;
+  const { TextArea } = Input;
 
   // Función para manejar el archivo de foto
   const handlePhotoUpload = (file) => {
@@ -116,7 +117,7 @@ const EditPatientProfile = () => {
 
   return (
     <Row justify="center" align="middle" style={{ marginTop: "20px" }}>
-      <Col xs={24} sm={20} md={16} lg={12}>
+      <Col xs={24} sm={22} md={18} lg={16}>
         <Card title="Editar Perfil">
           <Form
             form={form}
@@ -136,62 +137,74 @@ const EditPatientProfile = () => {
               <Input placeholder="Nombre" />
             </Form.Item>
 
-            {/* Apellido Paterno */}
-            <Form.Item
-              name="apellido_pat"
-              label="Apellido Paterno"
-              className="form-item"
-              rules={[{ min: 3, message: "Apellido mayor a 3 digitos" }]}
-            >
-              <Input placeholder="Apellido Paterno" />
-            </Form.Item>
+            <Row>
+              <Col xs={12} sm={12} md={12} lg={12}>
+                {/* Apellido Paterno */}
+                <Form.Item
+                  name="apellido_pat"
+                  label="Apellido Paterno"
+                  className="form-item"
+                  rules={[{ min: 3, message: "Apellido mayor a 3 digitos" }]}
+                >
+                  <Input placeholder="Apellido Paterno" />
+                </Form.Item>
+              </Col>
 
-            {/* Apellido Materno */}
-            <Form.Item
-              name="apellido_mat"
-              label="Apellido Materno"
-              className="form-item"
-              rules={[{ min: 3, message: "Apellido mayor a 3 digitos" }]}
-            >
-              <Input placeholder="Apellido Materno" />
-            </Form.Item>
+              <Col xs={12} sm={12} md={12} lg={12}>
+                {/* Apellido Materno */}
+                <Form.Item
+                  name="apellido_mat"
+                  label="Apellido Materno"
+                  className="form-item"
+                  rules={[{ min: 3, message: "Apellido mayor a 3 digitos" }]}
+                >
+                  <Input placeholder="Apellido Materno" />
+                </Form.Item>
+              </Col>
+            </Row>
 
-            {/* Email */}
-            <Form.Item
-              name="email"
-              label="Email"
-              className="form-item"
-              rules={[{ type: "email", message: "Email valido" }]}
-            >
-              <Input placeholder="Email" />
-            </Form.Item>
-            {emailError &&
-            emailError === "Email ya se encuentra en uso / registrado" ? (
-              <>
-                <p className="error_form">{emailError}</p>
-              </>
-            ) : (
-              <></>
-            )}
+            <Row>
+              <Col xs={12} sm={12} md={12} lg={12}>
+                {/* Email */}
+                <Form.Item
+                  name="email"
+                  label="Email"
+                  className="form-item"
+                  rules={[{ type: "email", message: "Email valido" }]}
+                >
+                  <Input placeholder="Email" />
+                </Form.Item>
+                {emailError &&
+                emailError === "Email ya se encuentra en uso / registrado" ? (
+                  <>
+                    <p className="error_form">{emailError}</p>
+                  </>
+                ) : (
+                  <></>
+                )}
+              </Col>
 
-            {/* Teléfono */}
-            <Form.Item
-              name="telefono"
-              label="Teléfono"
-              className="form-item"
-              rules={[
-                { min: 10, message: "Minimo 10 digitos" },
-                {
-                  max: 14,
-                  message: "Maximo 11 digitos",
-                },
-              ]}
-            >
-              <PhoneInput
-                defaultCountry={"CO"}
-                placeholder="Ingresa numero de telefono"
-              />
-            </Form.Item>
+              <Col xs={12} sm={12} md={12} lg={12}>
+                {/* Teléfono */}
+                <Form.Item
+                  name="telefono"
+                  label="Teléfono"
+                  className="form-item"
+                  rules={[
+                    { min: 10, message: "Minimo 10 digitos" },
+                    {
+                      max: 14,
+                      message: "Maximo 11 digitos",
+                    },
+                  ]}
+                >
+                  <PhoneInput
+                    defaultCountry={"CO"}
+                    placeholder="Ingresa numero de telefono"
+                  />
+                </Form.Item>
+              </Col>
+            </Row>
 
             {/* Dirección */}
             <Form.Item
@@ -230,14 +243,17 @@ const EditPatientProfile = () => {
                     label="Documento de Identidad"
                     className="form-item"
                   >
-                    <Upload
+                    <Dragger
                       beforeUpload={handleDocumentUpload}
-                      showUploadList={false}
+                      name="document_id"
                     >
-                      <Button icon={<UploadOutlined />}>
+                      <Button
+                        className="form-upload-btn"
+                        icon={<UploadOutlined />}
+                      >
                         Seleccionar Documento
                       </Button>
-                    </Upload>
+                    </Dragger>
                     {user?.document_id?.url && (
                       <img
                         src={user.document_id.url}
@@ -249,14 +265,14 @@ const EditPatientProfile = () => {
                 </Col>
                 <Col xs={12} sm={12} md={12} lg={12}>
                   <Form.Item name="photo" label="Foto" className="form-item">
-                    <Upload
-                      beforeUpload={handlePhotoUpload}
-                      showUploadList={false}
-                    >
-                      <Button icon={<UploadOutlined />}>
+                    <Dragger beforeUpload={handlePhotoUpload} name="photo">
+                      <Button
+                        className="form-upload-btn"
+                        icon={<UploadOutlined />}
+                      >
                         Seleccionar Foto
                       </Button>
-                    </Upload>
+                    </Dragger>
                     {user?.photo?.url && (
                       <img
                         src={user.photo.url}

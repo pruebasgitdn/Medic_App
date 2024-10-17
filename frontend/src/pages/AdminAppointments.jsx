@@ -41,7 +41,7 @@ const AdminAppointments = () => {
       setFilteredAppointments(response.data.citas);
       setLoading(false);
     } catch (error) {
-      message.error("Error al cargar las citas.");
+      message.error("No se encontraron citas.");
       setLoading(false);
       console.log(error);
     }

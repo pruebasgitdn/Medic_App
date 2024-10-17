@@ -13,7 +13,6 @@ import {
 } from "antd";
 import { Context } from "../main";
 import { UploadOutlined } from "@ant-design/icons";
-// import { UploadOutlined } from "@ant-design/icons";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 
@@ -24,11 +23,12 @@ const EditAdminProfile = () => {
   const [loading, setLoading] = useState(false);
   const [photo, setPhoto] = useState(null); // Foto del paciente
   const [emailError, setEmailError] = useState("");
+  const { Dragger } = Upload;
 
   useEffect(() => {
-    //Del manejo del form del useForm de ant, nos permite rellenar los inputs con el nombre del input y valor
     form.setFieldsValue({
       email: user?.email,
+      password: user?.password,
     });
   }, [user, form]);
 
@@ -40,8 +40,6 @@ const EditAdminProfile = () => {
   const onFinish = async (values) => {
     try {
       setLoading(true);
-
-      //FormData para manejo de archivos y agrupacion
       const formData = new FormData();
       formData.append("email", values?.email);
 
@@ -49,12 +47,16 @@ const EditAdminProfile = () => {
         formData.append("photo", photo);
       }
 
-      // Enviar los datos al servidor
+      // Solo añadir la nueva contraseña si se proporciona
+      if (values.password) {
+        formData.append("password", values.password);
+      }
+
       const response = await axios.put(
         "http://localhost:4000/api/admin/editprofile",
         formData,
         {
-          withCredentials: true, // Para asegurarse de que las cookies se manejen correctamente
+          withCredentials: true,
           headers: {
             "Content-Type": "multipart/form-data",
           },
@@ -64,15 +66,13 @@ const EditAdminProfile = () => {
       message.success("Datos actualizados exitosamente");
       setLoading(false);
       setUser(response.data.admin);
-      navigate("/adminpanel/profile"); // Redirigir a la página
+      navigate("/adminpanel/profile");
     } catch (error) {
       setLoading(false);
-
       console.error("Error al actualizar el perfil:", error);
       if (error.response && error.response.data) {
         const { message } = error.response.data;
 
-        // Verificar si el mensaje es el de email duplicado
         if (message === "Email ya se encuentra en uso / registrado") {
           setEmailError("Email ya se encuentra en uso / registrado");
         } else {
@@ -84,52 +84,59 @@ const EditAdminProfile = () => {
     }
     console.log(values);
   };
+
   return (
     <Row justify="center" align="middle" style={{ marginTop: "20px" }}>
       <Col xs={24} sm={20} md={16} lg={12}>
         <Card title="Editar Perfil">
-          <Form
-            form={form}
-            layout="vertical"
-            initialValues={{
-              genero: "HOMBRE", // Valor por defecto
-            }}
-            onFinish={onFinish}
-          >
+          <Form form={form} layout="vertical" onFinish={onFinish}>
             {/* Email */}
             <Form.Item
               name="email"
               label="Email"
               className="form-item"
-              rules={[{ type: "email", message: "Email valido" }]}
+              rules={[{ type: "email", message: "Email válido" }]}
             >
               <Input placeholder="Email" />
             </Form.Item>
-            {emailError &&
-            emailError === "Email ya se encuentra en uso / registrado" ? (
-              <>
-                <p className="error_form">{emailError}</p>
-              </>
-            ) : (
-              <></>
-            )}
+            {emailError && <p className="error_form">{emailError}</p>}
 
-            {/* foto */}
+            <Form.Item
+              name="password"
+              label="Contraseña Actual"
+              rules={[
+                {
+                  required: true,
+                  message: "Por favor, ingresa tu contraseña actual",
+                },
+              ]}
+            >
+              <Input.Password placeholder="Contraseña Actual" />
+            </Form.Item>
 
+            {/* Foto */}
             <div className="login-container">
-              <Form.Item name="photo" label="Foto" className="form-item">
-                <Upload beforeUpload={handlePhotoUpload} showUploadList={false}>
-                  <Button icon={<UploadOutlined />}>Seleccionar Foto</Button>
-                </Upload>
-                {user?.photo?.url && (
-                  <img
-                    src={user.photo.url}
-                    alt="Foto"
-                    style={{ width: "80%", marginTop: "10px" }} // Estilo opcional
-                  />
-                )}
-              </Form.Item>
+              <Col xs={24} md={24} lg={24}>
+                <Form.Item name="photo" label="Foto" className="form-item">
+                  <Dragger name="photo" beforeUpload={handlePhotoUpload}>
+                    <Button
+                      className="form-upload-btn"
+                      icon={<UploadOutlined />}
+                    >
+                      Seleccionar Foto
+                    </Button>
+                  </Dragger>
+                  {user?.photo?.url && (
+                    <img
+                      src={user.photo.url}
+                      alt="Foto"
+                      style={{ width: "80%", marginTop: "10px" }}
+                    />
+                  )}
+                </Form.Item>
+              </Col>
             </div>
+
             {/* Botón de enviar */}
             <div className="admeditbnt">
               <Button type="primary" htmlType="submit" loading={loading} block>
@@ -137,8 +144,7 @@ const EditAdminProfile = () => {
               </Button>
 
               <Link to="/adminpanel/profile">
-                {" "}
-                <Button block htmlType="submit" loading={loading}>
+                <Button block htmlType="button" loading={loading}>
                   Cancelar
                 </Button>
               </Link>

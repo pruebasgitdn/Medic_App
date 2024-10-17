@@ -143,7 +143,7 @@ patientSchema.pre("save", async function (next) {
 });
 
 //Comparar contraseñas hasheadas
-patientSchema.methods.comaprePassword = async function (enteredPassword) {
+patientSchema.methods.comparePassword = async function (enteredPassword) {
   return await bcrypt.compare(enteredPassword, this.password);
 };
 

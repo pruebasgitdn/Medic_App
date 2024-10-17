@@ -2,12 +2,13 @@ import ErrorHandler from "../middlewares/errorMiddleware.js";
 import { Support } from "../models/supportSchema.js";
 import { Doctor } from "../models/doctorSchema.js";
 import { Patient } from "../models/patientSchema.js";
+import cloudinary from "cloudinary";
 
 // Crear soporte desde paciente
 export const createSupport = async (req, res, next) => {
   try {
     const { asunto, description } = req.body;
-    const file = req.files;
+    const { file } = req.files || {};
 
     if (!asunto || !description) {
       return next(
@@ -20,10 +21,23 @@ export const createSupport = async (req, res, next) => {
       return next(new ErrorHandler("Paciente no encontrado.", 404));
     }
 
+    //si la hay
+    let fileData = null;
+    if (file) {
+      const uploadResult = await cloudinary.uploader.upload(file.tempFilePath);
+      if (!uploadResult || uploadResult.error) {
+        return next(new ErrorHandler("Error al subir archivo", 500));
+      }
+      fileData = {
+        public_id: uploadResult.public_id,
+        url: uploadResult.secure_url,
+      };
+    }
+
     const support = await Support.create({
       usuario: patient._id,
       tipoUsuario: "Paciente",
-      file,
+      file: fileData,
       asunto,
       description,
       estado: "PENDIENTE",
@@ -43,7 +57,7 @@ export const createSupport = async (req, res, next) => {
 export const DocCreateSupport = async (req, res, next) => {
   try {
     const { asunto, description } = req.body;
-    const file = req.files;
+    const { file } = req.files || {};
 
     if (!asunto || !description) {
       return next(
@@ -56,10 +70,23 @@ export const DocCreateSupport = async (req, res, next) => {
       return next(new ErrorHandler("Doctor no encontrado.", 404));
     }
 
+    //si la hay
+    let fileData = null;
+    if (file) {
+      const uploadResult = await cloudinary.uploader.upload(file.tempFilePath);
+      if (!uploadResult || uploadResult.error) {
+        return next(new ErrorHandler("Error al subir archivo", 500));
+      }
+      fileData = {
+        public_id: uploadResult.public_id,
+        url: uploadResult.secure_url,
+      };
+    }
+
     const support = await Support.create({
       usuario: doctor._id,
       tipoUsuario: "Doctor",
-      file,
+      file: fileData,
       asunto,
       description,
       estado: "PENDIENTE",

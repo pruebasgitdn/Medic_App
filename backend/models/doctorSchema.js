@@ -21,11 +21,9 @@ const doctorSchema = new mongoose.Schema({
   photo: {
     public_id: {
       type: String,
-      required: [true, "Ingresa la foto."], 
     },
     url: {
       type: String,
-      required: [true, "Ingresa la URL de la foto."], 
     },
   },
   especialidad: {
@@ -112,7 +110,7 @@ doctorSchema.pre("save", async function (next) {
 });
 
 //Comparar contraseñas hasheadas
-doctorSchema.methods.comaprePassword = async function (enteredPassword) {
+doctorSchema.methods.comparePassword = async function (enteredPassword) {
   return await bcrypt.compare(enteredPassword, this.password);
 };
 

@@ -27,7 +27,20 @@
 #w80 {
   width: 80%;
 }
+#div_img_supp {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+#img_supp {
+  width: 250px;
+  border-radius: 8px;
+}
 
+#no_img_supp {
+  font-size: small;
+  font-style: italic;
+}
 .center {
   display: flex;
   justify-content: center;
@@ -573,6 +586,9 @@ h4 {
 }
 .btns_flex div {
   flex-wrap: wrap;
+}
+.flex_col {
+  margin-left: 20px;
 }
 .doctorpatient_img {
   display: flex;

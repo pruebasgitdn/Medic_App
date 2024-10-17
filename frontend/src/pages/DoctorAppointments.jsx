@@ -45,7 +45,7 @@ const DoctorAppointments = () => {
         }
       } catch (error) {
         console.log(error);
-        message.error("Error al cargar las citas.");
+        message.error("No se encontraron citas.");
       }
     };
     fetchAppointment();
@@ -129,91 +129,93 @@ const DoctorAppointments = () => {
                 title={`Paciente: ${appointment.idPaciente.nombre} ${appointment.idPaciente.apellido_pat}`}
               >
                 <Row>
-                  <Col span={8}>
+                  <Col span={12}>
                     <div className="doctorpatient_img">
                       <img
                         src={appointment.idPaciente.photo.url}
                         alt="patient"
                       />
+                      <div className="flex_col">
+                        <p>
+                          <strong>Estado:</strong> {appointment.estado}
+                        </p>
+                        <p>
+                          <strong>Fecha:</strong>{" "}
+                          {new Date(appointment.fecha).toLocaleDateString()}
+                        </p>
+                        <p>
+                          <strong>Hora:</strong>{" "}
+                          {new Date(appointment.fecha).toLocaleTimeString([], {
+                            hour: "2-digit",
+                            minute: "2-digit",
+                          })}
+                        </p>
+                        <p>
+                          <strong>Motivo:</strong> {appointment.motivo}
+                        </p>
+                        <p>
+                          <strong>Detalles Adicionales:</strong>
+                          <br />
+                          {appointment?.detallesAdicionales}
+                        </p>
+                      </div>
                     </div>
                   </Col>
-                  <Col span={16}>
-                    <p>
-                      <strong>Estado:</strong> {appointment.estado}
-                    </p>
-                    <p>
-                      <strong>Fecha:</strong>{" "}
-                      {new Date(appointment.fecha).toLocaleDateString()}
-                    </p>
-                    <p>
-                      <strong>Hora:</strong>{" "}
-                      {new Date(appointment.fecha).toLocaleTimeString([], {
-                        hour: "2-digit",
-                        minute: "2-digit",
-                      })}
-                    </p>
-                    <p>
-                      <strong>Motivo:</strong> {appointment.motivo}
-                    </p>
-                    <p>
-                      <strong>Detalles Adicionales:</strong>
-                      <br />
-                      {appointment?.detallesAdicionales}
-                    </p>
+                  <Col span={12}>
+                    <Form name="responsedr" form={form} onFinish={onFinish}>
+                      <Form.Item
+                        label="Diagnostico"
+                        className="form-item"
+                        rules={[
+                          {
+                            max: 150,
+                            required: true,
+                            message: "Requerido, y máximo 150 caracteres",
+                          },
+                        ]}
+                      >
+                        <TextArea
+                          rows={3}
+                          placeholder="Diagnosticar paciente"
+                          onChange={(e) =>
+                            setDetallesDiagnostico(e.target.value)
+                          }
+                        />
+                      </Form.Item>
+                      <Form.Item
+                        label="Recomendaciones"
+                        className="form-item"
+                        rules={[
+                          {
+                            max: 150,
+                            required: true,
+                            message: "Requerido, y máximo 150 caracteres",
+                          },
+                        ]}
+                      >
+                        <TextArea
+                          rows={3}
+                          placeholder="..."
+                          onChange={(e) => setRecomendaciones(e.target.value)}
+                        />
+                      </Form.Item>
+                      <div className="btns_responder">
+                        <Button
+                          block
+                          htmlType="submit"
+                          type="primary"
+                          className="btn_responder"
+                          onClick={() => getAppointmentId(appointment)}
+                        >
+                          Responder
+                        </Button>
+                        <Button danger type="primary" block>
+                          Cancelar Cita
+                        </Button>
+                      </div>
+                    </Form>
                   </Col>
                 </Row>
-
-                <hr />
-                <Form name="responsedr" form={form} onFinish={onFinish}>
-                  <Form.Item
-                    label="Diagnostico"
-                    className="form-item"
-                    rules={[
-                      {
-                        max: 150,
-                        required: true,
-                        message: "Requerido, y máximo 150 caracteres",
-                      },
-                    ]}
-                  >
-                    <TextArea
-                      rows={3}
-                      placeholder="Diagnosticar paciente"
-                      onChange={(e) => setDetallesDiagnostico(e.target.value)}
-                    />
-                  </Form.Item>
-                  <Form.Item
-                    label="Recomendaciones"
-                    className="form-item"
-                    rules={[
-                      {
-                        max: 150,
-                        required: true,
-                        message: "Requerido, y máximo 150 caracteres",
-                      },
-                    ]}
-                  >
-                    <TextArea
-                      rows={3}
-                      placeholder="..."
-                      onChange={(e) => setRecomendaciones(e.target.value)}
-                    />
-                  </Form.Item>
-                  <div className="btns_responder">
-                    <Button
-                      block
-                      htmlType="submit"
-                      type="primary"
-                      className="btn_responder"
-                      onClick={() => getAppointmentId(appointment)}
-                    >
-                      Responder
-                    </Button>
-                    <Button danger type="primary" block>
-                      Cancelar Cita
-                    </Button>
-                  </div>
-                </Form>
               </Card>
             </List.Item>
           )}

@@ -172,17 +172,7 @@ const AdminNewAdmin = () => {
 
               {/* INPUT FOTO */}
               <Col xs={24} md={12}>
-                <Form.Item
-                  label="Foto"
-                  className="form-item"
-                  name="photo"
-                  rules={[
-                    {
-                      required: true,
-                      message: "¡Por favor ingresa la foto!",
-                    },
-                  ]}
-                >
+                <Form.Item label="Foto" className="form-item" name="photo">
                   <Dragger name="photo" beforeUpload={handleUploadPhoto}>
                     <Button
                       className="form-upload-btn"

@@ -17,7 +17,7 @@ Ver Citas (pendientes)
 
 export const patientRegister = async (req, res, next) => {
   try {
-    //Coger valores
+    // Coger valores
     const {
       nombre,
       apellido_pat,
@@ -39,10 +39,9 @@ export const patientRegister = async (req, res, next) => {
       identificacion_url,
     } = req.body;
 
-    // const { photo } = req.files || {};
-    const { document_id, photo } = req.files;
-    //Extraemos los archivos
+    const { document_id, photo } = req.files || {}; // Extraemos los archivos
 
+    // Validar campos requeridos
     if (
       !nombre ||
       !dot ||
@@ -59,67 +58,87 @@ export const patientRegister = async (req, res, next) => {
       !identificacion_tipo
     ) {
       return next(
-        new ErrorHandler("Porfavor llena todos los campos del form!!", 400)
-      );
-    }
-
-    //Verificar si esta registrado
-    const isRegistered = await Patient.findOne({ email });
-    if (isRegistered) {
-      return next(new ErrorHandler("Paciente con este email ya existe"));
-    }
-
-    if (!document_id) {
-      return res.status(400).send("Por favor sube tu ID documento.");
-    }
-
-    //Sube el archivo temporal de photo acloudinary
-    const photoCloudinaryResponse = await cloudinary.uploader.upload(
-      photo.tempFilePath
-    );
-
-    //Si no se obtiene la respuesta o ocurrre un error entonces...
-    if (!photoCloudinaryResponse || photoCloudinaryResponse.error) {
-      console.error(
-        "Error cloudinary:",
-        photoCloudinaryResponse.error || "Error desconocido cloudinary"
-      );
-      return next(
         new ErrorHandler(
-          "Fallo al subir la foto del paciente a cloudinary",
-          500
+          "Por favor llena todos los campos del formulario!",
+          400
         )
       );
     }
 
-    //Sube el archivo temporal de document acloudinary
+    // Verificar si ya está registrado
+    const isRegistered = await Patient.findOne({ email });
+    if (isRegistered) {
+      return next(new ErrorHandler("Paciente con este email ya existe", 400));
+    }
+
+    // Validar que se suba el documento ID
+    if (!document_id) {
+      return next(new ErrorHandler("Sube tu documento de ID", 400));
+    }
+
+    // Subir el archivo temporal de document a Cloudinary
     const documentCloudinaryResponse = await cloudinary.uploader.upload(
       document_id.tempFilePath
     );
 
     if (!documentCloudinaryResponse || documentCloudinaryResponse.error) {
       console.error(
-        "Error cloudinary:",
-        documentCloudinaryResponse.error || "Error desconocido cloudinary"
+        "Error en Cloudinary:",
+        documentCloudinaryResponse.error || "Error desconocido en Cloudinary"
       );
       return next(
         new ErrorHandler(
-          "Fallo al subir el documento de ID del paciente a cloudinary",
+          "Fallo al subir el documento de ID del paciente a Cloudinary",
           500
         )
       );
     }
 
-    //Registrar paciente
+    // Inicializar el objeto para la foto
+    let photoData = null;
+
+    // Si la foto existe, validar formato y subirla a Cloudinary
+    if (photo) {
+      const allowedFormats = ["image/png", "image/jpeg", "image/webp"];
+
+      if (!allowedFormats.includes(photo.mimetype)) {
+        return next(
+          new ErrorHandler("Formato de archivo de la foto no soportado!", 400)
+        );
+      }
+
+      // Subir la foto a Cloudinary
+      const photoCloudinaryResponse = await cloudinary.uploader.upload(
+        photo.tempFilePath
+      );
+
+      if (!photoCloudinaryResponse || photoCloudinaryResponse.error) {
+        console.error(
+          "Error en Cloudinary:",
+          photoCloudinaryResponse.error || "Error desconocido en Cloudinary"
+        );
+        return next(
+          new ErrorHandler(
+            "Fallo al subir la foto del paciente a Cloudinary",
+            500
+          )
+        );
+      }
+
+      // Guardar datos de la foto si se subió correctamente
+      photoData = {
+        public_id: photoCloudinaryResponse.public_id,
+        url: photoCloudinaryResponse.secure_url,
+      };
+    }
+
+    // Registrar paciente
     const user = await Patient.create({
       nombre,
       apellido_pat,
       apellido_mat,
       dot,
-      photo: {
-        public_id: photoCloudinaryResponse.public_id,
-        url: photoCloudinaryResponse.secure_url,
-      },
+      ...(photoData && { photo: photoData }), // Solo incluir la foto si existe
       document_id: {
         public_id: documentCloudinaryResponse.public_id,
         url: documentCloudinaryResponse.secure_url,
@@ -155,13 +174,12 @@ export const login = async (req, res, next) => {
       return next(new ErrorHandler("Paciente no encontrado", 400));
     }
 
-    // // Verificar Contraseña
-    // const isMatch = await bcrypt.compare(password, patient.password);
-
-    // Verificar la contraseña sin encriptar
-    if (password !== patient.password) {
-      return res.status(400).json({ message: "Credenciales incorrectas" });
+    //Verificar Contraseña
+    const isMatch = await patient.comparePassword(password);
+    if (!isMatch) {
+      return next(new ErrorHandler("Credenciales incorrectas", 400));
     }
+
     generateToken(
       patient,
       "Incio de Sesio Exitoso, credenciales melas",

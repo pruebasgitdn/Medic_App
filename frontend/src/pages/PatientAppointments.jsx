@@ -1,7 +1,16 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import { Row, Col, Card, Alert, Button, message, Dropdown, Select } from "antd";
-import { DownOutlined } from "@ant-design/icons";
+import {
+  Row,
+  Col,
+  Card,
+  Alert,
+  Button,
+  message,
+  Dropdown,
+  Select,
+  List,
+} from "antd";
 const { Option } = Select;
 
 const PatientAppointments = () => {
@@ -166,41 +175,54 @@ const PatientAppointments = () => {
         </Select>
 
         {sortedRealizadas.length > 0 ? (
-          sortedRealizadas.map((cita, index) => (
-            <Card
-              key={index}
-              title={`Cita ${index + 1}`}
-              bordered={false}
-              className="card_adv"
-            >
-              <p>
-                <strong>Motivo:</strong> {cita.motivo}
-              </p>
-              <p>
-                <strong>Doctor:</strong>{" "}
-                {`${cita.idDoctor.nombre} ${cita.idDoctor.apellido_pat} ${cita.idDoctor.apellido_mat}`}
-              </p>
-              <p>
-                <strong>Especialidad del Doctor:</strong>{" "}
-                {cita.idDoctor.especialidad}
-              </p>
-              <p>
-                <strong>Fecha:</strong>{" "}
-                {new Date(cita.fecha).toLocaleDateString()}
-              </p>
-              <p>
-                <strong>Hora:</strong>{" "}
-                {new Date(cita.fecha).toLocaleTimeString()}
-              </p>
-              <p>
-                <strong>Detalles del Diagnóstico:</strong>{" "}
-                {cita.detallesDiagnostico}
-              </p>
-              <p>
-                <strong>Recomendaciones:</strong> {cita.recomendaciones}
-              </p>
-            </Card>
-          ))
+          <List
+            itemLayout="vertical"
+            size="large"
+            pagination={{
+              onChange: (page) => {
+                console.log(page);
+              },
+              pageSize: 10,
+            }}
+            dataSource={sortedRealizadas}
+            renderItem={(cita, index) => (
+              <List.Item key={cita._id}>
+                <Card
+                  key={index}
+                  title={`Cita ${index + 1}`}
+                  bordered={false}
+                  className="card_adv"
+                >
+                  <p>
+                    <strong>Motivo:</strong> {cita.motivo}
+                  </p>
+                  <p>
+                    <strong>Doctor:</strong>{" "}
+                    {`${cita.idDoctor.nombre} ${cita.idDoctor.apellido_pat} ${cita.idDoctor.apellido_mat}`}
+                  </p>
+                  <p>
+                    <strong>Especialidad del Doctor:</strong>{" "}
+                    {cita.idDoctor.especialidad}
+                  </p>
+                  <p>
+                    <strong>Fecha:</strong>{" "}
+                    {new Date(cita.fecha).toLocaleDateString()}
+                  </p>
+                  <p>
+                    <strong>Hora:</strong>{" "}
+                    {new Date(cita.fecha).toLocaleTimeString()}
+                  </p>
+                  <p>
+                    <strong>Detalles del Diagnóstico:</strong>{" "}
+                    {cita.detallesDiagnostico}
+                  </p>
+                  <p>
+                    <strong>Recomendaciones:</strong> {cita.recomendaciones}
+                  </p>
+                </Card>
+              </List.Item>
+            )}
+          />
         ) : (
           <Alert message="No tienes citas realizadas." type="info" />
         )}

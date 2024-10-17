@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
-import { Card, List, Spin, Alert, Dropdown, Button, Select } from "antd";
+import { Card, List, Spin, Alert, Select } from "antd";
 import axios from "axios";
-import { DownOutlined } from "@ant-design/icons";
 
 const { Option } = Select;
 
@@ -25,7 +24,7 @@ const PatientHistory = () => {
           }
         );
 
-        // Obtener respuesta de la petición
+        //respuesta de la petición
         const data = response.data;
 
         // Si es un éxito
@@ -78,8 +77,15 @@ const PatientHistory = () => {
           </Select>
 
           <List
-            grid={{ gutter: 16, column: 1 }} // Layout en una columna
             dataSource={sortedHistorial()}
+            itemLayout="vertical"
+            size="large"
+            pagination={{
+              onChange: (page) => {
+                console.log(page);
+              },
+              pageSize: 10,
+            }}
             renderItem={(reporte, index) => (
               <List.Item>
                 <Card title={`Reporte ${index + 1}`} className="card_adv">
