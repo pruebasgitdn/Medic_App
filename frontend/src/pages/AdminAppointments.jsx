@@ -9,11 +9,14 @@ import {
   Row,
   Col,
   Select,
+  Input,
+  Form,
 } from "antd";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 
 const { Option } = Select;
+const { TextArea } = Input;
 
 // http://localhost:4000/api/admin/appointments
 const AdminAppointments = () => {
@@ -24,6 +27,7 @@ const AdminAppointments = () => {
   const [filteredAppointments, setFilteredAppointments] = useState([]);
   const [state, setState] = useState("TODAS");
   const [order, setOrder] = useState("recent");
+  const [motivoCancelacion, setMotivoCancelacion] = useState("");
   const navigate = useNavigate();
 
   const fetchAppointments = async () => {
@@ -94,6 +98,41 @@ const AdminAppointments = () => {
 
   const handleOrderChange = (value) => {
     setOrder(value);
+  };
+
+  const nashe = async (id) => {
+    try {
+      setLoading(true);
+
+      if (!motivoCancelacion) {
+        message.error("Por favor, ingresa el motivo de la cancelación.");
+        setLoading(false);
+        return;
+      }
+
+      const response = await axios.put(
+        `http://localhost:4000/api/admin/appointment/cancel/${id}`,
+        { motivoCancelacion },
+        {
+          headers: { "Content-Type": "application/json" },
+          withCredentials: true,
+        }
+      );
+
+      if (response.status === 200) {
+        message.success("Cita cancelada exitosamente.");
+        navigate("/adminpanel/profile");
+        setVisible(false);
+      }
+
+      setLoading(false);
+    } catch (error) {
+      message.error("Error al cancelar la cita ");
+      console.error("Error:", error);
+      setLoading(false);
+    }
+
+    // console.log(id);
   };
 
   const handleDelete = async (id) => {
@@ -208,6 +247,7 @@ const AdminAppointments = () => {
         </Col>
       </Row>
 
+      <h4 className="nooverflow">Administrar Citas </h4>
       <Table
         dataSource={filteredAppointments}
         columns={columns}
@@ -243,7 +283,7 @@ const AdminAppointments = () => {
                 <p>
                   <strong>Dr:</strong>{" "}
                   <img
-                    src={selectedAppointment?.idDoctor?.photo.url} // Mostrar la foto si existe
+                    src={selectedAppointment?.idDoctor?.photo?.url} // Mostrar la foto si existe
                     alt="Foto del Doctor"
                     style={{
                       width: 40,
@@ -259,7 +299,7 @@ const AdminAppointments = () => {
                 <p>
                   <strong>Paciente:</strong>{" "}
                   <img
-                    src={selectedAppointment?.idPaciente?.photo.url} // Mostrar la foto si existe
+                    src={selectedAppointment?.idPaciente?.photo?.url} // Mostrar la foto si existe
                     alt="Foto del Doctor"
                     style={{
                       width: 40,
@@ -306,6 +346,68 @@ const AdminAppointments = () => {
                 </p>
               </Col>
             </Row>
+            {selectedAppointment.estado === "PENDIENTE" ? (
+              <>
+                <div>
+                  <p id="no_img_supp">
+                    En caso de que requiera cancelar la cita, deberá notificar
+                    al paciente el motivo o razon por el cual lo hizo para que
+                    el paciente pueda tomar acciones oportunas.
+                  </p>
+                  <br />
+                  <hr />
+                  <br />
+
+                  <Form>
+                    <Form.Item
+                      className="form-item"
+                      name="cancelacion_motivo"
+                      label="Motivo"
+                      rules={[
+                        {
+                          required: true,
+                          message: "Requerido",
+                        },
+                        {
+                          max: 200,
+                          message: "Maximo 200 caracteres",
+                        },
+                      ]}
+                    >
+                      <Input.TextArea
+                        rows={3}
+                        placeholder="Explica al paciente el motivo de la cancelacion de la cita"
+                        onChange={(e) => setMotivoCancelacion(e.target.value)}
+                      />
+                    </Form.Item>
+
+                    <div className="btns_flex">
+                      <Popconfirm
+                        title="¿Estás seguro de que quieres cancelar esta cita?"
+                        okText="Sí"
+                        cancelText="No"
+                        onConfirm={() => nashe(selectedAppointment._id)}
+                      >
+                        <Button block danger size="small" loading={loading}>
+                          Cancelar
+                        </Button>
+                      </Popconfirm>
+
+                      <Button
+                        type="dashed"
+                        block
+                        size="small"
+                        onClick={() => handleCancel()}
+                      >
+                        Salir
+                      </Button>
+                    </div>
+                  </Form>
+                </div>
+              </>
+            ) : (
+              <></>
+            )}
           </Card>
         )}
       </Modal>

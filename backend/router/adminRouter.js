@@ -29,6 +29,7 @@ import {
   getSupports,
   respondSupport,
 } from "../controller/supportController.js";
+import { adminCancelAppointment } from "../controller/appointmentController.js";
 
 const router = express.Router();
 
@@ -55,5 +56,6 @@ router.get("/drsupports", verifyAdminToken, getDrSupports);
 router.get("/patsupports", verifyAdminToken, getPatSupports);
 router.post("/respondsupport/:id", verifyAdminToken, respondSupport);
 router.delete("/deletesupport/:id", verifyAdminToken, deleteSupportById);
+router.put("/appointment/cancel/:id", verifyAdminToken, adminCancelAppointment);
 
 export default router;

@@ -2,6 +2,7 @@ import ErrorHandler from "../middlewares/errorMiddleware.js";
 import { Cita } from "../models/citaSchema.js";
 import { Doctor } from "../models/doctorSchema.js";
 import { Patient } from "../models/patientSchema.js";
+import nodemailer from "nodemailer";
 import transporter from "../utils/nodeMailerConfig.js";
 
 // PACIENTE AGENDA UNA CITA
@@ -65,10 +66,30 @@ export const createAppointment = async (req, res, next) => {
       estado: "PENDIENTE", // Estado inicial
     });
 
-    res.status(201).json({
-      success: true,
-      message: "Cita creada exitosamente.",
-      appointment,
+    const mailOptions = {
+      from: "medelinknotificaciones@gmail.com", // Cambia esto por tu email de notificaciones
+      to: req.user.email, // Correo del paciente autenticado
+      subject: "Confirmación de Creación de Cita",
+      text: `Hola ${req.user.nombre},\n\nTu cita con el Dr. ${doctor.nombre} ${doctor.apellido_pat} ha sido creada exitosamente para la fecha: ${fecha}.\n\nMotivo: ${motivo}.\n\nSaludos,\nEquipo Médico`,
+    };
+
+    // Enviar el correo
+    transporter.sendMail(mailOptions, (error, info) => {
+      if (error) {
+        return res
+          .status(500)
+          .json({
+            message: "Error al enviar el correo de confirmación",
+            error,
+          });
+      }
+
+      // Respuesta exitosa
+      res.status(201).json({
+        success: true,
+        message: "Cita creada exitosamente y notificación enviada.",
+        appointment,
+      });
     });
   } catch (error) {
     next(error);
@@ -268,6 +289,61 @@ export const doctorCancelAppointment = async (req, res, next) => {
       to: appointment.idPaciente.email,
       subject: "Cancelación de Cita",
       text: `Hola ${appointment.idPaciente.nombre},\n\nTu cita con el doctor ha sido cancelada. Motivo: ${motivoCancelacion}.\n\nSaludos,\nEquipo Médico`,
+    };
+
+    // Enviar el correo
+    transporter.sendMail(mailOptions, (error, info) => {
+      if (error) {
+        return res
+          .status(500)
+          .json({ message: "Error al enviar el correo", error: error });
+      }
+      res.status(200).json({
+        message: "Cita cancelada y notificación enviada correctamente",
+      });
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const adminCancelAppointment = async (req, res, next) => {
+  try {
+    const appointmentId = req.params.id;
+
+    const { motivoCancelacion } = req.body; // Motivo de la cancelación
+
+    // Buscar la cita por ID y doctor
+
+    // Buscar la cita por ID
+    const appointment = await Cita.findById(appointmentId).populate(
+      "idPaciente",
+      "nombre email"
+    );
+
+    if (!appointment) {
+      return next(new ErrorHandler("Cita no encontrada o ya cancelada", 404));
+    }
+
+    // Verificar si ya está cancelada
+    if (appointment.estado === "CANCELADA") {
+      return next(new ErrorHandler("La cita ya está cancelada", 400));
+    }
+    if (!motivoCancelacion) {
+      return next(
+        new ErrorHandler("El motivo de la cancelación es requerido.", 400)
+      );
+    }
+
+    // Actualizar el estado de la cita a "CANCELADA"
+    appointment.estado = "CANCELADA";
+    await appointment.save();
+
+    const mailOptions = {
+      from: "<medelinknotificaciones@gmail.com>",
+      to: appointment.idPaciente.email,
+      subject: "Cancelación de Cita",
+      text: `Hola ${appointment.idPaciente.nombre},\n\nEl administrador le informa que su cita con el doctor ha sido cancelada. Motivo: ${motivoCancelacion}.\n\nSaludos,\nEquipo de administracion.`,
     };
 
     // Enviar el correo
