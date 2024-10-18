@@ -8,7 +8,10 @@ import {
   logout,
   Me,
 } from "../controller/doctorController.js";
-import { getDoctorAppointments } from "../controller/appointmentController.js";
+import {
+  doctorCancelAppointment,
+  getDoctorAppointments,
+} from "../controller/appointmentController.js";
 import { verifyDoctorToken } from "../middlewares/authMiddleware.js";
 import {
   createSupport,
@@ -29,4 +32,9 @@ router.get("/mysupports", verifyDoctorToken, getDoctorTickets);
 router.put("/newallergie/:id", verifyDoctorToken, AddAllergie);
 router.put("/delleteallergie/:id/:index", verifyDoctorToken, deleteAllergie);
 router.delete("/deletesupport/:id", verifyDoctorToken, deleteSupportById);
+router.put(
+  "/appointment/cancel/:id",
+  verifyDoctorToken,
+  doctorCancelAppointment
+);
 export default router;

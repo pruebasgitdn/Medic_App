@@ -12,9 +12,12 @@ import {
   Row,
   Col,
   Select,
+  Modal,
 } from "antd";
 
 const { Option } = Select;
+const { TextArea } = Input;
+
 const DoctorAppointments = () => {
   const [appointments, setAppointments] = useState([]);
   const [detallesDiagnostico, setDetallesDiagnostico] = useState("");
@@ -24,6 +27,9 @@ const DoctorAppointments = () => {
   const [form] = Form.useForm();
   const [order, setOrder] = useState("recent");
   const navigate = useNavigate(); //navigate como Navigate mehtod
+  const [isModalVisible, setIsModalVisible] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [motivoCancelacion, setMotivoCancelacion] = useState("");
 
   useEffect(() => {
     const fetchAppointment = async () => {
@@ -52,9 +58,13 @@ const DoctorAppointments = () => {
   }, []);
 
   //Obtengo el id de la cita
-  const getAppointmentId = (item) => {
+  const getAppointmentId = async (item) => {
     const id = item._id;
-    setCitaId(id);
+    if (id) {
+      setCitaId(id); // Asegúrate de que el id se asigna correctamente
+    } else {
+      console.error("ID no válido para la cita.");
+    }
   };
 
   const onFinish = async () => {
@@ -100,6 +110,48 @@ const DoctorAppointments = () => {
   };
   const citasOrdenadas = [...appointments].sort(ordenarCitas);
 
+  //Abrir MOdal
+  const handleModal = () => {
+    setIsModalVisible(true);
+  };
+
+  // Cierra el modal
+  const handleCancel = () => {
+    setIsModalVisible(false);
+  };
+
+  const handleCancelarCita = async () => {
+    try {
+      setLoading(true);
+      if (!motivoCancelacion) {
+        message.error("Por favor, ingresa el motivo de la cancelación.");
+        setLoading(false);
+        return;
+      }
+
+      const response = await axios.put(
+        `http://localhost:4000/api/doctor/appointment/cancel/${citaId}`,
+        { motivoCancelacion },
+        {
+          headers: { "Content-Type": "application/json" },
+          withCredentials: true,
+        }
+      );
+
+      if (response.status === 200) {
+        message.success("Cita cancelada exitosamente.");
+        navigate("/doctorpanel/profile");
+        setIsModalVisible(false);
+      }
+      setLoading(false);
+    } catch (error) {
+      message.error("Error al cancelar la cita.");
+      console.error("Error:", error);
+      setLoading(false);
+    }
+  };
+
+  console.log(citaId);
   return (
     <div>
       <h2 className="nooverflow">Citas Proximas y Agendadas</h2>
@@ -170,6 +222,7 @@ const DoctorAppointments = () => {
                       <Form.Item
                         label="Diagnostico"
                         className="form-item"
+                        name="responsedr"
                         rules={[
                           {
                             max: 150,
@@ -192,6 +245,7 @@ const DoctorAppointments = () => {
                       <Form.Item
                         label="Recomendaciones"
                         className="form-item"
+                        name="recomendaciones"
                         rules={[
                           {
                             max: 150,
@@ -220,7 +274,16 @@ const DoctorAppointments = () => {
                         >
                           Responder
                         </Button>
-                        <Button danger size="small" type="primary" block>
+                        <Button
+                          danger
+                          size="small"
+                          type="primary"
+                          block
+                          onClick={() => {
+                            getAppointmentId(appointment);
+                            handleModal();
+                          }}
+                        >
                           Cancelar Cita
                         </Button>
                       </div>
@@ -234,6 +297,65 @@ const DoctorAppointments = () => {
       ) : (
         <Card title="No tienes citas agendadas de momento!" />
       )}
+
+      <Modal
+        open={isModalVisible}
+        title="Cancelar Cita"
+        onCancel={handleCancel}
+        footer={[]}
+      >
+        <p id="no_img_supp">
+          En caso de que requiera cancelar la cita, deberá notificar al paciente
+          el motivo o razon por el cual lo hizo para que el paciente pueda tomar
+          acciones oportunas.
+        </p>
+        <br />
+        <hr />
+        <br />
+        <Form>
+          <Form.Item
+            className="form-item"
+            name="cancelacion_motivo"
+            label="Motivo"
+            rules={[
+              {
+                required: true,
+                message: "Requerido",
+              },
+              {
+                max: 200,
+                message: "Maximo 200 caracteres",
+              },
+            ]}
+          >
+            <Input.TextArea
+              rows={3}
+              placeholder="Explica al paciente el motivo de la cancelacion de la cita"
+              onChange={(e) => setMotivoCancelacion(e.target.value)}
+            />
+
+            <div className="btns_flex">
+              <Button
+                block
+                danger
+                size="small"
+                loading={loading}
+                onClick={() => handleCancelarCita()}
+              >
+                Confirmar
+              </Button>
+              <Button
+                type="dashed"
+                block
+                size="small"
+                onClick={() => handleCancel()}
+              >
+                Salir
+              </Button>
+            </div>
+          </Form.Item>
+        </Form>
+      </Modal>
     </div>
   );
 };

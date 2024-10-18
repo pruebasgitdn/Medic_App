@@ -4,6 +4,7 @@ import { generateToken } from "../utils/jwtToken.js";
 import cloudinary from "cloudinary";
 import { Cita } from "../models/citaSchema.js";
 import { Patient } from "../models/patientSchema.js";
+import transporter from "../utils/nodeMailerConfig.js";
 
 /* 
 Iniciar Sesion

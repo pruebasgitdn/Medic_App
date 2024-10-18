@@ -2,6 +2,7 @@ import ErrorHandler from "../middlewares/errorMiddleware.js";
 import { Cita } from "../models/citaSchema.js";
 import { Doctor } from "../models/doctorSchema.js";
 import { Patient } from "../models/patientSchema.js";
+import transporter from "../utils/nodeMailerConfig.js";
 
 // PACIENTE AGENDA UNA CITA
 export const createAppointment = async (req, res, next) => {
@@ -216,6 +217,69 @@ export const respondAppointment = async (req, res, next) => {
       success: true,
       message: "Cita realizada y paciente actualizado.",
       appointment,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const doctorCancelAppointment = async (req, res, next) => {
+  try {
+    const appointmentId = req.params.id;
+    const doctorId = req.user.id; // ID del doctor autenticado
+
+    const { motivoCancelacion } = req.body; // Motivo de la cancelación
+
+    // Buscar la cita por ID y doctor
+
+    // Buscar la cita por ID
+    const appointment = await Cita.findById(appointmentId).populate(
+      "idPaciente",
+      "nombre email"
+    );
+
+    if (!appointment) {
+      return next(new ErrorHandler("Cita no encontrada o ya cancelada", 404));
+    }
+
+    // Verificar que la cita pertenece al doctor autenticado
+    if (appointment.idDoctor.toString() !== doctorId) {
+      return next(
+        new ErrorHandler("No tienes permiso para cancelar esta cita", 403)
+      );
+    }
+
+    // Verificar si ya está cancelada
+    if (appointment.estado === "CANCELADA") {
+      return next(new ErrorHandler("La cita ya está cancelada", 400));
+    }
+    if (!motivoCancelacion) {
+      return next(
+        new ErrorHandler("El motivo de la cancelación es requerido.", 400)
+      );
+    }
+
+    // Actualizar el estado de la cita a "CANCELADA"
+    appointment.estado = "CANCELADA";
+    await appointment.save();
+
+    const mailOptions = {
+      from: "medelinknotificaciones@gmail.com",
+      to: appointment.idPaciente.email,
+      subject: "Cancelación de Cita",
+      text: `Hola ${appointment.idPaciente.nombre},\n\nTu cita con el doctor ha sido cancelada. Motivo: ${motivoCancelacion}.\n\nSaludos,\nEquipo Médico`,
+    };
+
+    // Enviar el correo
+    transporter.sendMail(mailOptions, (error, info) => {
+      if (error) {
+        return res
+          .status(500)
+          .json({ message: "Error al enviar el correo", error: error });
+      }
+      res.status(200).json({
+        message: "Cita cancelada y notificación enviada correctamente",
+      });
     });
   } catch (error) {
     next(error);
