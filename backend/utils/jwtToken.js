@@ -1,5 +1,5 @@
 export const generateToken = (user, message, statusCode, res) => {
-  const token = user.generateJWT();
+  const token = user.generateJWT(); // .generateJWT = viene de los esquemas de admi,dr o pacient
 
   const cookieName =
     user.role === "admin"
@@ -11,18 +11,13 @@ export const generateToken = (user, message, statusCode, res) => {
       : "usertoken";
 
   /*
-  Mandamos la res.status
-.cookie => crea la cookie para la peticion
+ Se manda el codigo de estado, mas la cookie con su bombre y configuracion, que de respuesta es el succes mensaje usuario y token del usuario
   */
   res
     .status(statusCode)
     .cookie(cookieName, token, {
       expires: new Date(Date.now() + parseInt(process.env.COOKIE_EXPIRE)),
     })
-
-    /*
-    Devolvemos el mensaje user y su token
-    */
     .json({
       succes: true,
       message,

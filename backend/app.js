@@ -10,14 +10,10 @@ import adminRouter from "./router/adminRouter.js";
 import doctorRouter from "./router/doctorRouter.js";
 import appointmentRouter from "./router/appointmentRouter.js";
 import { errorMiddleware } from "./middlewares/errorMiddleware.js";
-import { patientRegister } from "./controller/patientController.js";
 
 const app = express(); //iniciar app
 
-/*
-Config(configura las variables de entornto env)
-path('ruta del archivo .env')
-*/
+//Config(configura las variables de entornto env)
 config({ path: "./config/config.env" });
 
 //MIDDLEWARES
@@ -39,13 +35,12 @@ app.use(
   })
 );
 
-//===============================================================
-
-app.use("/api/message", messageRouter); //Ruta base para consultar api y el /message para ese router
-app.use("/api/patient", patientRouter); //Ruta base para consultar api y el /message para ese router
-app.use("/api/admin", adminRouter); //Ruta base para consultar api y el /message para ese router
-app.use("/api/doctor", doctorRouter); //Ruta base para consultar api y el /message para ese router
-app.use("/api/appointment", appointmentRouter); //Ruta base para consultar api y el /message para ese router
+//Enrutadores con su ruta base
+app.use("/api/message", messageRouter);
+app.use("/api/patient", patientRouter);
+app.use("/api/admin", adminRouter);
+app.use("/api/doctor", doctorRouter);
+app.use("/api/appointment", appointmentRouter);
 
 //Conexion a la bd
 dbConnection();

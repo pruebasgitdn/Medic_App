@@ -8,21 +8,9 @@ import { Cita } from "../models/citaSchema.js";
 import cloudinary from "cloudinary";
 import bcrypt from "bcrypt";
 
-/* 
-Iniciar Sesion
-Cerrar Sesion
-Crear Admin
-EditarPerfil
-EliminarUsuario
-EliminarDoctor
-EliminarCitas
-Eliminar Cuenta (Propia)
-*/
-
 export const login = async (req, res, next) => {
   const { email, password } = req.body;
   try {
-    // Encontrar paciente por email
     const admin = await Admin.findOne({ email });
     if (!admin) {
       return next(new ErrorHandler("Admin no encontrado", 400));
@@ -49,12 +37,11 @@ export const createAdmin = async (req, res, next) => {
   const { nombre, email, password } = req.body;
 
   try {
-    const { photo } = req.files || {}; // Extraemos photo si existe
+    const { photo } = req.files || {}; // photo si existe si no vacio
 
     // Formatos permitidos
     const allowedFormats = ["image/png", "image/jpeg", "image/webp"];
 
-    // Validar campos requeridos (nombre, email, password)
     if (!nombre || !email || !password) {
       return next(
         new ErrorHandler(
@@ -64,22 +51,20 @@ export const createAdmin = async (req, res, next) => {
       );
     }
 
-    // Verificar si ya está registrado
+    // Verificar registrado
     const isRegistered = await Admin.findOne({ email });
     if (isRegistered) {
       return next(new ErrorHandler("Administrador con este email ya existe"));
     }
 
-    // Inicializamos el objeto para la photo con valores por defecto
+    // Foto (si no se proporciona null pero si tan tan si sabe la sube y melo)
     let photoData = null;
-
-    // Si la photo existe, validar formato y subirla a Cloudinary
     if (photo) {
       if (!allowedFormats.includes(photo.mimetype)) {
         return next(new ErrorHandler("Formato de archivo no soportado!", 400));
       }
 
-      // Subir la foto a Cloudinary
+      // Subir la foto a cloud
       const cloudinaryResponse = await cloudinary.uploader.upload(
         photo.tempFilePath
       );
@@ -94,14 +79,13 @@ export const createAdmin = async (req, res, next) => {
         );
       }
 
-      // Guardar datos de la photo si se subió correctamente
+      // Guardar datos de la photo
       photoData = {
         public_id: cloudinaryResponse.public_id,
         url: cloudinaryResponse.secure_url,
       };
     }
 
-    // Crear el admin con la photo si existe, si no, simplemente sin la photo
     const admin = await Admin.create({
       nombre,
       email,
@@ -126,18 +110,18 @@ export const createDoctor = async (req, res, next) => {
       email,
       password,
       numero_licencia,
-    } = req.body; // Extraer valores
+    } = req.body;
 
-    const { photo, licencia } = req.files || {}; // Extraemos los archivos
+    const { photo, licencia } = req.files || {}; // Extraemos si no vacio
 
     const allowedFormats = [
       "image/png",
       "image/jpeg",
       "image/webp",
       "image/jpg",
-    ]; // Formatos permitidos
+    ]; // Formatos
 
-    // Validaciones para los archivos licencia
+    //Licencia (obligatoria)
     if (!licencia || !allowedFormats.includes(licencia.mimetype)) {
       return next(
         new ErrorHandler(
@@ -149,7 +133,7 @@ export const createDoctor = async (req, res, next) => {
       );
     }
 
-    // Validar campos requeridos
+    // Campos requeridos
     if (
       !nombre ||
       !apellido_pat ||
@@ -165,13 +149,12 @@ export const createDoctor = async (req, res, next) => {
       );
     }
 
-    // Verificar si está registrado
     const isRegistered = await Doctor.findOne({ email });
     if (isRegistered) {
       return next(new ErrorHandler("Doctor con este email ya existe"));
     }
 
-    // Subir el archivo temporal de licencia a Cloudinary
+    //Licencia
     const licenseCloudinaryResponse = await cloudinary.uploader.upload(
       licencia.tempFilePath
     );
@@ -189,7 +172,7 @@ export const createDoctor = async (req, res, next) => {
       );
     }
 
-    // Subir la foto si se proporcionó
+    // Foto (si no se proporciona null pero si tan tan si sabe la sube y melo)
     let photoData = null;
     if (photo) {
       if (!allowedFormats.includes(photo.mimetype)) {
@@ -221,12 +204,11 @@ export const createDoctor = async (req, res, next) => {
       };
     }
 
-    // Crear el doctor
     const doctor = await Doctor.create({
       nombre,
       apellido_pat,
       apellido_mat,
-      photo: photoData, // Se puede guardar como null si no se proporcionó
+      photo: photoData, // Se puede guardar como null si no se envio
       especialidad,
       telefono,
       email,
@@ -266,19 +248,17 @@ export const getAllPatients = async (req, res, next) => {
 
 export const getAdminDetails = async (req, res, next) => {
   try {
-    //Req.user proveniente del middleware de autenticacion previamante para pasar a esta ruta en el router del admin
+    //Req.user del middleware previamante en la ruta en el router del admin
     const admin = req.user;
     console.log(admin.id);
 
-    //Verificamos con la coleccion Admin en la tabla de datos
+    //Encontrar admin por id del del id de la autenticacion
     const verifyAdmin = await Admin.findById(req.user.id);
 
-    //Si no lo encuentra
     if (!verifyAdmin) {
       return next(new ErrorHandler("Admin no encontrado", 404));
     }
 
-    //Si lo encuentra
     res.status(200).json({
       success: true,
       details: [verifyAdmin.nombre, verifyAdmin.email, verifyAdmin.role],
@@ -305,19 +285,17 @@ export const EditProfile = async (req, res, next) => {
   try {
     const adminId = req.user.id; // ID del admin autenticado
 
-    // Obtener los datos que el admin desea actualizar
     const { email, password } = req.body;
 
     const { photo } = req.files || {};
 
-    // Buscar el paciente
     const admin = await Admin.findById(adminId);
 
     if (!admin) {
       return next(new ErrorHandler("Paciente no encontrado", 404));
     }
 
-    //Verificar por email usado
+    //Verificar email usado
     if (email !== admin.email) {
       const emailExist = await Admin.findOne({ email });
       if (emailExist) {
@@ -327,9 +305,8 @@ export const EditProfile = async (req, res, next) => {
       }
     }
 
-    // Actualizar la foto de perfil si se envió
+    // Actualizar la foto de perfil si se envio no obligatorio porque arriba se inicializa como vacio si no tan
     if (photo) {
-      //cloud.uploaded.upload => metodo para subir, el .tempFilePath => que es la ruta temporal de la foto
       const photoCloudinaryResponse = await cloudinary.uploader.upload(
         photo.tempFilePath
       );
@@ -345,17 +322,17 @@ export const EditProfile = async (req, res, next) => {
 
       // Borrar la foto anterior en Cloudinary si existe
       if (admin.photo.public_id) {
-        //cloud.uploaded.destoy => metodo para eliminar, el .public_id => que es el id de la foto en cloudinaty
         await cloudinary.uploader.destroy(admin.photo.public_id);
       }
 
+      //Se actualizan el campo de photo con la respuesta de arriba
       admin.photo = {
         public_id: photoCloudinaryResponse.public_id,
         url: photoCloudinaryResponse.secure_url,
       };
     }
 
-    // Actualizar los campos del admin
+    // Actualizar email y passowrd
     admin.email = email || admin.email;
     admin.password = password || admin.password;
 
@@ -376,7 +353,6 @@ export const EditDoctorProfile = async (req, res, next) => {
   try {
     const doctorId = req.params.id; //ID del doctor URL
 
-    // Obtener los datos
     const {
       nombre,
       apellido_pat,
@@ -389,14 +365,13 @@ export const EditDoctorProfile = async (req, res, next) => {
 
     const { photo, licencia } = req.files || {};
 
-    // Buscar al doctor por ID
     const doctor = await Doctor.findById(doctorId);
 
     if (!doctor) {
       return next(new ErrorHandler("Doctor no encontrado", 404));
     }
 
-    // Verificar si el email está en uso
+    // Verificar email
     if (email !== doctor.email) {
       const emailExist = await Doctor.findOne({ email });
       if (emailExist) {
@@ -406,7 +381,6 @@ export const EditDoctorProfile = async (req, res, next) => {
       }
     }
 
-    // Actualizar la foto de perfil si se envió
     if (photo) {
       const photoCloudinaryResponse = await cloudinary.uploader.upload(
         photo.tempFilePath
@@ -433,7 +407,6 @@ export const EditDoctorProfile = async (req, res, next) => {
     }
 
     if (licencia) {
-      //cloud.uploaded.upload => metodo para subir, el .tempFilePath => que es la ruta temporal de la foto
       const documentCloudinaryResponse = await cloudinary.uploader.upload(
         licencia.tempFilePath
       );
@@ -447,9 +420,8 @@ export const EditDoctorProfile = async (req, res, next) => {
         );
       }
 
-      // Borrar documento anterior en Cloudinary si existe
       if (doctor.licencia && doctor.licencia.public_id) {
-        //cloud.uploaded.destoy => metodo para eliminar, el .public_id => que es el id de la foto en cloudinaty
+        //Borrar por id
         await cloudinary.uploader.destroy(doctor.licencia.public_id);
       }
 
@@ -542,7 +514,6 @@ export const EditPatientProfile = async (req, res, next) => {
 
     //Manejar docmuento
     if (document_id) {
-      //cloud.uploaded.upload => metodo para subir, el .tempFilePath => que es la ruta temporal de la foto
       const documentCloudinaryResponse = await cloudinary.uploader.upload(
         document_id.tempFilePath
       );
@@ -558,7 +529,6 @@ export const EditPatientProfile = async (req, res, next) => {
 
       // Borrar documento anterior en Cloudinary si existe
       if (patient.document_id.public_id) {
-        //cloud.uploaded.destoy => metodo para eliminar, el .public_id => que es el id de la foto en cloudinaty
         await cloudinary.uploader.destroy(patient.document_id.public_id);
       }
 
@@ -569,7 +539,6 @@ export const EditPatientProfile = async (req, res, next) => {
     }
 
     //Actualizar campos del paciente
-
     patient.nombre = nombre || patient.nombre;
     patient.apellido_pat = apellido_pat || patient.apellido_pat;
     patient.apellido_mat = apellido_mat || patient.apellido_mat;
@@ -601,10 +570,10 @@ export const deleteDoctor = async (req, res, next) => {
       return next(new ErrorHandler("Doctor no encontrado", 404));
     }
 
-    // Eliminar la imagen de perfil del doctor en Cloudinary, si existe
+    // Eliminar la imagen de perfil del doctor en Cloudinary
     if (doctor.photo && doctor.photo.public_id) {
       try {
-        await cloudinary.uploader.destroy(doctor.photo.public_id); // Eliminar la foto de Cloudinary
+        await cloudinary.uploader.destroy(doctor.photo.public_id); // Eliminar por id
       } catch (error) {
         return next(
           new ErrorHandler(
@@ -615,10 +584,10 @@ export const deleteDoctor = async (req, res, next) => {
       }
     }
 
-    // Eliminar la licencia del doctor en Cloudinary, si existe
+    // Eliminar la licencia del doctor en Cloudinary
     if (doctor.licencia && doctor.licencia.public_id) {
       try {
-        await cloudinary.uploader.destroy(doctor.licencia.public_id); // Eliminar la licencia de Cloudinary
+        await cloudinary.uploader.destroy(doctor.licencia.public_id); // por id
       } catch (error) {
         return next(
           new ErrorHandler(
@@ -629,6 +598,7 @@ export const deleteDoctor = async (req, res, next) => {
       }
     }
 
+    //Eliminar doctor
     await Doctor.findByIdAndDelete(doctorId);
 
     res.status(200).json({
@@ -650,10 +620,10 @@ export const deletePatient = async (req, res, next) => {
       return next(new ErrorHandler("Doctor no encontrado", 404));
     }
 
-    // Eliminar la imagen de perfil del doctor en Cloudinary, si existe
+    // Eliminar la imagen de perfil del doctor en Cloudinary
     if (patient.photo && patient.photo.public_id) {
       try {
-        await cloudinary.uploader.destroy(patient.photo.public_id); // Eliminar la foto de Cloudinary
+        await cloudinary.uploader.destroy(patient.photo.public_id);
       } catch (error) {
         return next(
           new ErrorHandler(
@@ -664,10 +634,10 @@ export const deletePatient = async (req, res, next) => {
       }
     }
 
-    // Eliminar la licencia del doctor en Cloudinary, si existe
+    // Eliminar la licencia del doctor en Cloudinary
     if (patient.document_id && patient.document_id.public_id) {
       try {
-        await cloudinary.uploader.destroy(patient.document_id.public_id); // Eliminar la licencia de Cloudinary
+        await cloudinary.uploader.destroy(patient.document_id.public_id);
       } catch (error) {
         return next(
           new ErrorHandler(
@@ -678,6 +648,7 @@ export const deletePatient = async (req, res, next) => {
       }
     }
 
+    //Eliminar
     await Patient.findByIdAndDelete(patientId);
 
     res.status(200).json({
@@ -691,7 +662,7 @@ export const deletePatient = async (req, res, next) => {
 
 export const getAppointments = async (req, res, next) => {
   try {
-    // Obtener todas las citas
+    // Obtener todas las citas y popular por idDoctor que referencia esa tabla, dichos valores
     const citas = await Cita.find()
       .populate(
         "idDoctor",

@@ -32,5 +32,4 @@ const messageSchema = new mongoose.Schema({
   },
 });
 
-//Exportamos el Message(esquema) luego de haber creado en mongoose la coleccion con el nombre Message
 export const Message = mongoose.model("Message", messageSchema);

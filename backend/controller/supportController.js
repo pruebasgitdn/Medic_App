@@ -172,10 +172,9 @@ export const getPatSupports = async (req, res, next) => {
 };
 
 export const respondSupport = async (req, res, next) => {
-  const { id } = req.params;
-  const { respuestaAdmin } = req.body;
-
   try {
+    const { id } = req.params;
+    const { respuestaAdmin } = req.body;
     const support = await Support.findById(id);
 
     if (!respuestaAdmin) {
@@ -205,6 +204,7 @@ export const respondSupport = async (req, res, next) => {
   }
 };
 
+//obtener los del paciente iniciado sesion
 export const getPatientTickets = async (req, res, next) => {
   const patientId = req.user.id;
   const tickets = await Support.find({ usuario: patientId });
@@ -221,6 +221,8 @@ export const getPatientTickets = async (req, res, next) => {
     tickets,
   });
 };
+
+//obtener los del doctor iniciado sesion
 export const getDoctorTickets = async (req, res, next) => {
   const doctorId = req.user.id;
   const tickets = await Support.find({ usuario: doctorId });

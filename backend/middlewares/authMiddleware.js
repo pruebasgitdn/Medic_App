@@ -43,10 +43,7 @@ export const verifyPatientToken = (req, res, next) => {
   }
 
   try {
-    /*
-    decoded informacion desencriptada del token 
-    req.user => en las sgtes partes de la ruta se tenga acceso a la información del usuario autenticado
-    */
+    //verificamos y desencriptamos el token en decoded para ser pasado a req.user que lo pasa al controlador
     const decoded = jwt.verify(token, process.env.JWT_SECRET_KEY);
     console.log("Decoded patient Token:", decoded);
     req.user = decoded;
@@ -70,10 +67,7 @@ export const verifyAdminToken = (req, res, next) => {
   }
 
   try {
-    /*
-    decoded informacion desencriptada del token 
-    req.user => en las sgtes partes de la ruta se tenga acceso a la información del usuario autenticado
-    */
+    //verificamos y desencriptamos el token en decoded para ser pasado a req.user que lo pasa al controlador
     const decoded = jwt.verify(token, process.env.JWT_SECRET_KEY);
     console.log("Decoded admin Token:", decoded);
     req.user = decoded;
@@ -95,12 +89,9 @@ export const verifyDoctorToken = (req, res, next) => {
       )
     );
   }
-  console.log(token);
+
   try {
-    /*
-    decoded informacion desencriptada del token 
-    req.user => en las sgtes partes de la ruta se tenga acceso a la información del usuario autenticado
-    */
+    //verificamos y desencriptamos el token en decoded para ser pasado a req.user que lo pasa al controlador
     const decoded = jwt.verify(token, process.env.JWT_SECRET_KEY);
     console.log("Decoded doctor Token:", decoded);
     req.user = decoded;

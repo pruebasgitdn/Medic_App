@@ -6,52 +6,18 @@ import { Cita } from "../models/citaSchema.js";
 import { Patient } from "../models/patientSchema.js";
 import transporter from "../utils/nodeMailerConfig.js";
 
-/* 
-Iniciar Sesion
-Cerrar Sesion
-Crear Doctor => 
-  Esta función crearía un nuevo registro de doctor en la base de datos, incluyendo la validación de la licencia/documento y la generación de una contraseña.
-  Entradas: Datos del doctor (nombre, número de licencia, etc.).
-  Salidas: Confirmación de la solicitud y se dara revision al registro en unos dias para el registro exitoso!!.
-
-
-Actualizar Doctor => 
-  Permitiría a los administradores o al mismo doctor actualizar su información, como sus credenciales o su historial de pacientes atendidos.
-
-  Entradas: ID del doctor, datos actualizados.
-  Salidas: Confirmación de la actualización o errores.
-
-AñadirHistorialPaciente => 
-  Esta función se encargaría de registrar que un doctor ha atendido a un paciente. Incluiría detalles del reporte y del caso.
-  Entradas: ID del doctor, detalles del paciente (ID del paciente, nombre, reporte, detalles del caso).
-  Salidas: Confirmación de la adición o errores.
-
-getPatientHistory =>( historial de pacientes atendidos por un doctor)
-  Descripción: Permitiría al doctor o al administrador ver el historial completo de los pacientes atendidos por ese doctor.
-  Entradas: ID del doctor.
-  Salidas: Lista de historiales de pacientes atendidos.
-
-
-
-
-
-*/
-
 export const Me = async (req, res, next) => {
   try {
-    //Req.user proveniente del middleware de autenticacion previamante para pasar a esta ruta en el router del admin
-    const doctor = req.user;
+    const doctor = req.user; //Autenticacion
     console.log(doctor.id);
 
-    //Verificamos con la coleccion Admin en la tabla de datos
+    //buscarlo
     const verifyDoctor = await Doctor.findById(req.user.id);
 
-    //Si no lo encuentra
     if (!verifyDoctor) {
       return next(new ErrorHandler("Doctor no encontrado", 404));
     }
 
-    //Si lo encuentra
     res.status(200).json({
       success: true,
       details: [verifyDoctor.nombre, verifyDoctor.email, verifyDoctor.role],
@@ -63,9 +29,8 @@ export const Me = async (req, res, next) => {
 
 export const EditProfile = async (req, res, next) => {
   try {
-    const doctorId = req.user.id; // ID del doctor autenticado
+    const doctorId = req.user.id; // Autnteicacion
 
-    // Obtener los datos que el doctor desea actualizar
     const {
       nombre,
       apellido_pat,
@@ -78,7 +43,6 @@ export const EditProfile = async (req, res, next) => {
 
     const { photo, licencia } = req.files || {};
 
-    // Buscar el dr
     const doctor = await Doctor.findById(doctorId);
 
     if (!doctor) {
@@ -97,7 +61,6 @@ export const EditProfile = async (req, res, next) => {
 
     // Actualizar la foto de perfil si se envió
     if (photo) {
-      //cloud.uploaded.upload => metodo para subir, el .tempFilePath => que es la ruta temporal de la foto
       const photoCloudinaryResponse = await cloudinary.uploader.upload(
         photo.tempFilePath
       );
@@ -113,7 +76,7 @@ export const EditProfile = async (req, res, next) => {
 
       // Borrar la foto anterior en Cloudinary si existe
       if (doctor.photo && doctor.photo.public_id) {
-        //cloud.uploaded.destoy => metodo para eliminar, el .public_id => que es el id de la foto en cloudinaty
+        //Por id
         await cloudinary.uploader.destroy(doctor.photo.public_id);
       }
 
@@ -126,7 +89,6 @@ export const EditProfile = async (req, res, next) => {
 
     // Actualizar documento si se envió
     if (licencia) {
-      //cloud.uploaded.upload => metodo para subir, el .tempFilePath => que es la ruta temporal de la foto
       const documentCloudinaryResponse = await cloudinary.uploader.upload(
         licencia.tempFilePath
       );
@@ -142,7 +104,7 @@ export const EditProfile = async (req, res, next) => {
 
       // Borrar documento anterior en Cloudinary si existe
       if (doctor.licencia && doctor.licencia.public_id) {
-        //cloud.uploaded.destoy => metodo para eliminar, el .public_id => que es el id de la foto en cloudinaty
+        //por id
         await cloudinary.uploader.destroy(doctor.licencia.public_id);
       }
 
@@ -176,9 +138,10 @@ export const EditProfile = async (req, res, next) => {
 };
 
 export const login = async (req, res, next) => {
-  const { email, password } = req.body;
   try {
-    // Encontrar paciente por email
+    const { email, password } = req.body;
+
+    //encontar en doctor por email
     const doctor = await Doctor.findOne({ email });
     if (!doctor) {
       return next(new ErrorHandler("Doctor no encontrado", 400));
@@ -219,17 +182,17 @@ export const getPatients = async (req, res, next) => {
     //id autenticado
     const doctorId = req.user.id;
 
-    // Obtener los IDs únicos de los idspacientes en las citas del doctor que coincidan con el campoidDoctor en cita del dr autentic...
+    // Obtener los IDs unicos (no duplicados)se obtienen todos los idPaciente únicos donde el idDoctor coincide con el ID del doctor autenticado.
     const pacientesIds = await Cita.distinct("idPaciente", {
       idDoctor: doctorId,
     });
 
-    // Buscar detalles de todos los pacientes relacionados con esos IDs únicos
+    // Por el campo _id de Pacientes buscar documentos donde coincida con los pacientesIds
     const pacientes = await Patient.find({ _id: { $in: pacientesIds } });
 
     res.status(200).json({
       success: true,
-      pacientes, // Lista de pacientes con toda su información obtenida directamente
+      pacientes,
     });
   } catch (error) {
     next(error);
@@ -238,14 +201,13 @@ export const getPatients = async (req, res, next) => {
 
 export const AddAllergie = async (req, res, next) => {
   try {
-    const { id } = req.params; //ID DEL PACIENTE
+    const { id } = req.params; //url
     const { alergia } = req.body;
 
     if (!alergia) {
       return next(new ErrorHandler("Ingresa la alergia", 400));
     }
 
-    // Buscar el paciente por ID
     const paciente = await Patient.findById(id);
     if (!paciente) {
       return next(new ErrorHandler("Paciente no encontrado", 404));
@@ -262,14 +224,13 @@ export const AddAllergie = async (req, res, next) => {
     res.status(200).json({
       success: true,
       message: "Alergia añadida correctamente",
-      alergias: paciente.alergias, //lista actualizada
+      alergias: paciente.alergias,
     });
   } catch (error) {
     next(error);
   }
 };
 
-// Controlador para eliminar una alergia del paciente
 export const deleteAllergie = async (req, res) => {
   try {
     const { id, index } = req.params; //URL
@@ -279,6 +240,7 @@ export const deleteAllergie = async (req, res) => {
       return next(new ErrorHandler("Paciente no encontrado", 404));
     }
 
+    //En esa posicion eliminar 1 solo elemento
     patient.alergias.splice(index, 1);
     await patient.save();
 

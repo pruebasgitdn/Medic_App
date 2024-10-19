@@ -120,10 +120,6 @@ const patientSchema = new mongoose.Schema({
     type: String,
     minLength: [10, "El mensaje debe contener al menos 10 caracteres"],
   },
-  identificacion_url: {
-    type: String,
-    minLength: [10, "El mensaje debe contener al menos 10 caracteres"],
-  },
   role: {
     type: String,
     enum: {
@@ -134,7 +130,7 @@ const patientSchema = new mongoose.Schema({
   },
 });
 
-//MIDDLEWARE PARA HASHEAR CONTRASEÑAS (PENDIENTE)
+//CONTRASEÑAS
 patientSchema.pre("save", async function (next) {
   if (!this.isModified("password")) {
     next();

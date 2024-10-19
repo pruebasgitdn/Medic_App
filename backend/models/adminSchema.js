@@ -13,6 +13,7 @@ const adminSchema = new mongoose.Schema({
     type: String,
     required: true,
     validate: [validator.isEmail, "Por favor, proporciona un email válido"],
+    unique: true,
   },
   password: {
     type: String,
@@ -37,7 +38,7 @@ const adminSchema = new mongoose.Schema({
   },
 });
 
-//MIDDLEWARE PARA HASHEAR CONTRASEÑAS (PENDIENTE)
+//HASHEAR CONTRASEÑAS
 adminSchema.pre("save", async function (next) {
   if (!this.isModified("password")) {
     next();
@@ -52,7 +53,7 @@ adminSchema.methods.comparePassword = async function (enteredPassword) {
 
 //Generar JSONTOKEN
 adminSchema.methods.generateJWT = function () {
-  //Firma el token con el _id del paciente
+  //Firma el token con el _id
   return jwt.sign(
     { id: this._id, nombre: this.nombre, email: this.email, role: this.role },
     process.env.JWT_SECRET_KEY,

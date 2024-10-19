@@ -18,10 +18,7 @@ import {
   login,
   logout,
 } from "../controller/adminController.js";
-import {
-  verifyAdminToken,
-  verifyToken,
-} from "../middlewares/authMiddleware.js";
+import { verifyAdminToken } from "../middlewares/authMiddleware.js";
 import {
   deleteSupportById,
   getDrSupports,

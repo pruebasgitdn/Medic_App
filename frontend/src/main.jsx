@@ -13,7 +13,7 @@ const AppWraper = () => {
   const [user, setUser] = useState({});
   const [role, setRole] = useState(""); // "doctor" o "patient"
 
-  //Recuperar credenciales del localstorage al cargar la aplicacion
+  //Recuperar credenciales del localstorage
   useEffect(() => {
     const storedUser = localStorage.getItem("user");
     const storedIsAuthenticated = localStorage.getItem("isAuthenticated");
@@ -30,7 +30,7 @@ const AppWraper = () => {
   }, [setUser, setIsAuthenticated]);
 
   return (
-    //Proveer la aplicacion con el contexto y a la vez estos valores
+    //Proveer la aplicacion con el contexto con los valores
     <Context.Provider
       value={{
         isAuthenticated,

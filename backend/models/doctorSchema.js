@@ -54,11 +54,11 @@ const doctorSchema = new mongoose.Schema({
   licencia: {
     public_id: {
       type: String,
-      required: [true, "Ingresa la licencia."], // Mensaje de error personalizado
+      required: [true, "Ingresa la licencia."],
     },
     url: {
       type: String,
-      required: [true, "Ingresa la URL de la licencia."], // Mensaje de error personalizado
+      required: [true, "Ingresa la URL de la licencia."],
     },
   },
   patientHistory: [
@@ -101,7 +101,7 @@ const doctorSchema = new mongoose.Schema({
   },
 });
 
-//MIDDLEWARE PARA HASHEAR CONTRASEÑAS (PENDIENTE)
+//HASHEAR CONTRASEÑAS
 doctorSchema.pre("save", async function (next) {
   if (!this.isModified("password")) {
     next();
@@ -117,9 +117,13 @@ doctorSchema.methods.comparePassword = async function (enteredPassword) {
 //Generar JSONTOKEN
 doctorSchema.methods.generateJWT = function () {
   //Firma el token con el _id del paciente
-  return jwt.sign({ id: this._id }, process.env.JWT_SECRET_KEY, {
-    expiresIn: process.env.JWT_EXPIRES,
-  });
+  return jwt.sign(
+    { id: this._id, nombre: this.nombre, email: this.email, role: this.role },
+    process.env.JWT_SECRET_KEY,
+    {
+      expiresIn: process.env.JWT_EXPIRES,
+    }
+  );
 };
 
 export const Doctor = mongoose.model("Doctor", doctorSchema);

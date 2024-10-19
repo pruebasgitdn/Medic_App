@@ -9,15 +9,11 @@ import {
   EditProfile,
 } from "../controller/patientController.js";
 import { verifyPatientToken } from "../middlewares/authMiddleware.js";
-import {
-  checkAppointments,
-  createAppointment,
-} from "../controller/appointmentController.js";
+import { checkAppointments } from "../controller/appointmentController.js";
 import {
   createSupport,
   deleteSupportById,
   getPatientTickets,
-  getPatSupports,
 } from "../controller/supportController.js";
 
 const router = express.Router(); //Creando enrutador
