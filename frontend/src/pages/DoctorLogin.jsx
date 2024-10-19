@@ -9,11 +9,10 @@ const DoctorLogin = () => {
   const { setUser, setIsAuthenticated, setRole } = useContext(Context);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const navigate = useNavigate(); //navigate como Navigate mehtod
+  const navigate = useNavigate();
 
   const handleLogin = async (e) => {
     try {
-      //Se hace la peticion post a dicha ulr mas el contenido
       const response = await axios.post(
         "http://localhost:4000/api/doctor/login",
         {
@@ -26,7 +25,6 @@ const DoctorLogin = () => {
         }
       );
 
-      //Si la respuesta es correcta
       if (response.status === 200) {
         message.success("Inicio de sesion exitoso!");
 
@@ -65,9 +63,6 @@ const DoctorLogin = () => {
       <div className="login-container">
         <div className="login-form">
           <Card title={"Inicio de Sesion Doctor."}>
-            {/*
-          onFinish => Onsubmit
-          */}
             <Form onFinish={handleLogin} name="loginform">
               <div className="login-container">
                 <div className="login-form">

@@ -13,23 +13,19 @@ const PatientHistory = () => {
   useEffect(() => {
     const fetchHistory = async () => {
       try {
-        // Llama a la API para obtener el historial del paciente
         const response = await axios.get(
           "http://localhost:4000/api/patient/gethistory",
           {
-            withCredentials: true, // Importante para que las cookies se envíen
+            withCredentials: true,
             headers: {
               "Content-Type": "application/json",
             },
           }
         );
 
-        //respuesta de la petición
         const data = response.data;
 
-        // Si es un éxito
         if (data.success) {
-          // Entonces setear el historial con el data.historial
           setHistorial(data.historial);
         } else {
           console.log("No se encontró historial");

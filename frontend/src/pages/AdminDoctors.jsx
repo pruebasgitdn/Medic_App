@@ -60,7 +60,7 @@ const AdminDoctors = () => {
   //manejar el archivo de foto
   const handlePhotoUpload = (file) => {
     setPhoto(file);
-    return false; //  evita  subir el archivo automáticamente
+    return false;
   };
 
   //manejar el archivo de licencia
@@ -75,7 +75,7 @@ const AdminDoctors = () => {
     setIsModalVisible(true);
   };
 
-  // Cierra el modal
+  // Cerrar el modal
   const handleCancel = () => {
     setIsModalVisible(false);
   };
@@ -149,7 +149,7 @@ const AdminDoctors = () => {
       const response = await axios.delete(
         `http://localhost:4000/api/admin/deletedoctor/${doctorId}`,
         {
-          withCredentials: true, // Para asegurarse de que las cookies se manejen correctamente
+          withCredentials: true,
           headers: {
             "Content-Type": "multipart/form-data",
           },
@@ -251,7 +251,7 @@ const AdminDoctors = () => {
       <Table
         columns={columns}
         dataSource={doctors.map((doctor) => ({ ...doctor, key: doctor._id }))}
-        pagination={{ pageSize: 5 }} // Controlar el número de filas por página
+        pagination={{ pageSize: 5 }} // Número de filas por página
       />
 
       {/* MODAL DOCTOR EDITAR */}
@@ -378,7 +378,7 @@ const AdminDoctors = () => {
                       <img
                         src={selectedDoctor.licencia.url}
                         alt="Licencia"
-                        style={{ width: "80%", marginTop: "10px" }} // Estilo opcional
+                        style={{ width: "80%", marginTop: "10px" }}
                       />
                     )}
                   </Form.Item>
@@ -397,7 +397,7 @@ const AdminDoctors = () => {
                       <img
                         src={selectedDoctor.photo.url}
                         alt="Licencia"
-                        style={{ width: "80%", marginTop: "10px" }} // Estilo opcional
+                        style={{ width: "80%", marginTop: "10px" }}
                       />
                     )}
                   </Form.Item>

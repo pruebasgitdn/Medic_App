@@ -2,13 +2,7 @@ import React, { useContext, useEffect } from "react";
 import { Card, Button, Avatar, Row, Col } from "antd";
 import { Link } from "react-router-dom";
 import { Context } from "../main";
-import {
-  CalendarTwoTone,
-  PhoneTwoTone,
-  MailTwoTone,
-  EditOutlined,
-  UserAddOutlined,
-} from "@ant-design/icons";
+import { MailTwoTone, EditOutlined, UserAddOutlined } from "@ant-design/icons";
 const AdminProfile = () => {
   const { user } = useContext(Context);
 
@@ -27,7 +21,7 @@ const AdminProfile = () => {
           <Avatar
             size={150}
             style={{ marginBottom: "20px" }}
-            src={user?.photo?.url} // Usar la URL de la foto del usuario
+            src={user?.photo?.url}
           />
 
           {/* Información del Usuario */}

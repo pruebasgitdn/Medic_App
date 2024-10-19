@@ -101,7 +101,6 @@ function App() {
             <Route path="appointment" element={<AppointmentForm />} />
             <Route path="appointments" element={<PatientAppointments />} />
             <Route path="editprofile" element={<EditPatientProfile />} />
-            {/* <Route path="supportt" element={<SupportForm />} /> */}
             <Route path="support" element={<PatientSupport />} />
           </Route>
 
@@ -115,7 +114,6 @@ function App() {
             <Route path="editprofile" element={<EditDoctorProfile />} />
             <Route path="patients" element={<DoctorPatients />} />
             <Route path="history" element={<DoctorHistory />} />
-            {/* <Route path="support" element={<SupportForm />} /> */}
             <Route path="support" element={<DoctorSupports />} />
           </Route>
 

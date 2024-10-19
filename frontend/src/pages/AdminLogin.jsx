@@ -13,7 +13,7 @@ const AdminLogin = () => {
 
   const handleLogin = async (e) => {
     try {
-      //Se hace la peticion post a dicha ulr mas el contenido
+      //Peticion post a dicha ulr mas el contenido
       const response = await axios.post(
         "http://localhost:4000/api/admin/login",
         {
@@ -26,7 +26,6 @@ const AdminLogin = () => {
         }
       );
 
-      //Si la respuesta es correcta
       if (response.status === 200) {
         message.success("Inicio de sesion Administrador exitoso!");
 

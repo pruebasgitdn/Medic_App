@@ -23,7 +23,6 @@ const DoctorAppointments = () => {
   const [detallesDiagnostico, setDetallesDiagnostico] = useState("");
   const [citaId, setCitaId] = useState("");
   const [recomendaciones, setRecomendaciones] = useState("");
-  const { TextArea } = Input;
   const [form] = Form.useForm();
   const [order, setOrder] = useState("recent");
   const navigate = useNavigate(); //navigate como Navigate mehtod
@@ -61,7 +60,7 @@ const DoctorAppointments = () => {
   const getAppointmentId = async (item) => {
     const id = item._id;
     if (id) {
-      setCitaId(id); // Asegúrate de que el id se asigna correctamente
+      setCitaId(id);
     } else {
       console.error("ID no válido para la cita.");
     }

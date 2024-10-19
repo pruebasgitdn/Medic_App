@@ -18,7 +18,6 @@ import { useNavigate } from "react-router-dom";
 const { Option } = Select;
 const { TextArea } = Input;
 
-// http://localhost:4000/api/admin/appointments
 const AdminAppointments = () => {
   const [appointments, setAppointments] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -56,7 +55,7 @@ const AdminAppointments = () => {
   }, []);
 
   const filterAndSortAppointments = () => {
-    //Como let const no me deja
+    //let, const no muy flexible
     let filtered = appointments;
 
     // Filtrar por estado valor
@@ -131,8 +130,6 @@ const AdminAppointments = () => {
       console.error("Error:", error);
       setLoading(false);
     }
-
-    // console.log(id);
   };
 
   const handleDelete = async (id) => {
@@ -140,7 +137,7 @@ const AdminAppointments = () => {
       const response = await axios.delete(
         `http://localhost:4000/api/admin/deleteappointment/${id}`,
         {
-          withCredentials: true, // Para asegurarse de que las cookies se manejen correctamente
+          withCredentials: true,
           headers: {
             "Content-Type": "multipart/form-data",
           },
@@ -165,7 +162,7 @@ const AdminAppointments = () => {
       title: "Fecha",
       dataIndex: "fecha",
       key: "fecha",
-      render: (fecha) => new Date(fecha).toLocaleDateString(), // Usar toLocaleDateString para la fecha
+      render: (fecha) => new Date(fecha).toLocaleDateString(), // toLocaleDateString para la fecha
     },
     {
       title: "Hora",
@@ -175,7 +172,7 @@ const AdminAppointments = () => {
         new Date(fecha).toLocaleTimeString([], {
           hour: "2-digit",
           minute: "2-digit",
-        }), // Usar toLocaleTimeString para la hora
+        }), //  toLocaleTimeString para la hora
     },
 
     {

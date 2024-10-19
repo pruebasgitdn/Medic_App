@@ -14,7 +14,6 @@ import {
   DatePicker,
   Select,
   Upload,
-  InputNumber,
   message,
 } from "antd";
 import axios from "axios";
@@ -33,7 +32,7 @@ const Register = () => {
 
   const handleUploadPhoto = (file) => {
     setPhoto(file);
-    return false; // Esto evita que Ant Design intente subir el archivo automáticamente
+    return false;
   };
 
   const handleUploadDocument = (file) => {

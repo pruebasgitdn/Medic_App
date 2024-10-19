@@ -27,7 +27,7 @@ const DoctorProfile = () => {
           <Avatar
             size={150}
             style={{ marginBottom: "20px" }}
-            src={user?.photo?.url} // Usar la URL de la foto del usuario
+            src={user?.photo?.url}
           />
 
           {/* Información del Usuario */}

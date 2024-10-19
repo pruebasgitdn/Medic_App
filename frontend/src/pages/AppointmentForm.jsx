@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-
 import {
   Form,
   Input,
@@ -11,10 +10,8 @@ import {
   Row,
   Col,
   message,
-} from "antd"; // Usamos Antd message para mostrar notificación
+} from "antd";
 import axios from "axios";
-import { toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
 
 const { Option } = Select;
 
@@ -22,7 +19,7 @@ const AppointmentForm = () => {
   const [form] = Form.useForm();
   const [doctores, setDoctores] = useState([]);
   const [loading, setLoading] = useState(true);
-  const navigate = useNavigate(); //navigate como Navigate mehtod
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchDoctors = async () => {
@@ -33,7 +30,7 @@ const AppointmentForm = () => {
             withCredentials: true,
           }
         );
-        setDoctores(response.data.doctors); // Asumiendo que la respuesta es un array de doctores
+        setDoctores(response.data.doctors);
       } catch (error) {
         console.error("Error al obtener los doctores:", error);
       } finally {
@@ -46,7 +43,7 @@ const AppointmentForm = () => {
 
   //El values del userForm del ant nos permite acceder a los valores de los name de los input del form de antdesign
   const onFinish = async (values) => {
-    // Formatear el input de name fecha para enviarla en el formato adecuado (el Date Picker)
+    // Formato del input fecha para enviarla en el formato adecuado (el Date Picker)
     const fechaISO = values.fecha.format(); // Formato ISO 8601
     const { motivo, detallesAdicionales, doctor } = values;
 
@@ -67,7 +64,6 @@ const AppointmentForm = () => {
         }
       );
 
-      //Si hay exito en la peticion
       if (response.data.success) {
         form.resetFields(); //Resetear campos
         message.success("Cita agendada exitosamente!!");
@@ -75,7 +71,7 @@ const AppointmentForm = () => {
       }
     } catch (error) {
       console.error("Error al crear la cita:", error);
-      toast.error(error.response?.data?.message || "Error al crear la cita."); // Notificación de error
+      message.error(error.response?.data?.message || "Error al crear la cita."); // Notificación de error
     }
 
     console.log("Formulario enviado:", values);
@@ -106,7 +102,6 @@ const AppointmentForm = () => {
               loading={loading}
               className="nooverflow"
             >
-              {/* Al poner en value el ._id puedo acceder a todo el id del dr para mandar a la cira*/}
               {doctores.map((doctor) => (
                 <Option key={doctor._id} value={doctor._id}>
                   {doctor.nombre} {doctor.apellido_pat}

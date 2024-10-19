@@ -6,7 +6,6 @@ import { useNavigate } from "react-router-dom";
 const AdminMessages = () => {
   const [messages, setMessages] = useState("");
   const navigate = useNavigate();
-  //   const [selectedMessage, setSelectedMessage] = useState([]);
 
   useEffect(() => {
     const getMessages = async () => {
@@ -54,7 +53,7 @@ const AdminMessages = () => {
       const response = await axios.delete(
         `http://localhost:4000/api/admin/deletemessage/${id}`,
         {
-          withCredentials: true, // Para asegurarse de que las cookies se manejen correctamente
+          withCredentials: true,
           headers: {
             "Content-Type": "multipart/form-data",
           },

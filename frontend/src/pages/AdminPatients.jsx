@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
 import {
   Table,
   Button,
@@ -31,7 +30,7 @@ const AdminPatients = () => {
   const navigate = useNavigate();
   const { Dragger } = Upload;
 
-  // Función para manejar el archivo de foto
+  // Manejar el archivo de foto
   const handlePhotoUpload = (file) => {
     setPhoto(file);
     return false;
@@ -53,7 +52,6 @@ const AdminPatients = () => {
 
   useEffect(() => {
     //Rellenar form con el tan seteado
-
     form.setFieldsValue({
       nombre: selectedPatient?.nombre,
       apellido_pat: selectedPatient?.apellido_pat,
@@ -178,7 +176,7 @@ const AdminPatients = () => {
         `http://localhost:4000/api/admin/editpatient/${selectedPatient._id}`,
         formData,
         {
-          withCredentials: true, // Para asegurarse de que las cookies se manejen correctamente
+          withCredentials: true,
           headers: {
             "Content-Type": "multipart/form-data",
           },
@@ -217,7 +215,7 @@ const AdminPatients = () => {
       const response = await axios.delete(
         `http://localhost:4000/api/admin/deletepatient/${id}`,
         {
-          withCredentials: true, // Para asegurarse de que las cookies se manejen correctamente
+          withCredentials: true,
           headers: {
             "Content-Type": "multipart/form-data",
           },
@@ -245,7 +243,7 @@ const AdminPatients = () => {
           ...patient,
           key: patient._id,
         }))}
-        pagination={{ pageSize: 5 }} // Controlar el número de filas por página
+        pagination={{ pageSize: 5 }} // Numero de filas por página
       />
 
       <Modal
@@ -368,7 +366,7 @@ const AdminPatients = () => {
                       <img
                         src={selectedPatient.document_id.url}
                         alt="Foto"
-                        style={{ width: "80%", marginTop: "10px" }} // Estilo opcional
+                        style={{ width: "80%", marginTop: "10px" }}
                       />
                     )}
                   </Form.Item>
@@ -387,7 +385,7 @@ const AdminPatients = () => {
                       <img
                         src={selectedPatient.photo.url}
                         alt="Foto"
-                        style={{ width: "80%", marginTop: "10px" }} // Estilo opcional
+                        style={{ width: "80%", marginTop: "10px" }}
                       />
                     )}
                   </Form.Item>

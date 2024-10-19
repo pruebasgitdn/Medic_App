@@ -20,7 +20,7 @@ const DoctorPatients = () => {
   const [alergia, setAlergias] = useState("");
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isReportModalOpen, setIsReportModalOpen] = useState(false); // Estado para los 2 modales
-  const [selectedPatient, setSelectedPatient] = useState(null); // Estado para el paciente seleccionado
+  const [selectedPatient, setSelectedPatient] = useState(null); // paciente seleccionado
   const { TextArea } = Input;
   const [form] = Form.useForm();
   const navigate = useNavigate();
@@ -55,7 +55,7 @@ const DoctorPatients = () => {
 
   const showReportModal = (patient) => {
     setSelectedPatient(patient);
-    setIsReportModalOpen(true); // Abre el modal de historial
+    setIsReportModalOpen(true); // Modal de historial
   };
 
   const handleOk = () => {

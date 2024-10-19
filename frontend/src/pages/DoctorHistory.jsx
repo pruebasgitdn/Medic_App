@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import axios from "axios";
 import { List, Card, Alert, Select, Row, Col } from "antd";
 
@@ -27,7 +27,7 @@ const DoctorHistory = () => {
     fetchAppointments();
   }, []);
 
-  // Filtramos las citas que están en estado 'REALIZADA'
+  //Filtrar realizada
   const citasRealizadas = data.filter((cita) => cita.estado === "REALIZADA");
 
   const ordenarCitas = (a, b) => {

@@ -33,12 +33,9 @@ const PatientAppointments = () => {
           }
         );
 
-        //respuesta de la petición
         const data = response.data;
 
-        // éxito
         if (data.success) {
-          // Setear el historial con el data.appointments que es lo que devuelve la respuesta en el backend
           setHistorial(data.appointments);
         } else {
           console.log("No se encontraron citas");
@@ -54,7 +51,7 @@ const PatientAppointments = () => {
     fetchHistory();
   }, []);
 
-  // Filtrar citas por estado y ordenar dependiento del estado 'pendientes' o 'realizadas' que se setean con el set... de dropdown onclik set
+  // Filtrar por estado y ordenar dependiento del estado 'pendientes' o 'realizadas' que se setean con el set... de dropdown onclik set
   const sortedPendientes = historial
     .filter((cita) => cita.estado === "PENDIENTE")
     .sort((a, b) =>
@@ -85,7 +82,7 @@ const PatientAppointments = () => {
       );
 
       if (response.data.success) {
-        message.success("Cita cancelada exitosamente"); // Toast de éxito
+        message.success("Cita cancelada exitosamente");
 
         //actualizar estado para recargar componentes sin recargar la pagina
         setHistorial((prev) =>

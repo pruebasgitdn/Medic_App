@@ -71,7 +71,7 @@ const PatientSupport = () => {
     };
 
     fetch();
-  }, []); // Asegúrate de no incluir `supports` en las dependencias para evitar bucles infinitos
+  }, []);
 
   const handleSubmit = async (values) => {
     try {
