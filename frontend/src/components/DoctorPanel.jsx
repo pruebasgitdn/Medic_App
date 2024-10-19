@@ -7,7 +7,6 @@ import {
   CalendarOutlined,
   HistoryOutlined,
   TeamOutlined,
-  NotificationOutlined,
   ToolOutlined,
 } from "@ant-design/icons";
 import { Link, Outlet } from "react-router-dom";
@@ -17,7 +16,6 @@ const DoctorPanel = () => {
     <Layout>
       <Sider collapsible theme="light">
         <Menu mode="inline">
-          {/* Añadir enlaces de las rutas a los items del menú */}
           <Menu.Item key="1" icon={<UserOutlined />}>
             <Link to="profile">Perfil</Link>
           </Menu.Item>

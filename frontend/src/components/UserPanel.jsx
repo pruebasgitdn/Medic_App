@@ -1,5 +1,3 @@
-import React, { useContext } from "react";
-import { Context } from "../main";
 import { Layout, Menu } from "antd";
 const { Sider, Content } = Layout;
 import {
@@ -7,19 +5,15 @@ import {
   CalendarOutlined,
   HistoryOutlined,
   EyeOutlined,
-  NotificationOutlined,
   ToolOutlined,
 } from "@ant-design/icons";
 import { Link, Outlet } from "react-router-dom";
 
 const UserPanel = () => {
-  // const { isAuthenticated, user } = useContext(Context);
-
   return (
     <Layout>
       <Sider collapsible theme="light">
         <Menu mode="inline">
-          {/* Añadir enlaces de las rutas a los items del menú */}
           <Menu.Item key="1" icon={<UserOutlined />}>
             <Link to="profile">Perfil</Link>
           </Menu.Item>

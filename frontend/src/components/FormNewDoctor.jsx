@@ -56,7 +56,7 @@ const FormNewDoctor = () => {
 
     if (licencia) {
       console.log("Subiendo licencia:", licencia);
-      formData.append("licencia", licencia); // Archivo de foto
+      formData.append("licencia", licencia); // Archivo de licencia
     }
 
     if (!document || !licencia) {
@@ -72,7 +72,7 @@ const FormNewDoctor = () => {
         "http://localhost:4000/api/admin/createDoctor",
         formData,
         {
-          withCredentials: true, // Para asegurarse de que las cookies se manejen correctamente
+          withCredentials: true,
           headers: {
             "Content-Type": "multipart/form-data",
           },
@@ -164,14 +164,6 @@ const FormNewDoctor = () => {
                 >
                   <Input className="form-input" />
                 </Form.Item>
-                {/* {emailError &&
-                emailError === "Administrador con este email ya existe" ? (
-                  <>
-                    <p className="error_form">{emailError}</p>
-                  </>
-                ) : (
-                  <></>
-                )} */}
               </Col>
 
               {/* INPUT APELLIDO PATERNO */}
@@ -374,15 +366,6 @@ const FormNewDoctor = () => {
           </Form>
         </Card>
       </Col>
-
-      {/* Columna de la imagen */}
-      {/* <Col xs={0} md={8} className="image-column">
-        <img
-          src="/asideregister.jpg"
-          alt="Banner"
-          className="register-banner"
-        />
-      </Col> */}
     </Row>
   );
 };

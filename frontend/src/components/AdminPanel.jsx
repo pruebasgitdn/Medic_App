@@ -16,7 +16,6 @@ const AdminPanel = () => {
     <Layout>
       <Sider collapsible theme="light">
         <Menu mode="inline">
-          {/* Añadir enlaces de las rutas a los items del menú */}
           <Menu.Item key="1" icon={<UserOutlined />}>
             <Link to="profile">Perfil</Link>
           </Menu.Item>

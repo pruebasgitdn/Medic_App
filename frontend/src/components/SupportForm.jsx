@@ -56,7 +56,7 @@ const SupportForm = () => {
         message.success("Formulario enviado con éxito");
         setLoading(false);
         navigate("/");
-        form.resetFields(); // Limpiar el formulario
+        form.resetFields(); // Limpiar formulario
         setFile(null); // Reiniciar el archivo
       }
     } catch (error) {
@@ -70,9 +70,7 @@ const SupportForm = () => {
     <Row className="register-container">
       <Col xs={24} md={12}>
         <Card className="register-form-card">
-        <div>
-          such ni vokas
-        </div>
+          <div>such ni vokas</div>
           <Form
             form={form}
             layout="vertical"

@@ -33,7 +33,7 @@ const Departaments = () => {
 
   const responsive = {
     superLargeDesktop: {
-      // the naming can be any, depends on you.
+      // punto de quiebre
       breakpoint: { max: 4000, min: 3000 },
       items: 5,
     },
@@ -71,11 +71,6 @@ const Departaments = () => {
                 <div className="depart-name">{depart.name}</div>
               </div>
             </Card>
-
-            // <div key={index} className="card">
-            //   <div className="depart-name">{depart.name}</div>
-            //   <img src={depart.imageUrl} alt="Department" />
-            // </div>
           );
         })}
       </Carousel>

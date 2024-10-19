@@ -1,15 +1,5 @@
-import React, { useEffect, useContext, useState } from "react";
-import {
-  Form,
-  Input,
-  Button,
-  Select,
-  Row,
-  Col,
-  Upload,
-  Card,
-  message,
-} from "antd";
+import { useEffect, useContext, useState } from "react";
+import { Form, Input, Button, Row, Col, Upload, Card, message } from "antd";
 import { Context } from "../main";
 import { UploadOutlined } from "@ant-design/icons";
 import { useNavigate } from "react-router-dom";
@@ -17,7 +7,6 @@ import axios from "axios";
 import "react-phone-number-input/style.css";
 import PhoneInput from "react-phone-number-input";
 import { Link } from "react-router-dom";
-const { Option } = Select;
 
 const EditDoctorProfile = () => {
   const { user, setUser } = useContext(Context);
@@ -29,13 +18,13 @@ const EditDoctorProfile = () => {
   const [licencia, setLicencia] = useState(null);
   const { Dragger } = Upload;
 
-  // Función para manejar el archivo de foto
+  // Manejar el archivo de foto
   const handlePhotoUpload = (file) => {
     setPhoto(file);
     return false; //  evita  subir el archivo automáticamente
   };
 
-  // Función para manejar el archivo de foto
+  // Manejar el archivo de foto
   const handleLicenseUpload = (file) => {
     setLicencia(file);
     return false;
@@ -78,7 +67,6 @@ const EditDoctorProfile = () => {
         formData.append("licencia", licencia);
       }
 
-      //Peticion
       const response = await axios.put(
         "http://localhost:4000/api/doctor/editprofile",
         formData,
@@ -189,7 +177,6 @@ const EditDoctorProfile = () => {
                     defaultCountry={"CO"}
                     placeholder="Ingresa numero de telefono"
                   />
-                  {/* <Input placeholder="Teléfono" /> */}
                 </Form.Item>
               </Col>
             </Row>
@@ -238,7 +225,7 @@ const EditDoctorProfile = () => {
                       <img
                         src={user.licencia.url}
                         alt="Licencia"
-                        style={{ width: "80%", marginTop: "10px" }} // Estilo opcional
+                        style={{ width: "80%", marginTop: "10px" }}
                       />
                     )}
                   </Form.Item>
@@ -257,7 +244,7 @@ const EditDoctorProfile = () => {
                       <img
                         src={user.photo.url}
                         alt="Licencia"
-                        style={{ width: "80%", marginTop: "10px" }} // Estilo opcional
+                        style={{ width: "80%", marginTop: "10px" }}
                       />
                     )}
                   </Form.Item>

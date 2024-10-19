@@ -13,31 +13,6 @@ const NavBar = () => {
   const [menuVisible, setMenuVisible] = useState(false); // Estado para controlar la visibilidad del menú
 
   // Cerrar sesión
-  // const handleLogout = async () => {
-  //   try {
-  //     const response = await axios.get(
-  //       role === "doctor"
-  //         ? "http://localhost:4000/api/doctor/logout"
-  //         : "http://localhost:4000/api/patient/logout",
-  //       { withCredentials: true }
-  //     );
-
-  //     if (response.status === 200) {
-  //       message.info("Cierre de sesión exitoso!");
-  //       setUser(null);
-  //       setIsAuthenticated(false);
-  //       localStorage.removeItem("user");
-  //       localStorage.removeItem("isAuthenticated");
-  //       localStorage.removeItem("role");
-  //       navigate("/");
-  //     } else {
-  //       message.error("Error al cerrar sesión");
-  //     }
-  //   } catch (error) {
-  //     console.error("Error en el logout:", error);
-  //     message.error("Error al cerrar sesión");
-  //   }
-  // };
   const handleLogout = async () => {
     try {
       let logoutUrl;
@@ -71,7 +46,7 @@ const NavBar = () => {
   };
 
   const toggleMenu = () => {
-    setMenuVisible(!menuVisible); // Alterna la visibilidad del menú
+    setMenuVisible(!menuVisible); // Alternar menú
   };
 
   return (
@@ -129,13 +104,12 @@ const NavBar = () => {
           )}
         </div>
       </Menu>
-      {/* Botón y opciones que solo aparecen en pantallas pequeñas */}
+
       <div className="mobile-menu">
         <img src="/logos/logomain.png" alt="Logo" className="logonav" />
         <Button type="primary" onClick={toggleMenu} className="menu-button">
           Menú
         </Button>
-        {/* Logo que aparece en pantallas pequeñas */}
 
         {menuVisible && (
           <div className="mobile-options">

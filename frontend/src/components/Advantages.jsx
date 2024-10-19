@@ -4,10 +4,6 @@ import { Row, Col, Card } from "antd";
 const Advantages = () => {
   return (
     <div className="container">
-      {/* 
-       span 12 = 12 espacios de 24 columnas 
-       
-       */}
       <div className="advantages">
         <h3>Todo lo necesario para ofrecer el mejor servicio en linea.</h3>
         <Row gutter={[16, 16]}>

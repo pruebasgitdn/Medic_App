@@ -1,8 +1,6 @@
 import { Button, Card } from "antd";
 import React from "react";
 
-const { Meta } = Card;
-
 const Biography = ({ imageURL }) => {
   return (
     <div className="container">

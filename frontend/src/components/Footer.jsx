@@ -1,7 +1,6 @@
 import React from "react";
 import { Row, Col } from "antd";
 import {
-  FacebookFilled,
   FacebookOutlined,
   InstagramOutlined,
   MailOutlined,
@@ -16,10 +15,6 @@ const FooterCm = () => {
           <img src="/logos/mainblack.png" alt="" className="img_footer" />
         </div>
         <div className="fticons">
-          {/* <span>
-            <img src="/logos/mainblack.png" alt="" width="80px" />
-          </span> */}
-
           <FacebookOutlined className="icons_ftr" />
           <InstagramOutlined className="icons_ftr" />
           <MailOutlined className="icons_ftr" />

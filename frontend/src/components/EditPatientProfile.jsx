@@ -30,7 +30,7 @@ const EditPatientProfile = () => {
   const { Option } = Select;
   const { TextArea } = Input;
 
-  // Función para manejar el archivo de foto
+  // Manejar el archivo de foto
   const handlePhotoUpload = (file) => {
     setPhoto(file);
     return false;
@@ -78,12 +78,11 @@ const EditPatientProfile = () => {
         formData.append("document_id", document);
       }
 
-      // Enviar los datos al servidor
       const response = await axios.put(
         "http://localhost:4000/api/patient/editprofile",
         formData,
         {
-          withCredentials: true, // Para asegurarse de que las cookies se manejen correctamente
+          withCredentials: true,
           headers: {
             "Content-Type": "multipart/form-data",
           },
@@ -93,7 +92,7 @@ const EditPatientProfile = () => {
       message.success("Datos actualizados exitosamente");
       setLoading(false);
       setUser(response.data.patient);
-      navigate("/userpanel/profile"); // Redirigir a la página de perfil
+      navigate("/userpanel/profile"); // Redirigir al perfil
     } catch (error) {
       setLoading(false);
 
@@ -112,7 +111,6 @@ const EditPatientProfile = () => {
       }
       console.error("Error al actualizar el perfil:", error);
     }
-    // console.log(values);
   };
 
   return (
@@ -258,7 +256,7 @@ const EditPatientProfile = () => {
                       <img
                         src={user.document_id.url}
                         alt="Foto"
-                        style={{ width: "80%", marginTop: "10px" }} // Estilo opcional
+                        style={{ width: "80%", marginTop: "10px" }}
                       />
                     )}
                   </Form.Item>
@@ -277,7 +275,7 @@ const EditPatientProfile = () => {
                       <img
                         src={user.photo.url}
                         alt="Foto"
-                        style={{ width: "80%", marginTop: "10px" }} // Estilo opcional
+                        style={{ width: "80%", marginTop: "10px" }}
                       />
                     )}
                   </Form.Item>

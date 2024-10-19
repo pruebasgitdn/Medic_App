@@ -43,16 +43,13 @@ const ContactForm = () => {
 
   return (
     <div className="login-container">
-      <Card
-        title="Formulario de Contacto"
-        className="contact-card" // Clase personalizada
-      >
+      <Card title="Formulario de Contacto" className="contact-card">
         <Form
           form={form}
           name="contact-form"
           onFinish={onFinish}
           layout="vertical"
-          className="contact-form" // Clase personalizada
+          className="contact-form"
         >
           <Row gutter={16}>
             <Col xs={24} sm={12}>
