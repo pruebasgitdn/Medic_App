@@ -28,6 +28,14 @@
   overflow: visible;
   z-index: 1050; /* o un valor más alto si es necesario */
 }
+.center {
+  align-items: center;
+}
+.form-itemm {
+  background-color: #0bc624;
+  z-index: 2;
+  position: relative;
+}
 #w80 {
   width: 80%;
 }
@@ -45,12 +53,17 @@
   font-size: small;
   font-style: italic;
 }
-.center {
+.centere {
   display: flex;
-  justify-content: center;
-  align-items: center;
+  flex-wrap: wrap;
+  justify-content: space-evenly;
+  top: 0px;
+  bottom: 0px;
 }
-
+.ff {
+  min-height: 130px;
+  min-width: 200px;
+}
 .contain {
   object-fit: fill;
 }
@@ -598,6 +611,11 @@ h4 {
   display: flex;
   justify-content: center;
 }
+.avatardocpatient {
+  border-radius: 20px;
+  width: 150px;
+  height: 150px;
+}
 .doctorpatient_img img {
   border-radius: 20px;
   width: 150px;
@@ -727,7 +745,7 @@ h4 {
 }
 
 .admindoctorsimg {
-  width: 50px;
+  width: 40px;
 }
 
 @media (max-width: 700px) {

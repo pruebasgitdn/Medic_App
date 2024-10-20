@@ -162,7 +162,6 @@ const PatientAppointments = () => {
       {/* Sección de Citas Realizadas */}
       <Col span={12}>
         <h2 className="nooverflow">Citas Realizadas</h2>
-
         <Select
           defaultValue={realizadas}
           style={{ width: 200, marginBottom: "16px" }}

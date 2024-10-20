@@ -121,7 +121,10 @@ const PatientSupport = () => {
 
       if (response.status === 200) {
         message.success("Soporte eliminado correctamente.");
-        navigate("/userpanel/profile");
+
+        setPendientes((prevPendientes) =>
+          prevPendientes.filter((pendiente) => pendiente._id !== id)
+        );
       }
       setLoading(false);
     } catch (error) {

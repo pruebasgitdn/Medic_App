@@ -11,6 +11,7 @@ import {
   Select,
   Input,
   Form,
+  Avatar,
 } from "antd";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
@@ -197,7 +198,7 @@ const AdminAppointments = () => {
       key: "acciones",
       render: (record) => (
         <>
-          <Button type="link" onClick={() => showDetails(record)}>
+          <Button type="link" onClick={() => showDetails(record)} size="small">
             Ver
           </Button>
           <Popconfirm
@@ -206,7 +207,7 @@ const AdminAppointments = () => {
             cancelText="No"
             onConfirm={() => handleDelete(record._id)}
           >
-            <Button type="link" danger>
+            <Button type="link" danger size="small">
               Eliminar
             </Button>
           </Popconfirm>
@@ -279,7 +280,7 @@ const AdminAppointments = () => {
               <Col xs={24} md={12}>
                 <p>
                   <strong>Dr:</strong>{" "}
-                  <img
+                  <Avatar
                     src={selectedAppointment?.idDoctor?.photo?.url} // Mostrar la foto si existe
                     alt="Foto del Doctor"
                     style={{
@@ -295,7 +296,7 @@ const AdminAppointments = () => {
               <Col xs={24} md={12}>
                 <p>
                   <strong>Paciente:</strong>{" "}
-                  <img
+                  <Avatar
                     src={selectedAppointment?.idPaciente?.photo?.url} // Mostrar la foto si existe
                     alt="Foto del Doctor"
                     style={{

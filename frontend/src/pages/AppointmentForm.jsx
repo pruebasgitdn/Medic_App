@@ -1,17 +1,9 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import {
-  Form,
-  Input,
-  DatePicker,
-  Select,
-  Button,
-  Card,
-  Row,
-  Col,
-  message,
-} from "antd";
+import { Form, Input, Select, Button, Card, Row, Col, message } from "antd";
 import axios from "axios";
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
 
 const { Option } = Select;
 
@@ -20,6 +12,7 @@ const AppointmentForm = () => {
   const [doctores, setDoctores] = useState([]);
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
+  const [startDate, setStartDate] = useState(new Date());
 
   useEffect(() => {
     const fetchDoctors = async () => {
@@ -37,14 +30,13 @@ const AppointmentForm = () => {
         setLoading(false);
       }
     };
-
+    startDate.setSeconds(0);
     fetchDoctors();
-  }, []);
+  }, [form]);
 
-  //El values del userForm del ant nos permite acceder a los valores de los name de los input del form de antdesign
   const onFinish = async (values) => {
-    // Formato del input fecha para enviarla en el formato adecuado (el Date Picker)
-    const fechaISO = values.fecha.format(); // Formato ISO 8601
+    const fechaISO = startDate.toISOString(); // Formato ISO 8601
+
     const { motivo, detallesAdicionales, doctor } = values;
 
     //Crear objeto para cita
@@ -56,6 +48,8 @@ const AppointmentForm = () => {
     };
 
     try {
+      setLoading(true);
+
       const response = await axios.post(
         "http://localhost:4000/api/appointment/post",
         citaData,
@@ -69,12 +63,14 @@ const AppointmentForm = () => {
         message.success("Cita agendada exitosamente!!");
         navigate("/userpanel/appointments");
       }
+      setLoading(false);
     } catch (error) {
       console.error("Error al crear la cita:", error);
       message.error(error.response?.data?.message || "Error al crear la cita."); // Notificación de error
+      setLoading(false);
     }
 
-    console.log("Formulario enviado:", values);
+    console.log("Formulario enviado:", citaData);
   };
 
   return (
@@ -149,25 +145,24 @@ const AppointmentForm = () => {
               </Form.Item>
             </Col>
           </Row>
-          <Form.Item
-            label="Fecha de la Cita"
-            name="fecha"
-            className="form-item"
-            id="containerpicker"
-            rules={[
-              { required: true, message: "Por favor, selecciona una fecha" },
-            ]}
-          >
+
+          <Row className="centere">
+            <h4>Fecha: </h4>
             <DatePicker
-              format="YYYY-MM-DDTHH:mm:ss" //ISO
-              showTime
-              placeholder="Seleccione una fecha y hora"
-              style={{ width: "100%" }}
+              selected={startDate}
+              onChange={(date) => setStartDate(date)}
+              showTimeInput
             />
-          </Form.Item>
+          </Row>
 
           <Form.Item>
-            <Button type="primary" htmlType="submit" style={{ width: "100%" }}>
+            <Button
+              type="primary"
+              loading={loading}
+              htmlType="submit"
+              block
+              size="small"
+            >
               Agendar Cita
             </Button>
           </Form.Item>

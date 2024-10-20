@@ -11,6 +11,7 @@ import {
   message,
   Popconfirm,
   Select,
+  Avatar,
 } from "antd";
 import axios from "axios";
 import { UploadOutlined } from "@ant-design/icons";
@@ -86,12 +87,8 @@ const AdminPatients = () => {
       title: "Foto",
       dataIndex: "photo",
       key: "photo",
-      render: (_, photo) => (
-        <img
-          src={photo.url || "placeholder-image-url"}
-          alt="Patient Image"
-          className="admindoctorsimg"
-        />
+      render: (_, selectedPatient) => (
+        <Avatar src={selectedPatient?.photo?.url} className="admindoctorsimg" />
       ),
     },
     {
@@ -136,7 +133,7 @@ const AdminPatients = () => {
       key: "acciones",
       render: (record) => (
         <div className="adminperfil_btns">
-          <Button type="link" onClick={() => handleEdit(record)}>
+          <Button type="link" onClick={() => handleEdit(record)} size="small">
             Editar
           </Button>
           <Popconfirm
@@ -145,7 +142,9 @@ const AdminPatients = () => {
             okText="Sí"
             cancelText="No"
           >
-            <Button danger>Eliminar</Button>
+            <Button danger size="small">
+              Eliminar
+            </Button>
           </Popconfirm>
         </div>
       ),
@@ -315,7 +314,7 @@ const AdminPatients = () => {
               rules={[
                 { min: 10, message: "Numero mayor a 10 digitos" },
                 {
-                  max: 12,
+                  max: 14,
                   message: "Maximo 11 digitos",
                 },
               ]}

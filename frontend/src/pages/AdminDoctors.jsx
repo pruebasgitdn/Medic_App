@@ -11,6 +11,7 @@ import {
   Upload,
   message,
   Popconfirm,
+  Avatar,
 } from "antd";
 import "react-phone-number-input/style.css";
 import PhoneInput from "react-phone-number-input";
@@ -173,9 +174,9 @@ const AdminDoctors = () => {
       title: "Foto",
       dataIndex: "photo",
       key: "photo",
-      render: (_, photo) => (
-        <img
-          src={photo.url || "placeholder-image-url"}
+      render: (_, selectedDoctor) => (
+        <Avatar
+          src={selectedDoctor?.photo?.url || "placeholder-image-url"}
           alt="Doctor"
           className="admindoctorsimg"
         />
@@ -224,7 +225,7 @@ const AdminDoctors = () => {
       key: "acciones",
       render: (_, doctor) => (
         <div className="adminperfil_btns">
-          <Button type="link" onClick={() => handleEdit(doctor)}>
+          <Button type="link" onClick={() => handleEdit(doctor)} size="small">
             Editar
           </Button>
           <Popconfirm
@@ -233,7 +234,9 @@ const AdminDoctors = () => {
             okText="Sí"
             cancelText="No"
           >
-            <Button danger>Eliminar</Button>
+            <Button danger size="small">
+              Eliminar
+            </Button>
           </Popconfirm>
         </div>
       ),

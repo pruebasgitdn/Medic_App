@@ -9,6 +9,7 @@ import {
   Modal,
   Form,
   Input,
+  Avatar,
 } from "antd";
 
 import { DeleteFilled } from "@ant-design/icons";
@@ -136,7 +137,8 @@ const DoctorPatients = () => {
                 <Row gutter={[16, 16]}>
                   <Col xs={24} sm={8}>
                     <div className="doctorpatient_img">
-                      <img
+                      <Avatar
+                        className="avatardocpatient"
                         src={patient?.photo?.url || "default-image-url"}
                         alt="patient"
                       />

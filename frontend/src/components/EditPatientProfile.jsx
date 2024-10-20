@@ -214,13 +214,8 @@ const EditPatientProfile = () => {
               <Input placeholder="Dirección" />
             </Form.Item>
 
-            <Form.Item
-              name="alergias"
-              label="Alergias"
-              className="form-item"
-              rules={[{ min: 3, message: "Minimo 3 caracteres" }]}
-            >
-              <TextArea rows={3} />
+            <Form.Item name="alergias" label="Alergias" className="form-item">
+              <Input.TextArea rows={3} />
             </Form.Item>
 
             {/* Género */}

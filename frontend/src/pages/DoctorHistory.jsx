@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
-import { List, Card, Alert, Select, Row, Col } from "antd";
+import { List, Card, Alert, Select, Row, Col, Avatar } from "antd";
 
 const { Option } = Select;
 
@@ -43,7 +43,7 @@ const DoctorHistory = () => {
 
   return (
     <div>
-      <h2>Historial de Citas Realizadas</h2>
+      <h2 className="nooverflow">Historial de Citas Realizadas</h2>
       <Select
         value={order}
         onChange={(value) => setOrder(value)}
@@ -72,7 +72,7 @@ const DoctorHistory = () => {
               >
                 <Row gutter={20}>
                   <Col>
-                    <img
+                    <Avatar
                       src={cita?.idPaciente?.photo?.url || {}}
                       alt="patientimage"
                       id="dr_pt_history"

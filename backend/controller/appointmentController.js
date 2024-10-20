@@ -2,49 +2,53 @@ import ErrorHandler from "../middlewares/errorMiddleware.js";
 import { Cita } from "../models/citaSchema.js";
 import { Doctor } from "../models/doctorSchema.js";
 import { Patient } from "../models/patientSchema.js";
-import nodemailer from "nodemailer";
 import transporter from "../utils/nodeMailerConfig.js";
 
 // PACIENTE AGENDA UNA CITA
 export const createAppointment = async (req, res, next) => {
   try {
-    //Extrear valores
     const { fecha, motivo, idDoctor, detallesAdicionales } = req.body;
-    const idPaciente = req.user.id; // ID del paciente autenticado
+    const idPaciente = req.user.id; // id del paciente autenticado
 
-    // Validar campos obligatorios
+    // campos obligatorios
     if (!fecha || !motivo || !idDoctor) {
       return next(
         new ErrorHandler("Por favor, llena todos los campos obligatorios.", 400)
       );
     }
 
+    //Fecha no anterior a la actuak
+    const today = new Date();
+    if (new Date(fecha) < today) {
+      return next(new ErrorHandler(`Ingrese una fecha valida`, 400));
+    }
+
     // Verificar que el doctor existe
     const doctor = await Doctor.findById(idDoctor);
-
     if (!doctor) {
       return next(new ErrorHandler("Doctor no encontrado.", 404));
     }
 
     // Verificar que no haya citas que se esten en el mismo horario
     const startDate = new Date(fecha); // Fecha de inicio de la nueva cita
-    const endDate = new Date(startDate.getTime() + 40 * 60000); // Obtenemos la fecha de inicio y agregamos 40 minutos de duración a la cita para la duracion el final - 40 min
+    const endDate = new Date(startDate.getTime() + 40 * 60000); // fecha de inicio y agregamos 40 minutos de duración a la cita para la duracion el final - 40 min
 
-    // Buscar citas que se esten en el horario del doctor
-    /* 
-    mongo operadores
-    $ne (not equal): no  excluir las 'CANCELADA'
-    $gte (grether than) masn que
-    $lt (less tahn) menos que
-    lo que hace un intervalo de busqueda en la fecha
-    */
+    // Verificar si existe algún conflicto de citas en el intervalo de 40 minutos
+    // or asegura que la nueva cita no comienza en el intervalo de otra cita y que no haya una exixstene que este en el intervalo de la nueva
     const conflictAppointments = await Cita.find({
       idDoctor,
-      estado: { $ne: "CANCELADA" }, // Ignorar las citas canceladas
-      fecha: {
-        $gte: startDate,
-        $lt: endDate,
-      },
+      estado: { $nin: ["CANCELADA", "REALIZADA"] }, // Excluir estas cance.. y real..
+      $or: [
+        {
+          fecha: { $gte: startDate, $lt: endDate },
+        },
+        {
+          fecha: {
+            $lte: startDate,
+            $gte: new Date(startDate.getTime() - 40 * 60000),
+          },
+        },
+      ],
     });
 
     if (conflictAppointments.length > 0) {
@@ -56,18 +60,17 @@ export const createAppointment = async (req, res, next) => {
       );
     }
 
-    // Crear la cita
     const appointment = await Cita.create({
       idDoctor,
       idPaciente,
-      fecha, //En la API meter CON FORMATO ISO 8601
+      fecha,
       motivo,
       detallesAdicionales,
       estado: "PENDIENTE", // Estado inicial
     });
 
     const mailOptions = {
-      from: "medelinknotificaciones@gmail.com", // Cambia esto por tu email de notificaciones
+      from: "medelinknotificaciones@gmail.com",
       to: req.user.email, // Correo del paciente autenticado
       subject: "Confirmación de Creación de Cita",
       text: `Hola ${req.user.nombre},\n\nTu cita con el Dr. ${doctor.nombre} ${doctor.apellido_pat} ha sido creada exitosamente para la fecha: ${fecha}.\n\nMotivo: ${motivo}.\n\nSaludos,\nEquipo Médico`,
@@ -76,15 +79,12 @@ export const createAppointment = async (req, res, next) => {
     // Enviar el correo
     transporter.sendMail(mailOptions, (error, info) => {
       if (error) {
-        return res
-          .status(500)
-          .json({
-            message: "Error al enviar el correo de confirmación",
-            error,
-          });
+        return res.status(500).json({
+          message: "Error al enviar el correo de confirmación",
+          error,
+        });
       }
 
-      // Respuesta exitosa
       res.status(201).json({
         success: true,
         message: "Cita creada exitosamente y notificación enviada.",
@@ -99,14 +99,13 @@ export const createAppointment = async (req, res, next) => {
 //CONSULTAR CITAS DEL PACIENTE
 export const checkAppointments = async (req, res, next) => {
   try {
-    const patientId = req.user.id; //ID del user autenticado by middleware
+    const patientId = req.user.id; //Auth
 
-    //busqueda en citas por el id del paciente
     const appointments = await Cita.find({ idPaciente: patientId }).populate(
       "idDoctor",
       "nombre apellido_pat apellido_mat especialidad"
     );
-    //popular del idDoctor que es la conexiona la otra tabla, los sgtes campos de nombre apillo y especialed
+    //popular del idDoctor los sgtes campos de nombre apillo y especialed
 
     if (!appointments || appointments.length === 0) {
       return next(
@@ -125,7 +124,7 @@ export const checkAppointments = async (req, res, next) => {
 //CONSULTAR CITAS DEL DOCTOR
 export const getDoctorAppointments = async (req, res, next) => {
   try {
-    const doctorId = req.user.id; //Viene de la autententicacion del middleware
+    const doctorId = req.user.id; //auth
 
     const appointments = await Cita.find({ idDoctor: doctorId }).populate(
       "idPaciente",
@@ -150,14 +149,14 @@ export const getDoctorAppointments = async (req, res, next) => {
 //PACIENTE CANCELA CITA
 export const cancelAppointment = async (req, res, next) => {
   try {
-    const appointmentId = req.params.id; // ID de la cita de los parámetros  URL
-    const patientId = req.user.id; // ID del paciente autenticado
+    const appointmentId = req.params.id; //  URL
+    const patientId = req.user.id; // ID del auth
 
-    // Busca por ID y asegurar que pertenece al paciente autenticado
+    // Busca por ID y asegurar que pertenece al paciente autenticado y que no sean iguales a canceladas
     const appointment = await Cita.findOne({
       _id: appointmentId,
-      idPaciente: patientId, // Verificar que el paciente sea el dueño de la cita
-      estado: { $ne: "CANCELADA" }, // No permitir cancelar si ya está cancelada
+      idPaciente: patientId,
+      estado: { $ne: "CANCELADA" },
     });
 
     if (!appointment) {
@@ -181,11 +180,11 @@ export const cancelAppointment = async (req, res, next) => {
 // DOCTOR RESPONDE LA CITA Y ACTUALIZA SU ESTADO Y EL HISTORIAL DEL PACIENTE
 export const respondAppointment = async (req, res, next) => {
   try {
-    const doctorId = req.user.id; // ID del doctor autenticado
-    const { id } = req.params; // ID de la cita
+    const doctorId = req.user.id; // ID del doctor aute
+    const { id } = req.params; // ID de la cita URL
     const { detallesDiagnostico, recomendaciones } = req.body;
 
-    // Buscar la cita por ID y doctor
+    // Buscar la cita por ID y doctor y popular por id sus campos
     const appointment = await Cita.findOne({
       _id: id,
       idDoctor: doctorId,
@@ -246,31 +245,28 @@ export const respondAppointment = async (req, res, next) => {
 
 export const doctorCancelAppointment = async (req, res, next) => {
   try {
-    const appointmentId = req.params.id;
+    const appointmentId = req.params.id; //URL
     const doctorId = req.user.id; // ID del doctor autenticado
 
-    const { motivoCancelacion } = req.body; // Motivo de la cancelación
-
-    // Buscar la cita por ID y doctor
+    const { motivoCancelacion } = req.body;
 
     // Buscar la cita por ID
     const appointment = await Cita.findById(appointmentId).populate(
       "idPaciente",
       "nombre email"
     );
-
     if (!appointment) {
       return next(new ErrorHandler("Cita no encontrada o ya cancelada", 404));
     }
 
-    // Verificar que la cita pertenece al doctor autenticado
+    // Cita pertenece al doctor autenticado
     if (appointment.idDoctor.toString() !== doctorId) {
       return next(
         new ErrorHandler("No tienes permiso para cancelar esta cita", 403)
       );
     }
 
-    // Verificar si ya está cancelada
+    // Verificar cancelada
     if (appointment.estado === "CANCELADA") {
       return next(new ErrorHandler("La cita ya está cancelada", 400));
     }
@@ -280,7 +276,7 @@ export const doctorCancelAppointment = async (req, res, next) => {
       );
     }
 
-    // Actualizar el estado de la cita a "CANCELADA"
+    // Actualizar estado
     appointment.estado = "CANCELADA";
     await appointment.save();
 
@@ -291,7 +287,6 @@ export const doctorCancelAppointment = async (req, res, next) => {
       text: `Hola ${appointment.idPaciente.nombre},\n\nTu cita con el doctor ha sido cancelada. Motivo: ${motivoCancelacion}.\n\nSaludos,\nEquipo Médico`,
     };
 
-    // Enviar el correo
     transporter.sendMail(mailOptions, (error, info) => {
       if (error) {
         return res
@@ -309,11 +304,9 @@ export const doctorCancelAppointment = async (req, res, next) => {
 
 export const adminCancelAppointment = async (req, res, next) => {
   try {
-    const appointmentId = req.params.id;
+    const appointmentId = req.params.id; //URL
 
-    const { motivoCancelacion } = req.body; // Motivo de la cancelación
-
-    // Buscar la cita por ID y doctor
+    const { motivoCancelacion } = req.body;
 
     // Buscar la cita por ID
     const appointment = await Cita.findById(appointmentId).populate(
@@ -325,7 +318,7 @@ export const adminCancelAppointment = async (req, res, next) => {
       return next(new ErrorHandler("Cita no encontrada o ya cancelada", 404));
     }
 
-    // Verificar si ya está cancelada
+    // Verificar cancelada
     if (appointment.estado === "CANCELADA") {
       return next(new ErrorHandler("La cita ya está cancelada", 400));
     }

@@ -75,13 +75,19 @@ const AdminSupport = () => {
         }
       );
       if (response.status == 200) {
-        setLoading(false);
         message.success("Ticket resuelto exitosamente!!");
         navigate("/adminpanel/profile");
-      } else {
-        message.error("Error");
       }
+      setLoading(false);
     } catch (error) {
+      if (
+        error.response ||
+        error.response.data ||
+        error.response.data.message
+      ) {
+        message.error(error.response.data.message);
+      }
+      setLoading(false);
       console.log(error);
       message.error("Error al responder ticket");
     }
@@ -115,7 +121,9 @@ const AdminSupport = () => {
       <Row gutter={16}>
         <Col span={12}>
           {doctorSupports.length === 0 ? (
-            <p className="nooverflow">No se encontraron registros para soportes de doctores.</p>
+            <p className="nooverflow">
+              No se encontraron registros para soportes de doctores.
+            </p>
           ) : (
             <>
               <h3 className="nooverflow" id="txt_center">
@@ -179,6 +187,7 @@ const AdminSupport = () => {
                             type="primary"
                             onClick={() => handleSubmitResponse(item._id)}
                             loading={loading}
+                            size="small"
                           >
                             Enviar Respuesta
                           </Button>
@@ -188,7 +197,7 @@ const AdminSupport = () => {
                             okText="Sí"
                             cancelText="No"
                           >
-                            <Button block danger>
+                            <Button block danger size="small">
                               Eliminar Ticket
                             </Button>
                           </Popconfirm>
@@ -203,7 +212,9 @@ const AdminSupport = () => {
         </Col>
         <Col span={12}>
           {patientSupports.length === 0 ? (
-            <p className="nooverflow">No se encontraron registros para soportes de pacientes.</p>
+            <p className="nooverflow">
+              No se encontraron registros para soportes de pacientes.
+            </p>
           ) : (
             <>
               <h3 className="nooverflow" id="txt_center">
@@ -268,6 +279,7 @@ const AdminSupport = () => {
                             type="primary"
                             loading={loading}
                             onClick={() => handleSubmitResponse(item._id)}
+                            size="small"
                           >
                             Enviar Respuesta
                           </Button>
@@ -277,7 +289,7 @@ const AdminSupport = () => {
                             okText="Sí"
                             cancelText="No"
                           >
-                            <Button block danger>
+                            <Button block danger size="small">
                               Eliminar Ticket
                             </Button>
                           </Popconfirm>

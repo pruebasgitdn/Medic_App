@@ -24,14 +24,15 @@ const FormNewDoctor = () => {
   const [phone, setPhone] = useState("");
   const [photo, setPhoto] = useState(null); // Foto del paciente
   const [licencia, setLicencia] = useState(null);
-  // const [emailError, setEmailError] = useState("");
+  const [loading, setLoading] = useState(false);
+
   const navigate = useNavigate();
 
   const { Dragger } = Upload;
 
   const handleUploadPhoto = (file) => {
     setPhoto(file);
-    return false; // Esto evita que Ant Design intente subir el archivo automáticamente
+    return false;
   };
 
   const handleUploadLicense = (file) => {
@@ -68,6 +69,7 @@ const FormNewDoctor = () => {
 
     try {
       // Peticion
+      setLoading(true);
       const response = await axios.post(
         "http://localhost:4000/api/admin/createDoctor",
         formData,
@@ -83,18 +85,15 @@ const FormNewDoctor = () => {
         message.success("Registro de Doctor exitoso!!");
         navigate("/adminpanel/newdoctor");
       }
-
+      setLoading(false);
       console.log(values);
-      console.log("FormData values:");
-      for (let [key, value] of formData.entries()) {
-        console.log(`${key}: ${value}`);
-      }
     } catch (error) {
+      setLoading(false);
       console.log(error);
       message.error("Error al registrar doctor");
       if (
-        error.response &&
-        error.response.data &&
+        error.response ||
+        error.response.data ||
         error.response.data.message
       ) {
         message.error(error.response.data.message);
@@ -350,6 +349,7 @@ const FormNewDoctor = () => {
               type="primary"
               htmlType="submit"
               block
+              loading={loading}
               className="form-submit-btn"
             >
               Registrar Doctor
