@@ -33,31 +33,37 @@ const DoctorProfile = () => {
           {/* Información del Usuario */}
 
           <div className="card_info_user">
-            <h4>
-              Dr. {user.nombre} {user.apellido_pat}
-            </h4>
-            <h4>Especialista: {user.especialidad}</h4>
-            <h4>Numero de licencia: {user.numero_licencia}</h4>
-            <p>
-              <MailTwoTone />
-              {user.email}
-            </p>
-            <p>
-              <PhoneTwoTone />
-              {user.telefono}
-            </p>
-            <p>
-              <CalendarTwoTone />
-              {user && user.dot?.length > 0
-                ? new Date(user?.dot).toLocaleDateString()
-                : "15/23/2004"}
-            </p>
+            <Row gutter={20}>
+              <Col xs={12} sm={12} md={12} lg={12}>
+                <h4>
+                  Dr.{user.nombre} {user.apellido_pat}
+                </h4>
+                <h4>Especialista: {user.especialidad}</h4>
+                <h4>Licencia: {user.numero_licencia}</h4>
+              </Col>
+              <Col xs={12} sm={12} md={12} lg={12}>
+                <p>
+                  <MailTwoTone /> {user.email}
+                </p>
+                <p>
+                  <PhoneTwoTone />
+                  {user.telefono}
+                </p>
+                <p>
+                  <CalendarTwoTone />
+                  {user && user.dot?.length > 0
+                    ? new Date(user?.dot).toLocaleDateString()
+                    : "15/23/2004"}
+                </p>
+              </Col>
+            </Row>
           </div>
           {/* Botones de Acciones */}
-          <div className="card_btn_user">
+          <div className="adminperfil_btns">
             <Link to="/doctorpanel/history">
               <Button
                 type="primary"
+                block
                 icon={<HistoryOutlined />}
                 style={{ marginRight: "10px" }}
               >
@@ -65,7 +71,9 @@ const DoctorProfile = () => {
               </Button>
             </Link>
             <Link to="/doctorpanel/editprofile">
-              <Button icon={<EditOutlined />}>Editar Perfil</Button>
+              <Button block icon={<EditOutlined />}>
+                Editar Perfil
+              </Button>
             </Link>
           </div>
         </Card>

@@ -39,6 +39,8 @@ export const EditProfile = async (req, res, next) => {
       email,
       especialidad,
       numero_licencia,
+      newPassword,
+      currentPassword,
     } = req.body;
 
     const { photo, licencia } = req.files || {};
@@ -57,6 +59,9 @@ export const EditProfile = async (req, res, next) => {
           new ErrorHandler("Email ya se encuentra en uso / registrado")
         );
       }
+    }
+    if (currentPassword && !(await doctor.comparePassword(currentPassword))) {
+      return next(new ErrorHandler("La contraseña actual es incorrecta", 400));
     }
 
     // Actualizar la foto de perfil si se envió
@@ -123,6 +128,9 @@ export const EditProfile = async (req, res, next) => {
     doctor.telefono = telefono || doctor.telefono;
     doctor.especialidad = especialidad || doctor.especialidad;
     doctor.numero_licencia = numero_licencia || doctor.numero_licencia;
+    if (newPassword) {
+      doctor.password = newPassword;
+    }
 
     // Guardar los cambios
     await doctor.save();

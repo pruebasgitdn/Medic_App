@@ -33,11 +33,11 @@ const patientSchema = new mongoose.Schema({
   document_id: {
     public_id: {
       type: String,
-      required: [true, "Ingresa la foto."], // Mensaje de error personalizado
+      required: [true, "Ingresa la foto."],
     },
     url: {
       type: String,
-      required: [true, "Ingresa la URL de la foto."], // Mensaje de error personalizado
+      required: [true, "Ingresa la URL de la foto."],
     },
   },
   email: {
@@ -90,11 +90,11 @@ const patientSchema = new mongoose.Schema({
     {
       idDoctor: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: "Doctor", // Referencia al modelo 'Doctor'
+        ref: "Doctor", // Referencia al modelo Doctor
       },
       idCita: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: "Cita", // Referencia al modelo 'Cita'
+        ref: "Cita", // Referencia al modelo Cita
       },
       motivo: {
         type: String,

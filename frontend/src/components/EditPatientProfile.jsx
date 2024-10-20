@@ -1,4 +1,4 @@
-import React, { useEffect, useContext, useState } from "react";
+import { useEffect, useContext, useState } from "react";
 import {
   Form,
   Input,
@@ -8,8 +8,8 @@ import {
   Col,
   Upload,
   Card,
-  Alert,
-  message,
+  Switch,
+  message as tt,
 } from "antd";
 import "react-phone-number-input/style.css";
 import PhoneInput from "react-phone-number-input";
@@ -28,7 +28,7 @@ const EditPatientProfile = () => {
   const [emailError, setEmailError] = useState("");
   const { Dragger } = Upload;
   const { Option } = Select;
-  const { TextArea } = Input;
+  const [changingPassword, setChangingPassword] = useState(false);
 
   // Manejar el archivo de foto
   const handlePhotoUpload = (file) => {
@@ -71,6 +71,11 @@ const EditPatientProfile = () => {
       formData.append("direccion", values?.direccion);
       formData.append("genero", values?.genero);
       formData.append("alergias", values?.alergias);
+      formData.append("currentPassword", values?.yourPassword);
+
+      if (changingPassword && values.newPassword) {
+        formData.append("newPassword", values.newPassword);
+      }
       if (photo) {
         formData.append("photo", photo);
       }
@@ -89,28 +94,33 @@ const EditPatientProfile = () => {
         }
       );
 
-      message.success("Datos actualizados exitosamente");
+      tt.success("Datos actualizados exitosamente");
       setLoading(false);
       setUser(response.data.patient);
       navigate("/userpanel/profile"); // Redirigir al perfil
     } catch (error) {
-      setLoading(false);
-
-      console.error("Error al actualizar el perfil:", error);
-      if (error.response && error.response.data) {
-        const { message } = error.response.data;
-
-        // Verificar si el mensaje es el de email duplicado
-        if (message === "Email ya se encuentra en uso / registrado") {
-          setEmailError("Email ya se encuentra en uso / registrado");
-        } else {
-          message.error(message);
-        }
-      } else {
-        message.error("Error en la actualización del perfil");
+      if (
+        error.response ||
+        error.response.data ||
+        error.response.data.message
+      ) {
+        tt.error(error.response.data.message);
+        setLoading(false);
       }
+
+      const { message } = error.response.data;
+
+      if (message === "Email ya se encuentra en uso / registrado") {
+        setEmailError("Email ya se encuentra en uso / registrado");
+      }
+
       console.error("Error al actualizar el perfil:", error);
     }
+  };
+
+  const handlePasswordChange = () => {
+    setChangingPassword(!changingPassword);
+    form.resetFields(["newPassword", "yourPassword"]);
   };
 
   return (
@@ -204,6 +214,52 @@ const EditPatientProfile = () => {
               </Col>
             </Row>
 
+            {/* Cambiar contraseña */}
+            <Form.Item className="centere">
+              <div className="content_flex">
+                <h4>Cambiar de contraseña:</h4>
+                <Switch
+                  autoFocus={false}
+                  checked={changingPassword}
+                  onChange={handlePasswordChange}
+                  id="switch"
+                ></Switch>
+              </div>
+            </Form.Item>
+            {changingPassword && (
+              <>
+                <Row gutter={8}>
+                  <Col xs={20} md={12}>
+                    <Form.Item
+                      name="yourPassword"
+                      label="Tu contraseña actual"
+                      className="form-item"
+                    >
+                      <Input.Password placeholder="Contraseña actual" />
+                    </Form.Item>
+                    <p id="xlr">
+                      Ingresa tu contraseña actual para confirmar los cambios:
+                    </p>
+                  </Col>
+                  <Col xs={20} md={12}>
+                    <Form.Item
+                      name="newPassword"
+                      label="Confirmar"
+                      className="form-item"
+                      rules={[
+                        {
+                          min: 8,
+                          message: "Minimo 8 caracteres",
+                        },
+                      ]}
+                    >
+                      <Input.Password placeholder="Confirmar Nueva Contraseña" />
+                    </Form.Item>
+                  </Col>
+                </Row>
+              </>
+            )}
+
             {/* Dirección */}
             <Form.Item
               name="direccion"
@@ -248,11 +304,13 @@ const EditPatientProfile = () => {
                       </Button>
                     </Dragger>
                     {user?.document_id?.url && (
-                      <img
-                        src={user.document_id.url}
-                        alt="Foto"
-                        style={{ width: "80%", marginTop: "10px" }}
-                      />
+                      <div className="docu_cc">
+                        <img
+                          src={user.document_id.url}
+                          alt="Foto"
+                          className="edit_document"
+                        />
+                      </div>
                     )}
                   </Form.Item>
                 </Col>
@@ -267,19 +325,20 @@ const EditPatientProfile = () => {
                       </Button>
                     </Dragger>
                     {user?.photo?.url && (
-                      <img
-                        src={user.photo.url}
-                        alt="Foto"
-                        style={{ width: "80%", marginTop: "10px" }}
-                      />
+                      <div className="docu_cc">
+                        <img
+                          src={user.photo.url}
+                          alt="Foto"
+                          className="edit_photo"
+                        />
+                      </div>
                     )}
                   </Form.Item>
                 </Col>
               </Row>
             </Form.Item>
 
-            {/* Botón de enviar */}
-            <div className="btns_block">
+            <div className="admeditbnt">
               <Button type="primary" htmlType="submit" loading={loading} block>
                 Actualizar Perfil
               </Button>

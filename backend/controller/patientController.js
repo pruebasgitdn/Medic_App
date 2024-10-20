@@ -257,6 +257,8 @@ export const EditProfile = async (req, res, next) => {
       direccion,
       genero,
       alergias,
+      newPassword,
+      currentPassword,
     } = req.body;
 
     const { photo, document_id } = req.files || {};
@@ -275,6 +277,10 @@ export const EditProfile = async (req, res, next) => {
           new ErrorHandler("Email ya se encuentra en uso / registrado")
         );
       }
+    }
+
+    if (currentPassword && !(await patient.comparePassword(currentPassword))) {
+      return next(new ErrorHandler("La contraseña actual es incorrecta", 400));
     }
 
     // Actualizar la foto  si se envio
@@ -340,6 +346,9 @@ export const EditProfile = async (req, res, next) => {
     patient.direccion = direccion || patient.direccion;
     patient.genero = genero || patient.genero;
     patient.alergias = alergias || patient.alergias;
+    if (newPassword) {
+      patient.password = newPassword;
+    }
 
     // Guardar los cambios
     await patient.save();

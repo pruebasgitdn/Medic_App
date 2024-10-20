@@ -1,20 +1,20 @@
-import React, { useEffect, useContext, useState } from "react";
+import { useEffect, useContext, useState } from "react";
 import {
   Form,
   Input,
   Button,
-  Select,
   Row,
   Col,
   Upload,
   Card,
-  Alert,
-  message,
+  message as tt,
+  Switch,
 } from "antd";
 import { Context } from "../main";
 import { UploadOutlined } from "@ant-design/icons";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
+const { Dragger } = Upload;
 
 const EditAdminProfile = () => {
   const { user, setUser } = useContext(Context);
@@ -23,12 +23,11 @@ const EditAdminProfile = () => {
   const [loading, setLoading] = useState(false);
   const [photo, setPhoto] = useState(null); // Foto del paciente
   const [emailError, setEmailError] = useState("");
-  const { Dragger } = Upload;
+  const [changingPassword, setChangingPassword] = useState(false);
 
   useEffect(() => {
     form.setFieldsValue({
       email: user?.email,
-      password: user?.password,
     });
   }, [user, form]);
 
@@ -42,14 +41,14 @@ const EditAdminProfile = () => {
       setLoading(true);
       const formData = new FormData();
       formData.append("email", values?.email);
+      formData.append("currentPassword", values?.yourPassword);
 
       if (photo) {
         formData.append("photo", photo);
       }
 
-      // Solo añadir la nueva contraseña si se proporciona
-      if (values.password) {
-        formData.append("password", values.password);
+      if (changingPassword && values.newPassword) {
+        formData.append("newPassword", values.newPassword);
       }
 
       const response = await axios.put(
@@ -63,26 +62,37 @@ const EditAdminProfile = () => {
         }
       );
 
-      message.success("Datos actualizados exitosamente");
+      tt.success("Datos actualizados exitosamente");
       setLoading(false);
       setUser(response.data.admin);
       navigate("/adminpanel/profile");
-    } catch (error) {
-      setLoading(false);
-      console.error("Error al actualizar el perfil:", error);
-      if (error.response && error.response.data) {
-        const { message } = error.response.data;
 
-        if (message === "Email ya se encuentra en uso / registrado") {
-          setEmailError("Email ya se encuentra en uso / registrado");
-        } else {
-          message.error(message);
-        }
+      console.log(values);
+      setLoading(false);
+    } catch (error) {
+      if (
+        error.response ||
+        error.response.data ||
+        error.response.data.message
+      ) {
+        tt.error(error.response.data.message);
+        setLoading(false);
+      }
+
+      const { message } = error.response.data;
+
+      if (message === "Email ya se encuentra en uso / registrado") {
+        setEmailError("Email ya se encuentra en uso / registrado");
       } else {
-        message.error("Error en la actualización del perfil");
+        message.error(message);
       }
     }
     console.log(values);
+  };
+
+  const handlePasswordChange = () => {
+    setChangingPassword(!changingPassword);
+    form.resetFields(["newPassword", "yourPassword"]);
   };
 
   return (
@@ -101,18 +111,60 @@ const EditAdminProfile = () => {
             </Form.Item>
             {emailError && <p className="error_form">{emailError}</p>}
 
-            <Form.Item
-              name="password"
-              label="Contraseña Actual"
-              rules={[
-                {
-                  required: true,
-                  message: "Por favor, ingresa tu contraseña actual",
-                },
-              ]}
-            >
-              <Input.Password placeholder="Contraseña Actual" />
+            {/* Cambiar contraseña */}
+            <Form.Item className="centere">
+              <div className="content_flex">
+                <h4>Cambiar de contraseña:</h4>
+                <Switch
+                  autoFocus={false}
+                  checked={changingPassword}
+                  onChange={handlePasswordChange}
+                  id="switch"
+                >
+                  {changingPassword ? (
+                    <Button danger size="small">
+                      Cancelar cambio de contraseña
+                    </Button>
+                  ) : (
+                    <Button size="small">Cambiar contraseña</Button>
+                  )}
+                </Switch>
+              </div>
             </Form.Item>
+
+            {changingPassword && (
+              <>
+                <Row gutter={8}>
+                  <Col xs={20} md={12}>
+                    <Form.Item
+                      name="yourPassword"
+                      label="Tu contraseña actual"
+                      className="form-item"
+                    >
+                      <Input.Password placeholder="Contraseña actual" />
+                    </Form.Item>
+                    <p id="xlr">
+                      Ingresa tu contraseña actual para confirmar los cambios:
+                    </p>
+                  </Col>
+                  <Col xs={20} md={12}>
+                    <Form.Item
+                      name="newPassword"
+                      label="Confirmar"
+                      className="form-item"
+                      rules={[
+                        {
+                          min: 8,
+                          message: "Minimo 8 caracteres",
+                        },
+                      ]}
+                    >
+                      <Input.Password placeholder="Confirmar Nueva Contraseña" />
+                    </Form.Item>
+                  </Col>
+                </Row>
+              </>
+            )}
 
             {/* Foto */}
             <div className="login-container">
@@ -137,7 +189,6 @@ const EditAdminProfile = () => {
               </Col>
             </div>
 
-            {/* Botón de enviar */}
             <div className="admeditbnt">
               <Button type="primary" htmlType="submit" loading={loading} block>
                 Actualizar Perfil

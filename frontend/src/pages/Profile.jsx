@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import { useContext } from "react";
 import { Card, Button, Avatar, Row, Col } from "antd";
 import { EditOutlined, HistoryOutlined } from "@ant-design/icons";
 import { Link } from "react-router-dom";
@@ -25,27 +25,30 @@ const Profile = () => {
           {/* Información del Usuario */}
 
           <div className="card_info_user">
-            <h4>
-              {user.nombre} {user.apellido_pat}
-            </h4>
-            <p>
-              <MailTwoTone />
-              {user.email}
-            </p>
-            <p>
-              <PhoneTwoTone />
-              {user.telefono}
-            </p>
-            <p>
-              <CalendarTwoTone />
-              {user ? new Date(user?.dot).toLocaleDateString() : "15/23/2004"}
-            </p>
+            <div className="centere">
+              <h4>
+                {user.nombre} {user.apellido_pat}
+              </h4>
+              <h4>
+                <MailTwoTone />
+                {user.email}
+              </h4>
+              <p>
+                <PhoneTwoTone />
+                {user.telefono}
+              </p>
+              <p>
+                <CalendarTwoTone />
+                {user ? new Date(user?.dot).toLocaleDateString() : "15/23/2004"}
+              </p>
+            </div>
           </div>
           {/* Botones de Acciones */}
-          <div className="card_btn_user">
+          <div className="adminperfil_btns">
             <Link to="/userpanel/history">
               <Button
                 type="primary"
+                block
                 icon={<HistoryOutlined />}
                 style={{ marginRight: "10px" }}
               >
@@ -53,7 +56,9 @@ const Profile = () => {
               </Button>
             </Link>
             <Link to="/userpanel/editprofile">
-              <Button icon={<EditOutlined />}>Editar Perfil</Button>
+              <Button block icon={<EditOutlined />}>
+                Editar Perfil
+              </Button>
             </Link>
           </div>
         </Card>

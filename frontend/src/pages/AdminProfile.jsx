@@ -26,7 +26,7 @@ const AdminProfile = () => {
 
           {/* Información del Usuario */}
 
-          <div className="card_info_user">
+          <div className="card_info_ur">
             <h4>Adminstrador. {user.nombre}</h4>
 
             <p>

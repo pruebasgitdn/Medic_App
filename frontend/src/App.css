@@ -13,6 +13,16 @@
   display: flex;
   flex-direction: column;
 }
+.edit_photo {
+  width: 80%;
+  margin-top: 10px;
+  border-radius: 10px;
+}
+.edit_document {
+  width: 80%;
+  margin-top: 10px;
+  border-radius: 10px;
+}
 
 .adminperfil_btns {
   display: flex;
@@ -24,12 +34,27 @@
   flex-direction: column;
   gap: 10px;
 }
+.bbnb {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.bbnb p {
+  display: flex;
+  justify-content: center;
+  text-align: center;
+}
 #containerpicker {
   overflow: visible;
   z-index: 1050; /* o un valor más alto si es necesario */
 }
 .center {
   align-items: center;
+}
+.docu_cc {
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 .form-itemm {
   background-color: #0bc624;
@@ -49,9 +74,25 @@
   border-radius: 8px;
 }
 
+#xlr {
+  font-size: small;
+  font-style: italic;
+  font-size: 12px;
+  text-align: justify;
+}
+
 #no_img_supp {
   font-size: small;
   font-style: italic;
+}
+#switch {
+  padding: 5px;
+  margin: 5px;
+}
+.content_flex {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
 }
 .centere {
   display: flex;
@@ -60,6 +101,7 @@
   top: 0px;
   bottom: 0px;
 }
+
 .ff {
   min-height: 130px;
   min-width: 200px;
@@ -116,9 +158,20 @@
   min-height: 100vh;
 }
 
-.card_info_user {
+.card_info_user h4 {
+  text-align: justify;
 }
 .card_info_user p {
+  text-align: justify;
+  font-size: medium;
+  font-style: italic;
+  color: #738093;
+  margin: 5px;
+}
+.card_info_ur h4 {
+}
+.card_info_ur p {
+  text-align: center;
   font-size: medium;
   font-style: italic;
   color: #738093;

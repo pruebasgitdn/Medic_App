@@ -285,7 +285,7 @@ export const EditProfile = async (req, res, next) => {
   try {
     const adminId = req.user.id; // ID del admin autenticado
 
-    const { email, password } = req.body;
+    const { email, newPassword, currentPassword } = req.body;
 
     const { photo } = req.files || {};
 
@@ -303,6 +303,11 @@ export const EditProfile = async (req, res, next) => {
           new ErrorHandler("Email ya se encuentra en uso / registrado")
         );
       }
+    }
+
+    // Verificar la contraseña actual
+    if (currentPassword && !(await admin.comparePassword(currentPassword))) {
+      return next(new ErrorHandler("La contraseña actual es incorrecta", 400));
     }
 
     // Actualizar la foto de perfil si se envio no obligatorio porque arriba se inicializa como vacio si no tan
@@ -334,7 +339,9 @@ export const EditProfile = async (req, res, next) => {
 
     // Actualizar email y passowrd
     admin.email = email || admin.email;
-    admin.password = password || admin.password;
+    if (newPassword) {
+      admin.password = newPassword;
+    }
 
     // Guardar los cambios
     await admin.save();

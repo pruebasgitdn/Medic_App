@@ -1,5 +1,15 @@
 import { useEffect, useContext, useState } from "react";
-import { Form, Input, Button, Row, Col, Upload, Card, message } from "antd";
+import {
+  Form,
+  Input,
+  Button,
+  Row,
+  Col,
+  Switch,
+  Upload,
+  Card,
+  message as tt,
+} from "antd";
 import { Context } from "../main";
 import { UploadOutlined } from "@ant-design/icons";
 import { useNavigate } from "react-router-dom";
@@ -17,6 +27,7 @@ const EditDoctorProfile = () => {
   const [photo, setPhoto] = useState(null); // Foto del paciente
   const [licencia, setLicencia] = useState(null);
   const { Dragger } = Upload;
+  const [changingPassword, setChangingPassword] = useState(false);
 
   // Manejar el archivo de foto
   const handlePhotoUpload = (file) => {
@@ -58,6 +69,11 @@ const EditDoctorProfile = () => {
       formData.append("especialidad", values?.especialidad);
       formData.append("telefono", values?.telefono);
       formData.append("numero_licencia", values?.numero_licencia);
+      formData.append("currentPassword", values?.yourPassword);
+
+      if (changingPassword && values.newPassword) {
+        formData.append("newPassword", values.newPassword);
+      }
 
       if (photo) {
         formData.append("photo", photo);
@@ -71,32 +87,39 @@ const EditDoctorProfile = () => {
         "http://localhost:4000/api/doctor/editprofile",
         formData,
         {
-          withCredentials: true, // Para asegurarse de que las cookies se manejen correctamente
+          withCredentials: true,
           headers: {
             "Content-Type": "multipart/form-data",
           },
         }
       );
 
-      message.success("Datos actualizados exitosamente");
+      tt.success("Datos actualizados exitosamente");
       setLoading(false);
       setUser(response.data.doctor);
       navigate("/doctorpanel/profile");
     } catch (error) {
-      setLoading(false);
-      console.error("Error al actualizar el perfil:", error);
+      if (
+        error.response ||
+        error.response.data ||
+        error.response.data.message
+      ) {
+        tt.error(error.response.data.message);
+        setLoading(false);
+      }
 
-      if (error.response && error.response.data) {
-        //Extraer mensaje del da respuesta
-        const { message } = error.response.data;
-        if (message === "Email ya se encuentra en uso / registrado") {
-          setEmailError(message);
-        } else {
-          message.error(message);
-        }
+      //Extraer mensaje del da respuesta
+      const { message } = error.response.data;
+      if (message === "Email ya se encuentra en uso / registrado") {
+        setEmailError(message);
       }
     }
     console.log(values);
+  };
+
+  const handlePasswordChange = () => {
+    setChangingPassword(!changingPassword);
+    form.resetFields(["newPassword", "yourPassword"]);
   };
   return (
     <Row justify="center" align="middle" style={{ marginTop: "20px" }}>
@@ -180,6 +203,52 @@ const EditDoctorProfile = () => {
                 </Form.Item>
               </Col>
             </Row>
+            {/* Cambiar contraseña */}
+            <Form.Item className="centere">
+              <div className="content_flex">
+                <h4>Cambiar de contraseña:</h4>
+                <Switch
+                  autoFocus={false}
+                  checked={changingPassword}
+                  onChange={handlePasswordChange}
+                  id="switch"
+                ></Switch>
+              </div>
+            </Form.Item>
+
+            {changingPassword && (
+              <>
+                <Row gutter={8}>
+                  <Col xs={20} md={12}>
+                    <Form.Item
+                      name="yourPassword"
+                      label="Tu contraseña actual"
+                      className="form-item"
+                    >
+                      <Input.Password placeholder="Contraseña actual" />
+                    </Form.Item>
+                    <p id="xlr">
+                      Ingresa tu contraseña actual para confirmar los cambios:
+                    </p>
+                  </Col>
+                  <Col xs={20} md={12}>
+                    <Form.Item
+                      name="newPassword"
+                      label="Confirmar"
+                      className="form-item"
+                      rules={[
+                        {
+                          min: 8,
+                          message: "Minimo 8 caracteres",
+                        },
+                      ]}
+                    >
+                      <Input.Password placeholder="Confirmar Nueva Contraseña" />
+                    </Form.Item>
+                  </Col>
+                </Row>
+              </>
+            )}
 
             <Row>
               <Col xs={12} sm={12} md={12} lg={12}>
@@ -222,11 +291,13 @@ const EditDoctorProfile = () => {
                       </Button>
                     </Dragger>
                     {user?.licencia?.url && (
-                      <img
-                        src={user.licencia.url}
-                        alt="Licencia"
-                        style={{ width: "80%", marginTop: "10px" }}
-                      />
+                      <div className="docu_cc">
+                        <img
+                          src={user.licencia.url}
+                          alt="Licencia"
+                          className="edit_document"
+                        />
+                      </div>
                     )}
                   </Form.Item>
                 </Col>
@@ -241,11 +312,13 @@ const EditDoctorProfile = () => {
                       </Button>
                     </Dragger>
                     {user?.photo?.url && (
-                      <img
-                        src={user.photo.url}
-                        alt="Licencia"
-                        style={{ width: "80%", marginTop: "10px" }}
-                      />
+                      <div className="docu_cc">
+                        <img
+                          src={user.photo.url}
+                          alt="Licencia"
+                          className="edit_photo"
+                        />
+                      </div>
                     )}
                   </Form.Item>
                 </Col>
