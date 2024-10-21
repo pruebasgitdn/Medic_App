@@ -28,10 +28,6 @@ const DoctorPanel = () => {
           <Menu.Item key="4" icon={<HistoryOutlined />}>
             <Link to="history">Historial</Link>
           </Menu.Item>
-          <Menu.Item key="5" icon={<InsertRowAboveOutlined />}>
-            <Link to="reports">Reporte Estadísticas</Link>
-          </Menu.Item>
-
           <Menu.Item key="8" icon={<ToolOutlined />}>
             <Link to="support">Soporte</Link>
           </Menu.Item>

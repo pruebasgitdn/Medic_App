@@ -1,4 +1,4 @@
-import React, { useContext, useEffect } from "react";
+import { useContext, useEffect } from "react";
 import { Card, Button, Avatar, Row, Col } from "antd";
 import { Link } from "react-router-dom";
 import { Context } from "../main";

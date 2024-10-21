@@ -235,7 +235,7 @@ const AdminDoctors = () => {
             cancelText="No"
           >
             <Button danger size="small">
-              Eliminar
+              Inhabilitar
             </Button>
           </Popconfirm>
         </div>

@@ -3,7 +3,6 @@ import {
   AddAllergie,
   deleteAllergie,
   EditProfile,
-  generateReport,
   getPatients,
   login,
   logout,
@@ -39,5 +38,5 @@ router.put(
   doctorCancelAppointment
 );
 
-router.post("/generatepdf", verifyDoctorToken, generateReport);
+// router.post("/generatepdf", generateReport);
 export default router;

@@ -40,7 +40,7 @@ router.get("/me", verifyAdminToken, getAdminDetails);
 router.put("/editprofile", verifyAdminToken, EditProfile);
 router.put("/editdoctor/:id", verifyAdminToken, EditDoctorProfile);
 router.put("/editpatient/:id", verifyAdminToken, EditPatientProfile);
-router.delete("/deletedoctor/:id", verifyAdminToken, deleteDoctor);
+router.delete("/ctor/:id", verifyAdminToken, deleteDoctor);
 router.delete("/deletepatient/:id", verifyAdminToken, deletePatient);
 router.delete("/deleteappointment/:id", verifyAdminToken, deleteAppointment);
 router.delete("/deletemessage/:id", verifyAdminToken, deleteMessage);

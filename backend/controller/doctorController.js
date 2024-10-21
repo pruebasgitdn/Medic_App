@@ -267,82 +267,45 @@ export const deleteAllergie = async (req, res) => {
   }
 };
 
-export const generateReport = async (req, res, next) => {
-  try {
-    // Obtener los valores del req.body
-    const { titulo, textoIntroduccion, contenido, doctorName, patientName } =
-      req.body;
+// export const generateReport = async (req, res, next) => {
+//   try {
+//     // Crear un nuevo documento PDF
+//     const doc = new PDFDocument();
 
-    // Crear un nuevo documento PDF
-    const doc = new PDFDocument();
+//     // Establecer los encabezados para la respuesta como archivo PDF
+//     res.setHeader("Content-Type", "application/pdf");
+//     res.setHeader(
+//       "Content-Disposition",
+//       "attachment; filename=reporte_prueba.pdf"
+//     );
 
-    // Establecer la ruta donde se guardará el PDF temporalmente
-    const filePath = path.resolve(`../backend/tmp/_${Date.now()}.pdf`);
+//     // Pipe del documento PDF a la respuesta
+//     doc.pipe(res);
 
-    // Crear un stream de escritura hacia el archivo
-    const writeStream = fs.createWriteStream(filePath);
-    doc.pipe(writeStream);
+//     // Contenido simple para el PDF de prueba
+//     doc.fontSize(20).text("Reporte de Prueba", { align: "center" });
+//     doc.moveDown(1);
+//     doc
+//       .fontSize(12)
+//       .text("Este es un PDF de prueba generado desde el servidor.", {
+//         align: "left",
+//       });
+//     doc.moveDown(1);
+//     doc.fontSize(12).text("Aquí puedes agregar más contenido si lo deseas.", {
+//       align: "left",
+//     });
+//     doc.moveDown(2);
 
-    // Encabezado del PDF
-    doc.fontSize(20).text(titulo || "Reporte Médico", {
-      align: "center",
-    });
+//     const currentDate = new Date().toLocaleString();
+//     doc.fontSize(10).text(`Generado el: ${currentDate}`, { align: "left" });
 
-    doc.moveDown(1);
-
-    // Datos del doctor y paciente
-    doc
-      .fontSize(12)
-      .text(`Doctor: ${doctorName || "Nombre del Doctor"}`, { align: "left" })
-      .text(`Paciente: ${patientName || "Nombre del Paciente"}`, {
-        align: "left",
-      });
-
-    doc.moveDown(1);
-
-    // Texto de introducción
-    doc.fontSize(14).text(textoIntroduccion || "Introducción del reporte", {
-      align: "justify",
-      indent: 30,
-      height: 300,
-      ellipsis: true,
-    });
-
-    doc.moveDown(2);
-
-    // Contenido principal
-    doc.fontSize(12).text(contenido || "Contenido del reporte", {
-      align: "justify",
-    });
-
-    // Pie de página
-    doc.moveDown(2);
-    const currentDate = new Date().toLocaleString();
-    doc
-      .fontSize(10)
-      .text(`Generado el: ${currentDate}`, {
-        align: "left",
-      })
-      .text("Medelink", { align: "right" });
-
-    doc.end(); // Cerrar flujo
-
-    // Enviar el PDF como respuesta al cliente
-    writeStream.on("finish", () => {
-      res.download(filePath, "reporte.pdf", (err) => {
-        if (err) {
-          return next(err);
-        }
-
-        // Eliminar el archivo después de la descarga
-        fs.unlink(filePath, (err) => {
-          if (err) {
-            console.error("Error al eliminar el archivo:", err);
-          }
-        });
-      });
-    });
-  } catch (error) {
-    next(error);
-  }
-};
+//     // Finalizar el documento PDF
+//     doc.end();
+//   } catch (error) {
+//     console.error("Error en la generación del reporte:", error);
+//     res.status(500).json({
+//       success: false,
+//       message: "Error al generar el archivo de texto",
+//     });
+//   }
+// };
