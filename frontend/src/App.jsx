@@ -11,7 +11,6 @@ import About from "./pages/About";
 import NavBar from "./components/NavBar";
 import Register from "./pages/Register";
 import UserPanel from "./components/UserPanel";
-import ProtectedRoute from "./components/ProtectedRoute";
 import { useContext, useEffect } from "react";
 import { Context } from "./main";
 import PatientHistory from "./pages/PatientHistory";
@@ -37,26 +36,13 @@ import FormNewDoctor from "./components/FormNewDoctor";
 import AdminPatients from "./pages/AdminPatients";
 import AdminAppointments from "./pages/AdminAppointments";
 import AdminMessages from "./pages/AdminMessages";
-import SupportForm from "./components/SupportForm";
 import AdminSupport from "./pages/AdminSupport";
 import PatientSupport from "./pages/PatientSupport";
 import DoctorSupports from "./pages/DoctorSupports";
+import DataProtection from "./components/DataProtection";
 
 function App() {
-  const { setUser, setIsAuthenticated, user, isAuthenticated, role, setRole } =
-    useContext(Context);
-
-  const isAuth = () => {
-    const user = localStorage.getItem("user");
-    const isAuthenticated = localStorage.getItem("isAuthenticated");
-    return user && isAuthenticated === "true";
-  };
-
-  const isDoctorAuth = () => {
-    const doctor = localStorage.getItem("doctor");
-    const isAuthenticated = localStorage.getItem("isAuthenticated");
-    return doctor && isAuthenticated === "true";
-  };
+  const { setUser, setIsAuthenticated, role, setRole } = useContext(Context);
 
   useEffect(() => {
     const storedUser = localStorage.getItem("user");
@@ -90,6 +76,7 @@ function App() {
           <Route path="/patientregister" element={<Register />} />
           <Route path="/doctorlogin" element={<DoctorLogin />} />
           <Route path="/adminlogin" element={<AdminLogin />} />
+          <Route path="/privacypolicy" element={<DataProtection />} />
 
           {/* RUTA PACIENTE/USER */}
           <Route

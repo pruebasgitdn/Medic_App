@@ -46,7 +46,7 @@ const FooterCm = () => {
       <Col xs={24} md={4} className="col">
         <h3>Contacto</h3>
         <ul>
-          <li>contacto@medlink.com</li>
+          <li>medelinknotificaciones@gmail.com</li>
           <li>312323122</li>
           <li>305234433</li>
         </ul>
@@ -54,8 +54,14 @@ const FooterCm = () => {
       <Col xs={24} md={4} className="col">
         <h3>MEDELINK</h3>
         <ul>
-          <li>Quines somos.</li>
-          <li>Proteccion de datos.</li>
+          <Link to="/about">
+            <li>Quines somos.</li>
+          </Link>
+
+          <Link to="/privacypolicy">
+            <li>Proteccion de datos.</li>
+          </Link>
+
           <Link to="/patientregister">
             <li>Registarme</li>
           </Link>

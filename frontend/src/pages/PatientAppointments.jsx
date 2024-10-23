@@ -10,6 +10,7 @@ import {
   Popconfirm,
   Select,
   List,
+  Avatar,
 } from "antd";
 const { Option } = Select;
 
@@ -117,29 +118,31 @@ const PatientAppointments = () => {
               key={index}
               title={`Cita ${index + 1}`}
               bordered={false}
-              className="card_adv"
+              className="card_appont"
             >
               <p>
                 <strong>Motivo:</strong> {cita.motivo}
               </p>
-              <p>
-                <strong>Doctor:</strong>{" "}
-                {`${cita.idDoctor.nombre} ${cita.idDoctor.apellido_pat} ${cita.idDoctor.apellido_mat}`}
-              </p>
+
+              <div className="mini">
+                <p>
+                  <strong>Doctor:</strong>{" "}
+                  {`${cita.idDoctor.nombre} ${cita.idDoctor.apellido_pat} ${cita.idDoctor.apellido_mat}`}
+                </p>
+                <Avatar size={35} src={cita?.idDoctor?.photo?.url} />
+              </div>
+
               <p>
                 <strong>Fecha:</strong>{" "}
                 {new Date(cita.fecha).toLocaleDateString()}
               </p>
-
               <p>
                 <strong>Hora:</strong>{" "}
                 {new Date(cita.fecha).toLocaleTimeString()}
               </p>
-
               <p>
                 <strong>Detalles:</strong> {cita.detallesAdicionales}
               </p>
-
               <div className="nooverflow">
                 <Popconfirm
                   title="¿Estás seguro de que quieres eliminar esta cita?"
@@ -193,6 +196,13 @@ const PatientAppointments = () => {
                   <p>
                     <strong>Motivo:</strong> {cita.motivo}
                   </p>
+                  <div className="mini">
+                    <p>
+                      <strong>Doctor:</strong>{" "}
+                      {`${cita.idDoctor.nombre} ${cita.idDoctor.apellido_pat} ${cita.idDoctor.apellido_mat}`}
+                    </p>
+                    <Avatar size={35} src={cita?.idDoctor?.photo?.url} />
+                  </div>
                   <p>
                     <strong>Doctor:</strong>{" "}
                     {`${cita.idDoctor.nombre} ${cita.idDoctor.apellido_pat} ${cita.idDoctor.apellido_mat}`}

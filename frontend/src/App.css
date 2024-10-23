@@ -13,6 +13,12 @@
   display: flex;
   flex-direction: column;
 }
+.admin_crud_head {
+  display: flex;
+  flex-direction: row;
+  gap: 20px;
+  margin: 10px;
+}
 .edit_photo {
   width: 80%;
   margin-top: 10px;
@@ -167,6 +173,14 @@
   font-style: italic;
   color: #738093;
   margin: 5px;
+}
+.dp {
+  display: flex;
+  justify-content: center;
+}
+.card_dp {
+  width: 60%;
+  align-self: center;
 }
 .card_info_ur h4 {
 }
@@ -369,6 +383,14 @@ h4 {
 
 .nooverflow {
   overflow: hidden;
+}
+
+.card_appont {
+  margin-top: 8px;
+  font-size: small;
+  display: block;
+  flex-direction: row;
+  flex-wrap: wrap;
 }
 
 .card_adv {
@@ -644,11 +666,27 @@ h4 {
   margin-top: 10px;
   margin-bottom: 25px;
 }
+#fcorr {
+  display: flex;
+  flex-direction: column;
+  margin-left: auto;
+}
 .btns_flex {
   display: flex;
   justify-content: center;
   gap: 20px;
   margin: 5px;
+}
+.sendmain_btns {
+  display: flex;
+  justify-content: center;
+  gap: 5px;
+}
+.mini {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 20px;
 }
 
 .colgap {

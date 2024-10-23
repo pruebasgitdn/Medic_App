@@ -1,6 +1,16 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Form, Input, Select, Button, Card, Row, Col, message } from "antd";
+import {
+  Form,
+  Input,
+  Select,
+  Button,
+  Card,
+  Row,
+  Col,
+  message,
+  Avatar,
+} from "antd";
 import axios from "axios";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
@@ -23,7 +33,11 @@ const AppointmentForm = () => {
             withCredentials: true,
           }
         );
-        setDoctores(response.data.doctors);
+
+        const activos = response.data.doctors;
+        const filtered = activos.filter((doctor) => doctor.estado === "activo");
+
+        setDoctores(filtered);
       } catch (error) {
         console.error("Error al obtener los doctores:", error);
       } finally {
@@ -100,7 +114,8 @@ const AppointmentForm = () => {
             >
               {doctores.map((doctor) => (
                 <Option key={doctor._id} value={doctor._id}>
-                  {doctor.nombre} {doctor.apellido_pat}
+                  {doctor.nombre} {doctor.apellido_pat}{" "}
+                  <Avatar size={20} src={doctor?.photo?.url || "nn"} />
                 </Option>
               ))}
             </Select>

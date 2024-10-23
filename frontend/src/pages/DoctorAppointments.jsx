@@ -13,6 +13,7 @@ import {
   Col,
   Select,
   Modal,
+  Avatar,
 } from "antd";
 
 const { Option } = Select;
@@ -180,11 +181,15 @@ const DoctorAppointments = () => {
                   appointment?.idPaciente?.apellido_pat || "N/A"
                 }`}
               >
-                <Row>
-                  <Col span={12}>
+                <Row gutter={[16, 16]}>
+                  <Col span={8}>
                     <div className="doctorpatient_img">
-                      <img
-                        src={appointment?.idPaciente?.photo?.url || {}}
+                      <Avatar
+                        className="avatardocpatient"
+                        src={
+                          appointment?.idPaciente?.photo?.url ||
+                          "default-image-url"
+                        }
                         alt="patient"
                       />
                       <div className="flex_col">
@@ -216,7 +221,7 @@ const DoctorAppointments = () => {
                       </div>
                     </div>
                   </Col>
-                  <Col span={12}>
+                  <Col span={16}>
                     <Form name="responsedr" form={form} onFinish={onFinish}>
                       <Form.Item
                         label="Diagnostico"

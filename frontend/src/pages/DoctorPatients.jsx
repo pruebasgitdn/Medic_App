@@ -9,10 +9,11 @@ import {
   Modal,
   Form,
   Input,
+  Upload,
   Avatar,
 } from "antd";
 
-import { DeleteFilled } from "@ant-design/icons";
+import { DeleteFilled, UploadOutlined } from "@ant-design/icons";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 
@@ -22,9 +23,19 @@ const DoctorPatients = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isReportModalOpen, setIsReportModalOpen] = useState(false); // Estado para los 2 modales
   const [selectedPatient, setSelectedPatient] = useState(null); // paciente seleccionado
+  const { Dragger } = Upload;
   const { TextArea } = Input;
   const [form] = Form.useForm();
+  const [formail] = Form.useForm();
   const navigate = useNavigate();
+  const [isEmailModalOpen, setIsEmailModalOpen] = useState(false); // Modal para correo
+  const [loading, setLoading] = useState(false);
+  const [file, setFile] = useState(null);
+
+  const handleUploadFile = (file) => {
+    setFile(file);
+    return false;
+  };
 
   useEffect(() => {
     const fetchAppointment = async () => {
@@ -69,6 +80,16 @@ const DoctorPatients = () => {
   const handleCancel = () => {
     setIsModalOpen(false);
     setIsReportModalOpen(false); // Cierra ambos modales
+  };
+
+  //  modal de correo
+  const showEmailModal = (patient) => {
+    setSelectedPatient(patient);
+    setIsEmailModalOpen(true);
+  };
+
+  const handleEmailCancel = () => {
+    setIsEmailModalOpen(false);
   };
 
   const handleForm = async () => {
@@ -116,6 +137,49 @@ const DoctorPatients = () => {
     } catch (error) {
       message.error("Error al eliminar la alergia");
       console.log(error);
+    }
+  };
+
+  const handleMail = async (values) => {
+    try {
+      setLoading(true);
+      const formData = new FormData();
+      formData.append("asunto", values?.asunto);
+      formData.append("contenido", values?.contenido);
+
+      if (file) {
+        formData.append("file", file);
+      }
+
+      const response = await axios.post(
+        `http://localhost:4000/api/doctor/sendmail/${selectedPatient._id}`,
+        formData,
+        {
+          withCredentials: true,
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
+
+      if (response.data.success) {
+        message.success("Email enviado correctamente!");
+        navigate("/doctorpanel/profile");
+      } else {
+        message.error(response.data.message);
+      }
+      setLoading(false);
+      // console.log(values?.asunto);
+      // console.log(values?.contenido);
+    } catch (error) {
+      if (
+        error.response ||
+        error.response.data ||
+        error.response.data.message
+      ) {
+        message.error(error.response.data.message);
+      }
+      console.error(error);
     }
   };
 
@@ -184,6 +248,15 @@ const DoctorPatients = () => {
                             onClick={() => showModal(patient)} // Seteamos el estado del paciente para el modal
                           >
                             Alergias
+                          </Button>
+                        </div>
+                        <div className="btns_flex">
+                          <Button
+                            block
+                            type="primary"
+                            onClick={() => showEmailModal(patient)}
+                          >
+                            Enviar correo
                           </Button>
                         </div>
                       </p>
@@ -270,7 +343,7 @@ const DoctorPatients = () => {
 
       {/* Modal  historial */}
       <Modal
-        title="Historial del paciente"
+        title={`Historial del paciente ${selectedPatient?.nombre}`}
         open={isReportModalOpen}
         onOk={handleOk}
         cancelText="Salir"
@@ -298,6 +371,71 @@ const DoctorPatients = () => {
             <b>No hay reportes en el historial.</b>
           </p>
         )}
+      </Modal>
+
+      <Modal
+        title={`Enviar correo a ${selectedPatient?.nombre || "Paciente"}`}
+        open={isEmailModalOpen}
+        onCancel={handleEmailCancel}
+      >
+        <Form
+          layout="vertical"
+          name="formail"
+          form={formail}
+          onFinish={handleMail}
+        >
+          <Form.Item
+            className="fom-item"
+            label="Asunto"
+            name="asunto"
+            rules={[
+              {
+                required: true,
+                message: "Es alsunto es obligatorio",
+              },
+            ]}
+          >
+            <Input placeholder="Asunto..." />
+          </Form.Item>
+          <Form.Item
+            label="Contenido del correo:"
+            className="form-item"
+            name="contenido"
+            rules={[
+              {
+                required: true,
+                message: "Es contenido es obligatorio",
+              },
+            ]}
+          >
+            <TextArea
+              rows={4}
+              placeholder="Escribe el contenido del correo aquí..."
+            />
+          </Form.Item>
+          <Form.Item name="file" className="form-item" label="Adjuntar archivo">
+            <Dragger name="file" beforeUpload={handleUploadFile}>
+              <Button icon={<UploadOutlined />}>Adjuntar archivo</Button>
+            </Dragger>
+          </Form.Item>
+          <div className="sendmain_btns" key="oo">
+            <Button
+              key="submit"
+              htmlType="submit"
+              form="formail"
+              block
+              type="primary"
+              loading={loading}
+            >
+              Enviar
+            </Button>
+            <Button key="cance" block onClick={handleEmailCancel}>
+              Cancelar
+            </Button>
+            ,
+          </div>
+          ,
+        </Form>
       </Modal>
     </div>
   );

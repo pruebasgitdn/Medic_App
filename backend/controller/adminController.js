@@ -577,40 +577,34 @@ export const deleteDoctor = async (req, res, next) => {
       return next(new ErrorHandler("Doctor no encontrado", 404));
     }
 
-    // Eliminar la imagen de perfil del doctor en Cloudinary
-    if (doctor.photo && doctor.photo.public_id) {
-      try {
-        await cloudinary.uploader.destroy(doctor.photo.public_id); // Eliminar por id
-      } catch (error) {
-        return next(
-          new ErrorHandler(
-            "Error al eliminar la foto del doctor en Cloudinary",
-            500
-          )
-        );
-      }
-    }
-
-    // Eliminar la licencia del doctor en Cloudinary
-    if (doctor.licencia && doctor.licencia.public_id) {
-      try {
-        await cloudinary.uploader.destroy(doctor.licencia.public_id); // por id
-      } catch (error) {
-        return next(
-          new ErrorHandler(
-            "Error al eliminar la licencia del doctor en Cloudinary",
-            500
-          )
-        );
-      }
-    }
-
-    //Eliminar doctor
-    await Doctor.findByIdAndDelete(doctorId);
+    doctor.estado = "retirado";
+    await doctor.save();
 
     res.status(200).json({
       succes: true,
-      message: "Doctor eliminado correctamente",
+      message: "Doctor inactivo correctamente",
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const enableDoctor = async (req, res, next) => {
+  try {
+    const doctorId = req.params.id; //para URL
+
+    const doctor = await Doctor.findById(doctorId);
+
+    if (!doctor) {
+      return next(new ErrorHandler("Doctor no encontrado", 404));
+    }
+
+    doctor.estado = "activo";
+    await doctor.save();
+
+    res.status(200).json({
+      succes: true,
+      message: "Doctor activado correctamente",
     });
   } catch (error) {
     next(error);
@@ -627,40 +621,34 @@ export const deletePatient = async (req, res, next) => {
       return next(new ErrorHandler("Doctor no encontrado", 404));
     }
 
-    // Eliminar la imagen de perfil del doctor en Cloudinary
-    if (patient.photo && patient.photo.public_id) {
-      try {
-        await cloudinary.uploader.destroy(patient.photo.public_id);
-      } catch (error) {
-        return next(
-          new ErrorHandler(
-            "Error al eliminar la foto del paciente en Cloudinary",
-            500
-          )
-        );
-      }
-    }
-
-    // Eliminar la licencia del doctor en Cloudinary
-    if (patient.document_id && patient.document_id.public_id) {
-      try {
-        await cloudinary.uploader.destroy(patient.document_id.public_id);
-      } catch (error) {
-        return next(
-          new ErrorHandler(
-            "Error al eliminar el documento del paciente en Cloudinary",
-            500
-          )
-        );
-      }
-    }
-
-    //Eliminar
-    await Patient.findByIdAndDelete(patientId);
+    patient.estado = "retirado";
+    await patient.save();
 
     res.status(200).json({
       succes: true,
-      message: "Paciente eliminado correctamente",
+      message: "Paciente inhabilitado correctamente",
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const enablePatient = async (req, res, next) => {
+  try {
+    const patientId = req.params.id; //para URL
+
+    const patient = await Patient.findById(patientId);
+
+    if (!patient) {
+      return next(new ErrorHandler("Doctor no encontrado", 404));
+    }
+
+    patient.estado = "activo";
+    await patient.save();
+
+    res.status(200).json({
+      succes: true,
+      message: "Paciente conectado correctamente",
     });
   } catch (error) {
     next(error);

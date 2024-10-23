@@ -128,6 +128,11 @@ const patientSchema = new mongoose.Schema({
     },
     default: "paciente",
   },
+  estado: {
+    type: String,
+    enum: ["activo", "retirado"],
+    default: "activo",
+  },
 });
 
 //CONTRASEÑAS

@@ -121,7 +121,7 @@ export const checkAppointments = async (req, res, next) => {
 
     const appointments = await Cita.find({ idPaciente: patientId }).populate(
       "idDoctor",
-      "nombre apellido_pat apellido_mat especialidad"
+      "nombre apellido_pat apellido_mat especialidad photo"
     );
     //popular del idDoctor los sgtes campos de nombre apillo y especialed
 
@@ -404,6 +404,60 @@ export const adminCancelAppointment = async (req, res, next) => {
         res.status(200).json({
           message: "Cita cancelada y notificaciones enviadas correctamente",
         });
+      });
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const doctorSendEmailPatient = async (req, res, next) => {
+  try {
+    const patientId = req.params.id; //URL
+    const doctor = req.user.id; // ID del doctor autenticado
+
+    const { contenido, asunto } = req.body;
+    const { file } = req.files || {};
+
+    if (!contenido || !asunto) {
+      return next(new ErrorHandler("Ingrese los campos requeridos", 400));
+    }
+
+    const patient = await Patient.findById(patientId);
+    if (!patient) {
+      return next(new ErrorHandler("Paciente no encontrado", 404));
+    }
+
+    // Correo al paciente
+    const mailOptionsPaciente = {
+      from: doctor.email,
+      to: patient.email,
+      subject: asunto,
+      text: `Hola ${patient.nombre}.\n\n 
+      ${contenido}
+      \n\nSaludos.\n`,
+      attachments: file
+        ? [
+            {
+              filename: file.name, //nombre arcihvo
+              path: file.path, //ruta archivo
+              contentType: file.mimetype, //Tipo de contenido
+            },
+          ]
+        : [], // Si no entonces vacio
+    };
+
+    // Correo paciente
+    transporter.sendMail(mailOptionsPaciente, (error, info) => {
+      if (error) {
+        return res.status(500).json({
+          message: "Error al enviar el correo al paciente",
+          error: error,
+        });
+      }
+      res.status(200).json({
+        success: true,
+        message: "Correo enviado correctamente",
       });
     });
   } catch (error) {

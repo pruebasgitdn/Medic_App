@@ -10,6 +10,8 @@ import {
   EditDoctorProfile,
   EditPatientProfile,
   EditProfile,
+  enableDoctor,
+  enablePatient,
   getAdminDetails,
   getAllDoctors,
   getAllPatients,
@@ -40,7 +42,7 @@ router.get("/me", verifyAdminToken, getAdminDetails);
 router.put("/editprofile", verifyAdminToken, EditProfile);
 router.put("/editdoctor/:id", verifyAdminToken, EditDoctorProfile);
 router.put("/editpatient/:id", verifyAdminToken, EditPatientProfile);
-router.delete("/ctor/:id", verifyAdminToken, deleteDoctor);
+router.put("/deletedoctor/:id", verifyAdminToken, deleteDoctor);
 router.delete("/deletepatient/:id", verifyAdminToken, deletePatient);
 router.delete("/deleteappointment/:id", verifyAdminToken, deleteAppointment);
 router.delete("/deletemessage/:id", verifyAdminToken, deleteMessage);
@@ -54,5 +56,7 @@ router.get("/patsupports", verifyAdminToken, getPatSupports);
 router.post("/respondsupport/:id", verifyAdminToken, respondSupport);
 router.delete("/deletesupport/:id", verifyAdminToken, deleteSupportById);
 router.put("/appointment/cancel/:id", verifyAdminToken, adminCancelAppointment);
+router.put("/enabledoctor/:id", verifyAdminToken, enableDoctor);
+router.put("/enablepatient/:id", verifyAdminToken, enablePatient);
 
 export default router;

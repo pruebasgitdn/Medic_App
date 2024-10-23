@@ -36,6 +36,11 @@ const adminSchema = new mongoose.Schema({
     },
     default: "admin",
   },
+  estado: {
+    type: String,
+    enum: ["activo", "retirado"],
+    default: "activo",
+  },
 });
 
 //HASHEAR CONTRASEÑAS

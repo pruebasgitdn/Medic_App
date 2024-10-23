@@ -17,8 +17,6 @@ import axios from "axios";
 import { UploadOutlined } from "@ant-design/icons";
 import { useNavigate } from "react-router-dom";
 
-const { Option } = Select;
-
 const AdminPatients = () => {
   const [patients, setPatients] = useState([]);
   const [isModalVisible, setIsModalVisible] = useState(false);
@@ -30,6 +28,23 @@ const AdminPatients = () => {
   const [form] = Form.useForm();
   const navigate = useNavigate();
   const { Dragger } = Upload;
+  const { Option } = Select;
+  const [statusFilter, setStatusFilter] = useState("activo"); // Estado por defecto
+  const [filteredPatients, setFilteredPatients] = useState([]);
+
+  useEffect(() => {
+    // Filtrar los doctores por estado
+    const filtered = patients.filter(
+      (patient) =>
+        (statusFilter === "activo" && patient.estado === "activo") ||
+        (statusFilter === "retirado" && patient.estado === "retirado")
+    );
+    setFilteredPatients(filtered);
+  }, [statusFilter, patients]);
+
+  const handleStatusChange = (value) => {
+    setStatusFilter(value);
+  };
 
   // Manejar el archivo de foto
   const handlePhotoUpload = (file) => {
@@ -136,16 +151,45 @@ const AdminPatients = () => {
           <Button type="link" onClick={() => handleEdit(record)} size="small">
             Editar
           </Button>
-          <Popconfirm
-            title="¿Estás seguro de que quieres eliminar este paciente?"
+
+          {record.estado == "activo" ? (
+            <>
+              <Popconfirm
+                title="¿Estás seguro de que quieres inhabilitar este paciente?"
+                onConfirm={() => handleDelete(record._id)}
+                okText="Sí"
+                cancelText="No"
+              >
+                <Button danger size="small">
+                  Inhabilitar
+                </Button>
+              </Popconfirm>
+            </>
+          ) : (
+            <>
+              <Popconfirm
+                title="¿Estás seguro de que quieres habilitar este paciente?"
+                onConfirm={() => handleEnable(record._id)}
+                okText="Sí"
+                cancelText="No"
+              >
+                <Button type="primary" size="small">
+                  Habilitar
+                </Button>
+              </Popconfirm>
+            </>
+          )}
+
+          {/* <Popconfirm
+            title="¿Estás seguro de que quieres inhabilitar este paciente?"
             onConfirm={() => handleDelete(record._id)}
             okText="Sí"
             cancelText="No"
           >
             <Button danger size="small">
-              Eliminar
+              Inhabilitar
             </Button>
-          </Popconfirm>
+          </Popconfirm> */}
         </div>
       ),
     },
@@ -222,23 +266,67 @@ const AdminPatients = () => {
       );
 
       if (response.status == 200) {
-        message.success("Paciente eliminado correctamente");
-        navigate("/adminpanel/profile");
-        setPatients((prev) => prev.filter((doctor) => doctor._id !== id));
+        message.success("Paciente inhabilitado correctamente");
+        setPatients((prevPatients) =>
+          prevPatients.map((patient) =>
+            patient._id === id ? { ...patient, estado: "retirado" } : patient
+          )
+        );
       }
     } catch (error) {
-      message.error("Error al eliminar el paciente");
+      message.error("Error al inhabilitar el paciente");
       console.log(error);
     }
   };
+
+  const handleEnable = async (patientId) => {
+    try {
+      const response = await axios.put(
+        `http://localhost:4000/api/admin/enablepatient/${patientId}`,
+        {},
+        {
+          withCredentials: true,
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
+
+      if (response.status == 200) {
+        message.success("Paciente habilitado nuevamente");
+        setPatients((prevPatients) =>
+          prevPatients.map((patient) =>
+            patient._id === patientId
+              ? { ...patient, estado: "activo" }
+              : patient
+          )
+        );
+      }
+    } catch (error) {
+      message.error("Error al conectar el paceiente de nuevo");
+      console.log(error);
+    }
+  };
+
   return (
     <div>
       <h4 className="nooverflow">Administrar Pacientes </h4>
+      <Row className="admin_crud_head">
+        <Select
+          onChange={handleStatusChange}
+          defaultValue="activo"
+          title="Estado"
+          style={{ width: 180 }}
+        >
+          <Option value="activo">Activo</Option>
+          <Option value="retirado">Retirado</Option>
+        </Select>
+      </Row>
 
       {/* Tabla de pacientes */}
       <Table
         columns={columns}
-        dataSource={patients.map((patient) => ({
+        dataSource={filteredPatients.map((patient) => ({
           ...patient,
           key: patient._id,
         }))}

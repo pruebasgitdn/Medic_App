@@ -10,6 +10,7 @@ import {
   Row,
   Upload,
   message,
+  Select,
   Popconfirm,
   Avatar,
 } from "antd";
@@ -30,6 +31,9 @@ const AdminDoctors = () => {
   const [emailError, setEmailError] = useState("");
   const navigate = useNavigate();
   const { Dragger } = Upload;
+  const { Option } = Select;
+  const [statusFilter, setStatusFilter] = useState("activo"); // Estado por defecto
+  const [filteredDoctors, setFilteredDoctors] = useState([]);
 
   useEffect(() => {
     form.setFieldsValue({
@@ -50,6 +54,7 @@ const AdminDoctors = () => {
           }
         );
         setDoctors(response.data.doctors);
+        setFilteredDoctors(response.data.doctors); // Inicializa los doctores filtrados
       } catch (error) {
         console.log(error);
       }
@@ -57,6 +62,20 @@ const AdminDoctors = () => {
 
     fetchDoctors();
   }, [form, selectedDoctor]);
+
+  useEffect(() => {
+    // Filtrar los doctores por estado
+    const filtered = doctors.filter(
+      (doctor) =>
+        (statusFilter === "activo" && doctor.estado === "activo") ||
+        (statusFilter === "retirado" && doctor.estado === "retirado")
+    );
+    setFilteredDoctors(filtered);
+  }, [statusFilter, doctors]);
+
+  const handleStatusChange = (value) => {
+    setStatusFilter(value);
+  };
 
   //manejar el archivo de foto
   const handlePhotoUpload = (file) => {
@@ -147,8 +166,9 @@ const AdminDoctors = () => {
   //Eliminar doctor
   const handleDelete = async (doctorId) => {
     try {
-      const response = await axios.delete(
+      const response = await axios.put(
         `http://localhost:4000/api/admin/deletedoctor/${doctorId}`,
+        {},
         {
           withCredentials: true,
           headers: {
@@ -158,12 +178,43 @@ const AdminDoctors = () => {
       );
 
       if (response.status == 200) {
-        message.success("Doctor eliminado correctamente");
-        navigate("/adminpanel/profile");
-        setDoctors((prev) => prev.filter((doctor) => doctor._id !== doctorId));
+        message.success("Doctor inhabilitado correctamente");
+        setDoctors((prevDoctors) =>
+          prevDoctors.map((doctor) =>
+            doctor._id === doctorId ? { ...doctor, estado: "retirado" } : doctor
+          )
+        );
       }
     } catch (error) {
-      message.error("Error al eliminar el doctor");
+      message.error("Error al inhabilitar el doctor");
+      console.log(error);
+    }
+  };
+
+  //Habilitar
+  const handleEnable = async (doctorId) => {
+    try {
+      const response = await axios.put(
+        `http://localhost:4000/api/admin/enabledoctor/${doctorId}`,
+        {},
+        {
+          withCredentials: true,
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
+
+      if (response.status == 200) {
+        message.success("Doctor conectado nuevamente");
+        setDoctors((prevDoctors) =>
+          prevDoctors.map((doctor) =>
+            doctor._id === doctorId ? { ...doctor, estado: "activo" } : doctor
+          )
+        );
+      }
+    } catch (error) {
+      message.error("Error al conectar el doctor de nuevo");
       console.log(error);
     }
   };
@@ -228,16 +279,34 @@ const AdminDoctors = () => {
           <Button type="link" onClick={() => handleEdit(doctor)} size="small">
             Editar
           </Button>
-          <Popconfirm
-            title="¿Estás seguro de que quieres eliminar este doctor?"
-            onConfirm={() => handleDelete(doctor._id)}
-            okText="Sí"
-            cancelText="No"
-          >
-            <Button danger size="small">
-              Inhabilitar
-            </Button>
-          </Popconfirm>
+
+          {doctor.estado == "activo" ? (
+            <>
+              <Popconfirm
+                title="¿Estás seguro de que quieres inhabilitar este doctor?"
+                onConfirm={() => handleDelete(doctor._id)}
+                okText="Sí"
+                cancelText="No"
+              >
+                <Button danger size="small">
+                  Inhabilitar
+                </Button>
+              </Popconfirm>
+            </>
+          ) : (
+            <>
+              <Popconfirm
+                title="¿Estás seguro de que quieres habilitar este doctor?"
+                onConfirm={() => handleEnable(doctor._id)}
+                okText="Sí"
+                cancelText="No"
+              >
+                <Button type="primary" size="small">
+                  Habilitar
+                </Button>
+              </Popconfirm>
+            </>
+          )}
         </div>
       ),
     },
@@ -246,14 +315,28 @@ const AdminDoctors = () => {
   return (
     <div>
       <h4 className="nooverflow">Administrar doctores </h4>
-      <Link to="/adminpanel/formdoctor">
-        <Button type="primary">Agregar doctor</Button>
-      </Link>
+      <Row className="admin_crud_head">
+        <Link to="/adminpanel/formdoctor">
+          <Button type="primary">Agregar doctor</Button>
+        </Link>
+        <Select
+          onChange={handleStatusChange}
+          defaultValue="activo"
+          title="Estado"
+          style={{ width: 180 }}
+        >
+          <Option value="activo">Activo</Option>
+          <Option value="retirado">Retirado</Option>
+        </Select>
+      </Row>
 
       {/* Tabla de doctores */}
       <Table
         columns={columns}
-        dataSource={doctors.map((doctor) => ({ ...doctor, key: doctor._id }))}
+        dataSource={filteredDoctors.map((doctor) => ({
+          ...doctor,
+          key: doctor._id,
+        }))}
         pagination={{ pageSize: 5 }} // Número de filas por página
       />
 

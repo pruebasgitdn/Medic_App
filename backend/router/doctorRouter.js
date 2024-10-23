@@ -10,6 +10,7 @@ import {
 } from "../controller/doctorController.js";
 import {
   doctorCancelAppointment,
+  doctorSendEmailPatient,
   getDoctorAppointments,
 } from "../controller/appointmentController.js";
 import { verifyDoctorToken } from "../middlewares/authMiddleware.js";
@@ -37,6 +38,7 @@ router.put(
   verifyDoctorToken,
   doctorCancelAppointment
 );
+router.post("/sendmail/:id", verifyDoctorToken, doctorSendEmailPatient);
 
 // router.post("/generatepdf", generateReport);
 export default router;

@@ -99,6 +99,11 @@ const doctorSchema = new mongoose.Schema({
     },
     default: "doctor",
   },
+  estado: {
+    type: String,
+    enum: ["activo", "retirado"],
+    default: "activo",
+  },
 });
 
 //HASHEAR CONTRASEÑAS

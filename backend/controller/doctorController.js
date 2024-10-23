@@ -4,10 +4,6 @@ import { generateToken } from "../utils/jwtToken.js";
 import cloudinary from "cloudinary";
 import { Cita } from "../models/citaSchema.js";
 import { Patient } from "../models/patientSchema.js";
-import transporter from "../utils/nodeMailerConfig.js";
-import PDFDocument from "pdfkit";
-import path from "path";
-import fs from "fs";
 
 export const Me = async (req, res, next) => {
   try {
@@ -266,46 +262,3 @@ export const deleteAllergie = async (req, res) => {
       .json({ success: false, message: "Error del servidor", error });
   }
 };
-
-// export const generateReport = async (req, res, next) => {
-//   try {
-//     // Crear un nuevo documento PDF
-//     const doc = new PDFDocument();
-
-//     // Establecer los encabezados para la respuesta como archivo PDF
-//     res.setHeader("Content-Type", "application/pdf");
-//     res.setHeader(
-//       "Content-Disposition",
-//       "attachment; filename=reporte_prueba.pdf"
-//     );
-
-//     // Pipe del documento PDF a la respuesta
-//     doc.pipe(res);
-
-//     // Contenido simple para el PDF de prueba
-//     doc.fontSize(20).text("Reporte de Prueba", { align: "center" });
-//     doc.moveDown(1);
-//     doc
-//       .fontSize(12)
-//       .text("Este es un PDF de prueba generado desde el servidor.", {
-//         align: "left",
-//       });
-//     doc.moveDown(1);
-//     doc.fontSize(12).text("Aquí puedes agregar más contenido si lo deseas.", {
-//       align: "left",
-//     });
-//     doc.moveDown(2);
-
-//     const currentDate = new Date().toLocaleString();
-//     doc.fontSize(10).text(`Generado el: ${currentDate}`, { align: "left" });
-
-//     // Finalizar el documento PDF
-//     doc.end();
-//   } catch (error) {
-//     console.error("Error en la generación del reporte:", error);
-//     res.status(500).json({
-//       success: false,
-//       message: "Error al generar el archivo de texto",
-//     });
-//   }
-// };
