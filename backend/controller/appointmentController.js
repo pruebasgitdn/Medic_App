@@ -18,6 +18,18 @@ export const createAppointment = async (req, res, next) => {
       );
     }
 
+    const appointmentDate = new Date(fecha);
+    // Validar que la hora esté entre las 6:00 AM y las 11:00 PM
+    const appointmentHour = appointmentDate.getHours();
+    if (appointmentHour < 6 || appointmentHour >= 23) {
+      return next(
+        new ErrorHandler(
+          "Las citas solo pueden crearse entre las 6:00 AM y las 11:00 PM.",
+          400
+        )
+      );
+    }
+
     // Fecha no anterior a la actual
     const today = new Date();
     if (new Date(fecha) < today) {
