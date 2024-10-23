@@ -274,6 +274,13 @@ const AdminPatients = () => {
         );
       }
     } catch (error) {
+      if (
+        error.response ||
+        error.response.data ||
+        error.response.data.message
+      ) {
+        message.error(error.response.data.message);
+      }
       message.error("Error al inhabilitar el paciente");
       console.log(error);
     }

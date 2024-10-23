@@ -9,7 +9,10 @@ import {
   EditProfile,
 } from "../controller/patientController.js";
 import { verifyPatientToken } from "../middlewares/authMiddleware.js";
-import { checkAppointments } from "../controller/appointmentController.js";
+import {
+  checkAppointments,
+  getAppointmentsByDate,
+} from "../controller/appointmentController.js";
 import {
   createSupport,
   deleteSupportById,
@@ -29,5 +32,6 @@ router.put("/editprofile", verifyPatientToken, EditProfile);
 router.post("/support", verifyPatientToken, createSupport);
 router.get("/mysupports", verifyPatientToken, getPatientTickets);
 router.delete("/deletesupport/:id", verifyPatientToken, deleteSupportById);
+router.get("/appointmentoday", verifyPatientToken, getAppointmentsByDate);
 
 export default router;

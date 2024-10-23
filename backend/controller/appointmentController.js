@@ -464,3 +464,38 @@ export const doctorSendEmailPatient = async (req, res, next) => {
     next(error);
   }
 };
+
+export const getAppointmentsByDate = async (req, res, next) => {
+  try {
+    const today = new Date();
+    today.setHours(0, 0, 0, 0); // Inicio del dia 12:00:00 a partir de ahi busca
+
+    const tomorrow = new Date(today);
+    tomorrow.setDate(today.getDate() + 1); // Inicio del día siguiente a las 00:00:00, buscar hasta aca
+
+    // Buscar citas solo para el día actual
+    const appointments = await Cita.find({
+      fecha: {
+        $gte: today, // Desde el inicio del día actual
+        $lt: tomorrow, // Hasta el inicio del día siguiente
+      },
+      estado: { $nin: ["CANCELADA", "REALIZADA"] }, // Solo pendietne
+    }).populate(
+      "idDoctor",
+      "nombre apellido_pat apellido_mat especialidad photo"
+    );
+
+    if (!appointments || appointments.length === 0) {
+      return next(
+        new ErrorHandler("No se encontraron citas para el día de hoy", 200)
+      );
+    }
+
+    res.status(200).json({
+      success: true,
+      appointments,
+    });
+  } catch (error) {
+    next(error);
+  }
+};

@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
-import { List, Card, Alert, Select, Row, Col, Avatar } from "antd";
+import { List, Card, Alert, Select, Row, Col, Avatar, message } from "antd";
 
 const { Option } = Select;
 
@@ -20,6 +20,7 @@ const DoctorHistory = () => {
 
         setData(response.data.appointments);
       } catch (error) {
+        message.error(error);
         console.error("Error al obtener las citas:", error);
       }
     };

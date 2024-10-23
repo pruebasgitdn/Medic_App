@@ -135,6 +135,13 @@ const DoctorPatients = () => {
         message.error(response.data.message);
       }
     } catch (error) {
+      if (
+        error.response ||
+        error.response.data ||
+        error.response.data.message
+      ) {
+        message.error(error.response.data.message || error.response.data);
+      }
       message.error("Error al eliminar la alergia");
       console.log(error);
     }
@@ -279,6 +286,7 @@ const DoctorPatients = () => {
         cancelText="Salir"
         okText="OK"
         onCancel={handleCancel}
+        footer={[]}
       >
         {selectedPatient &&
         selectedPatient.alergias &&
@@ -373,10 +381,12 @@ const DoctorPatients = () => {
         )}
       </Modal>
 
+      {/* MODAL CORREO */}
       <Modal
         title={`Enviar correo a ${selectedPatient?.nombre || "Paciente"}`}
         open={isEmailModalOpen}
         onCancel={handleEmailCancel}
+        footer={[]}
       >
         <Form
           layout="vertical"

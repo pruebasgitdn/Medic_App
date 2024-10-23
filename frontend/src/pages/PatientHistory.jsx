@@ -69,8 +69,8 @@ const PatientHistory = () => {
             style={{ width: 200, marginBottom: "16px" }}
             onChange={(value) => setOrden(value)}
           >
-            <Option value="recent">Recientes</Option>
-            <Option value="oldest">Antiguos</Option>
+            <Option value="recent">Antiguos</Option>
+            <Option value="oldest">Recientes</Option>
           </Select>
 
           <List

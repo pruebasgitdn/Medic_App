@@ -108,6 +108,13 @@ const AdminSupport = () => {
         navigate("/adminpanel/profile");
       }
     } catch (error) {
+      if (
+        error.response ||
+        error.response.data ||
+        error.response.data.message
+      ) {
+        message.error(error.response.data.message);
+      }
       console.error("Error al eliminar el soporte:", error);
       message.error("No se pudo eliminar el soporte.");
     }

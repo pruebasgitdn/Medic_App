@@ -68,6 +68,7 @@ const DoctorSupports = () => {
         setPendientes(pendientesFiltrados);
         setResueltos(resueltosFiltrados);
       } catch (error) {
+        message.error(error);
         console.log(error);
       }
     };
@@ -105,6 +106,13 @@ const DoctorSupports = () => {
         setFile(null); // Reiniciar el archivo
       }
     } catch (error) {
+      if (
+        error.response ||
+        error.response.data ||
+        error.response.data.message
+      ) {
+        message.error(error.response.data.message || error.response.data);
+      }
       setLoading(false);
       console.error("Error al enviar el formulario:", error);
       message.error("Error en la solicitud, intente nuevamente");
@@ -132,6 +140,14 @@ const DoctorSupports = () => {
       }
       setLoading(false);
     } catch (error) {
+      if (
+        error.response ||
+        error.response.data ||
+        error.response.data.message
+      ) {
+        message.error(error.response.data.message || error.response.data);
+      }
+      setLoading(false);
       console.error("Error al eliminar el soporte:", error);
       message.error("No se pudo eliminar el soporte.");
     }

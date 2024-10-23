@@ -127,6 +127,13 @@ const AdminAppointments = () => {
 
       setLoading(false);
     } catch (error) {
+      if (
+        error.response ||
+        error.response.data ||
+        error.response.data.message
+      ) {
+        message.error(error.response.data.message);
+      }
       message.error("Error al cancelar la cita ");
       console.error("Error:", error);
       setLoading(false);
@@ -153,6 +160,13 @@ const AdminAppointments = () => {
         );
       }
     } catch (error) {
+      if (
+        error.response ||
+        error.response.data ||
+        error.response.data.message
+      ) {
+        message.error(error.response.data.message);
+      }
       message.error("Error al eliminar la cita");
       console.log(error);
     }

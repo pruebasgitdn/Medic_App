@@ -13,6 +13,16 @@
   display: flex;
   flex-direction: column;
 }
+.form_card {
+  max-width: 750px;
+  margin-left: auto;
+  margin-right: auto;
+}
+.citas_hoy {
+  max-width: 500px;
+  margin-left: auto;
+  margin-right: auto;
+}
 .admin_crud_head {
   display: flex;
   flex-direction: row;
@@ -177,6 +187,9 @@
 .dp {
   display: flex;
   justify-content: center;
+}
+.cont_apform {
+  display: flex;
 }
 .card_dp {
   width: 60%;

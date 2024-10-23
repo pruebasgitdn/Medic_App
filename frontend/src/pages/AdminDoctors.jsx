@@ -142,10 +142,6 @@ const AdminDoctors = () => {
       }
 
       console.log(values);
-      console.log("FormData values:");
-      for (let [key, value] of formData.entries()) {
-        console.log(`${key}: ${value}`);
-      }
     } catch (error) {
       console.log(error);
       message.error("Error al actualizar doctor");
@@ -186,6 +182,13 @@ const AdminDoctors = () => {
         );
       }
     } catch (error) {
+      if (
+        error.response ||
+        error.response.data ||
+        error.response.data.message
+      ) {
+        message.error(error.response.data.message);
+      }
       message.error("Error al inhabilitar el doctor");
       console.log(error);
     }
@@ -214,6 +217,14 @@ const AdminDoctors = () => {
         );
       }
     } catch (error) {
+      if (
+        error.response ||
+        error.response.data ||
+        error.response.data.message
+      ) {
+        message.error(error.response.data.message);
+        setLoading(false);
+      }
       message.error("Error al conectar el doctor de nuevo");
       console.log(error);
     }

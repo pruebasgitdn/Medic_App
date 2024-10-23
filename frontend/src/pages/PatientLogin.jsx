@@ -45,8 +45,8 @@ const Login = () => {
       }
     } catch (error) {
       if (
-        error.response &&
-        error.response.data &&
+        error.response ||
+        error.response.data ||
         error.response.data.message
       ) {
         message.error(error.response.data.message);

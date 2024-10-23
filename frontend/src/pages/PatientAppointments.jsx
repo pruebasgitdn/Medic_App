@@ -93,6 +93,13 @@ const PatientAppointments = () => {
         message.error("No se pudo cancelar la cita");
       }
     } catch (error) {
+      if (
+        error.response ||
+        error.response.data ||
+        error.response.data.message
+      ) {
+        message.error(error.response.data.message || error.response.data);
+      }
       message.error("Error al cancelar la cita", error);
     }
 
@@ -109,8 +116,8 @@ const PatientAppointments = () => {
           style={{ width: 200, marginBottom: "16px" }}
           onChange={(value) => setPendientes(value)}
         >
-          <Option value="recent">Recientes</Option>
-          <Option value="oldest">Antiguas</Option>
+          <Option value="recent">Antiguas</Option>
+          <Option value="oldest">Recientes</Option>
         </Select>
         {sortedPendientes.length > 0 ? (
           sortedPendientes.map((cita, index) => (
@@ -170,8 +177,8 @@ const PatientAppointments = () => {
           style={{ width: 200, marginBottom: "16px" }}
           onChange={(value) => setRealizadas(value)}
         >
-          <Option value="recent">Recientes</Option>
-          <Option value="oldest">Antiguas</Option>
+          <Option value="recent">Antiguas</Option>
+          <Option value="oldest">Recientes</Option>
         </Select>
 
         {sortedRealizadas.length > 0 ? (

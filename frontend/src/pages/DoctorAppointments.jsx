@@ -96,6 +96,13 @@ const DoctorAppointments = () => {
         navigate("/doctorpanel/history");
       }
     } catch (error) {
+      if (
+        error.response ||
+        error.response.data ||
+        error.response.data.message
+      ) {
+        message.error(error.response.data.message || error.response.data);
+      }
       message.error("Error en dar Respuesta al Paciente");
       console.error("Error:", error);
     }
@@ -145,6 +152,13 @@ const DoctorAppointments = () => {
       }
       setLoading(false);
     } catch (error) {
+      if (
+        error.response ||
+        error.response.data ||
+        error.response.data.message
+      ) {
+        message.error(error.response.data.message || error.response.data);
+      }
       message.error("Error al cancelar la cita.");
       console.error("Error:", error);
       setLoading(false);
@@ -160,8 +174,8 @@ const DoctorAppointments = () => {
         onChange={(value) => setOrder(value)}
         style={{ width: 200, marginBottom: "16px" }}
       >
-        <Option value="recent">Recientes</Option>
-        <Option value="oldest">Antiguas</Option>
+        <Option value="recent">Antiguas</Option>
+        <Option value="oldest">Recientes</Option>
       </Select>
       {citasOrdenadas.length > 0 ? (
         <List
