@@ -13,6 +13,8 @@ const FormNewDoctor = () => {
   const [photo, setPhoto] = useState(null); // Foto del paciente
   const [licencia, setLicencia] = useState(null);
   const [loading, setLoading] = useState(false);
+  const [licenseError, setLicenseError] = useState("");
+  const [emailError, setEmailError] = useState("");
 
   const navigate = useNavigate();
 
@@ -77,21 +79,23 @@ const FormNewDoctor = () => {
       console.log(values);
     } catch (error) {
       setLoading(false);
-      console.log(error);
-      message.error("Error al registrar doctor");
-      if (
-        error.response ||
-        error.response.data ||
-        error.response.data.message
-      ) {
-        message.error(error.response.data.message);
-      } else {
-        message.error("Error al añadir doctor");
+      if (error.response || error.response.data) {
+        const { message } = error.response.data;
+        if (message === "Doctor con este email ya existe") {
+          setEmailError(message);
+          message.error("Doctor con este email ya existe");
+        } else if (message === "Este número de licencia ya existe") {
+          setLicenseError(message);
+          message.error("Este número de licencia ya existe");
+        } else {
+          message.error("Error");
+        }
       }
-      console.error("Error:", error);
+      console.error("Error", error);
     }
 
-    console.log(values);
+    // message.error("Error al registrar doctor");
+    // console.log(values);
   };
 
   return (
@@ -151,6 +155,14 @@ const FormNewDoctor = () => {
                 >
                   <Input className="form-input" />
                 </Form.Item>
+                {emailError &&
+                emailError === "Doctor con este email ya existe" ? (
+                  <>
+                    <p className="error_form">{emailError}</p>
+                  </>
+                ) : (
+                  <></>
+                )}
               </Col>
 
               {/* INPUT APELLIDO PATERNO */}
@@ -274,6 +286,14 @@ const FormNewDoctor = () => {
                 >
                   <Input className="form-input" />
                 </Form.Item>
+                {licenseError &&
+                licenseError === "Este número de licencia ya existe" ? (
+                  <>
+                    <p className="error_form">{licenseError}</p>
+                  </>
+                ) : (
+                  <></>
+                )}
               </Col>
               {/* ESPECIALIDAD */}
               <Col xs={24} md={12}>

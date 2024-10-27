@@ -2,8 +2,6 @@ import React, { useState } from "react";
 import { UploadOutlined } from "@ant-design/icons";
 import "react-phone-number-input/style.css";
 import PhoneInput from "react-phone-number-input";
-import { toast, ToastContainer } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
 import {
   Form,
   Input,
@@ -111,8 +109,8 @@ const Register = () => {
       }
     } catch (error) {
       if (
-        error.response &&
-        error.response.data &&
+        error.response ||
+        error.response.data ||
         error.response.data.message
       ) {
         message.error(error.response.data.message);

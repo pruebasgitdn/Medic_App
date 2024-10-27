@@ -29,6 +29,7 @@ const AdminDoctors = () => {
   const [photo, setPhoto] = useState(null); // Foto del paciente
   const [licencia, setLicencia] = useState(null);
   const [emailError, setEmailError] = useState("");
+  const [licenseError, setLicenseError] = useState("");
   const navigate = useNavigate();
   const { Dragger } = Upload;
   const { Option } = Select;
@@ -98,6 +99,8 @@ const AdminDoctors = () => {
   // Cerrar el modal
   const handleCancel = () => {
     setIsModalVisible(false);
+    setLicenseError("");
+    setEmailError("");
   };
 
   //Editar doctor
@@ -126,7 +129,7 @@ const AdminDoctors = () => {
         `http://localhost:4000/api/admin/editdoctor/${selectedDoctor._id}`,
         formData,
         {
-          withCredentials: true, // Para asegurarse de que las cookies se manejen correctamente
+          withCredentials: true,
           headers: {
             "Content-Type": "multipart/form-data",
           },
@@ -142,18 +145,23 @@ const AdminDoctors = () => {
       }
 
       console.log(values);
+      setLoading(false);
     } catch (error) {
-      console.log(error);
-      message.error("Error al actualizar doctor");
-      if (error.response && error.response.data) {
+      setLoading(false);
+      if (error.response || error.response.data) {
         //Extraer mensaje del da respuesta
         const { message } = error.response.data;
         if (message === "Email ya se encuentra en uso / registrado") {
           setEmailError(message);
+        } else if (message === "El número de licencia ya está en uso") {
+          setLicenseError(message);
         } else {
-          message.error(message);
+          message.error("Error");
         }
       }
+
+      message.error("Error al actualizar doctor");
+      console.log(error);
     }
     console.log(values);
     console.log(selectedDoctor._id);
@@ -397,62 +405,83 @@ const AdminDoctors = () => {
                 </Form.Item>
               </Col>
             </Row>
-            {/* Email */}
-            <Form.Item
-              name="email"
-              label="Email"
-              className="form-item"
-              rules={[{ type: "email", message: "Email valido" }]}
-            >
-              <Input placeholder="Email" />
-            </Form.Item>
-            {emailError &&
-            emailError === "Email ya se encuentra en uso / registrado" ? (
-              <>
-                <p className="error_form">{emailError}</p>
-              </>
-            ) : (
-              <></>
-            )}
 
-            {/* Teléfono */}
-            <Form.Item
-              name="telefono"
-              label="Teléfono"
-              className="form-item"
-              rules={[
-                { min: 10, message: "Minimo 10 digitos" },
-                {
-                  max: 14,
-                  message: "Maximo 11 digitos",
-                },
-              ]}
-            >
-              <PhoneInput
-                defaultCountry={"CO"}
-                placeholder="Ingresa numero de telefono"
-              />
-            </Form.Item>
+            <Row>
+              <Col xs={24} md={12}>
+                {/* Email */}
+                <Form.Item
+                  name="email"
+                  label="Email"
+                  className="form-item"
+                  rules={[{ type: "email", message: "Email valido" }]}
+                >
+                  <Input placeholder="Email" />
+                </Form.Item>
+                {emailError &&
+                emailError === "Email ya se encuentra en uso / registrado" ? (
+                  <>
+                    <p className="error_form">{emailError}</p>
+                  </>
+                ) : (
+                  <></>
+                )}
+              </Col>
 
-            {/* ESPECIALIDAD */}
-            <Form.Item
-              name="especialidad"
-              label="Especialidad"
-              rules={[{ min: 5, message: "Mayor a 5 digitos" }]}
-              className="form-item"
-            >
-              <Input placeholder="Especialidad" />
-            </Form.Item>
+              <Col xs={24} md={12}>
+                {/* Teléfono */}
+                <Form.Item
+                  name="telefono"
+                  label="Teléfono"
+                  className="form-item"
+                  rules={[
+                    { min: 10, message: "Minimo 10 digitos" },
+                    {
+                      max: 14,
+                      message: "Maximo 11 digitos",
+                    },
+                  ]}
+                >
+                  <PhoneInput
+                    defaultCountry={"CO"}
+                    placeholder="Ingresa numero de telefono"
+                  />
+                </Form.Item>
+              </Col>
+            </Row>
 
-            {/* LICENCIA */}
-            <Form.Item
-              name="numero_licencia"
-              label="Licencia"
-              className="form-item"
-              rules={[{ max: 6, message: "Maximo a 6 digitos" }]}
-            >
-              <Input placeholder="Nmuero de licencia" />
-            </Form.Item>
+            <Row>
+              <Col xs={24} md={12}>
+                {/* ESPECIALIDAD */}
+                <Form.Item
+                  name="especialidad"
+                  label="Especialidad"
+                  rules={[{ min: 5, message: "Mayor a 5 digitos" }]}
+                  className="form-item"
+                >
+                  <Input placeholder="Especialidad" />
+                </Form.Item>
+              </Col>
+
+              <Col xs={24} md={12}>
+                {/* LICENCIA */}
+                <Form.Item
+                  name="numero_licencia"
+                  label="Licencia"
+                  className="form-item"
+                  rules={[{ max: 6, message: "Maximo a 6 digitos" }]}
+                >
+                  <Input placeholder="Nmuero de licencia" />
+                </Form.Item>
+                {licenseError &&
+                licenseError === "El número de licencia ya está en uso" ? (
+                  <>
+                    <p className="error_form">{licenseError}</p>
+                  </>
+                ) : (
+                  <></>
+                )}
+              </Col>
+            </Row>
 
             {/* ARCHIVOS */}
             <Form.Item label="Archivos">
@@ -472,11 +501,13 @@ const AdminDoctors = () => {
                       </Button>
                     </Dragger>
                     {selectedDoctor?.licencia?.url && (
-                      <img
-                        src={selectedDoctor.licencia.url}
-                        alt="Licencia"
-                        style={{ width: "80%", marginTop: "10px" }}
-                      />
+                      <div className="docu_cc">
+                        <img
+                          src={selectedDoctor.licencia.url}
+                          alt="Licencia"
+                          className="edit_document"
+                        />
+                      </div>
                     )}
                   </Form.Item>
                 </Col>
@@ -491,11 +522,13 @@ const AdminDoctors = () => {
                       </Button>
                     </Dragger>
                     {selectedDoctor?.photo?.url && (
-                      <img
-                        src={selectedDoctor.photo.url}
-                        alt="Licencia"
-                        style={{ width: "80%", marginTop: "10px" }}
-                      />
+                      <div className="docu_cc">
+                        <img
+                          src={selectedDoctor.photo.url}
+                          alt="Licencia"
+                          className="edit_document"
+                        />
+                      </div>
                     )}
                   </Form.Item>
                 </Col>
@@ -513,7 +546,7 @@ const AdminDoctors = () => {
                 >
                   Actualizar Perfil
                 </Button>
-                <Button key="cancel" block onClick={handleCancel}>
+                <Button type="dashed" block onClick={handleCancel}>
                   Cancelar
                 </Button>
               </div>

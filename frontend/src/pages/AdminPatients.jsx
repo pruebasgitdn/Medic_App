@@ -16,6 +16,7 @@ import {
 import axios from "axios";
 import { UploadOutlined } from "@ant-design/icons";
 import { useNavigate } from "react-router-dom";
+import PhoneInput from "react-phone-number-input";
 
 const AdminPatients = () => {
   const [patients, setPatients] = useState([]);
@@ -64,6 +65,7 @@ const AdminPatients = () => {
 
   const CloseModal = () => {
     setIsModalVisible(false);
+    setEmailError("");
   };
 
   useEffect(() => {
@@ -148,7 +150,11 @@ const AdminPatients = () => {
       key: "acciones",
       render: (record) => (
         <div className="adminperfil_btns">
-          <Button type="link" onClick={() => handleEdit(record)} size="small">
+          <Button
+            onClick={() => handleEdit(record)}
+            size="small"
+            type="primary"
+          >
             Editar
           </Button>
 
@@ -173,23 +179,12 @@ const AdminPatients = () => {
                 okText="Sí"
                 cancelText="No"
               >
-                <Button type="primary" size="small">
+                <Button type="dashed" size="small">
                   Habilitar
                 </Button>
               </Popconfirm>
             </>
           )}
-
-          {/* <Popconfirm
-            title="¿Estás seguro de que quieres inhabilitar este paciente?"
-            onConfirm={() => handleDelete(record._id)}
-            okText="Sí"
-            cancelText="No"
-          >
-            <Button danger size="small">
-              Inhabilitar
-            </Button>
-          </Popconfirm> */}
         </div>
       ),
     },
@@ -238,7 +233,9 @@ const AdminPatients = () => {
       for (let [key, value] of formData.entries()) {
         console.log(`${key}: ${value}`);
       }
+      setLoading(false);
     } catch (error) {
+      setLoading(false);
       console.log(error);
       message.error("Error al actualizar paciente");
       if (error.response && error.response.data) {
@@ -341,7 +338,7 @@ const AdminPatients = () => {
       />
 
       <Modal
-        title="Editar Doctor"
+        title="Editar Paciente"
         open={isModalVisible}
         onCancel={CloseModal}
         footer={[]}
@@ -383,58 +380,73 @@ const AdminPatients = () => {
               </Col>
             </Row>
 
-            {/* Email */}
-            <Form.Item
-              name="email"
-              label="Email"
-              className="form-item"
-              rules={[{ type: "email", message: "Email valido" }]}
-            >
-              <Input placeholder="Email" />
-            </Form.Item>
-            {emailError &&
-            emailError === "Email ya se encuentra en uso / registrado" ? (
-              <>
-                <p className="error_form">{emailError}</p>
-              </>
-            ) : (
-              <></>
-            )}
+            <Row>
+              {/* Email */}
+              <Col xs={24} md={12}>
+                <Form.Item
+                  name="email"
+                  label="Email"
+                  className="form-item"
+                  rules={[{ type: "email", message: "Email valido" }]}
+                >
+                  <Input placeholder="Email" />
+                </Form.Item>
+                {emailError &&
+                emailError === "Email ya se encuentra en uso / registrado" ? (
+                  <>
+                    <p className="error_form">{emailError}</p>
+                  </>
+                ) : (
+                  <></>
+                )}
+              </Col>
 
-            {/* Teléfono */}
-            <Form.Item
-              name="telefono"
-              label="Teléfono"
-              className="form-item"
-              rules={[
-                { min: 10, message: "Numero mayor a 10 digitos" },
-                {
-                  max: 14,
-                  message: "Maximo 11 digitos",
-                },
-              ]}
-            >
-              <Input placeholder="Teléfono" />
-            </Form.Item>
+              <Col xs={24} md={12}>
+                {/* Teléfono */}
+                <Form.Item
+                  name="telefono"
+                  label="Teléfono"
+                  className="form-item"
+                  rules={[
+                    { min: 10, message: "Numero mayor a 10 digitos" },
+                    {
+                      max: 14,
+                      message: "Maximo 11 digitos",
+                    },
+                  ]}
+                >
+                  <PhoneInput
+                    defaultCountry={"CO"}
+                    placeholder="Ingresa numero de telefono"
+                  />
+                  {/* <Input placeholder="Teléfono" /> */}
+                </Form.Item>
+              </Col>
+            </Row>
 
-            {/* Dirección */}
-            <Form.Item
-              name="direccion"
-              className="form-item"
-              label="Dirección"
-              rules={[{ min: 8, message: "Mayor a 8 digitos" }]}
-            >
-              <Input placeholder="Dirección" />
-            </Form.Item>
-
-            {/* Género */}
-            <Form.Item name="genero" className="form-item" label="Género">
-              <Select placeholder="Seleccione su género">
-                <Option value="HOMBRE">Hombre</Option>
-                <Option value="MUJER">Mujer</Option>
-                <Option value="OTRO">Otro</Option>
-              </Select>
-            </Form.Item>
+            <Row>
+              <Col xs={24} md={12}>
+                {/* Dirección */}
+                <Form.Item
+                  name="direccion"
+                  className="form-item"
+                  label="Dirección"
+                  rules={[{ min: 8, message: "Mayor a 8 digitos" }]}
+                >
+                  <Input placeholder="Dirección" />
+                </Form.Item>
+              </Col>
+              <Col xs={24} md={12}>
+                {/* Género */}
+                <Form.Item name="genero" className="form-item" label="Género">
+                  <Select placeholder="Seleccione su género">
+                    <Option value="HOMBRE">Hombre</Option>
+                    <Option value="MUJER">Mujer</Option>
+                    <Option value="OTRO">Otro</Option>
+                  </Select>
+                </Form.Item>
+              </Col>
+            </Row>
 
             {/* ARCHIVOS */}
             <Form.Item label="Archivos">
@@ -457,11 +469,13 @@ const AdminPatients = () => {
                       </Button>
                     </Dragger>
                     {selectedPatient.document_id?.url && (
-                      <img
-                        src={selectedPatient.document_id.url}
-                        alt="Foto"
-                        style={{ width: "80%", marginTop: "10px" }}
-                      />
+                      <div className="docu_cc">
+                        <img
+                          src={selectedPatient.document_id.url}
+                          alt="Foto"
+                          className="edit_document"
+                        />
+                      </div>
                     )}
                   </Form.Item>
                 </Col>
@@ -476,11 +490,13 @@ const AdminPatients = () => {
                       </Button>
                     </Dragger>
                     {selectedPatient?.photo?.url && (
-                      <img
-                        src={selectedPatient.photo.url}
-                        alt="Foto"
-                        style={{ width: "80%", marginTop: "10px" }}
-                      />
+                      <div className="docu_cc">
+                        <img
+                          src={selectedPatient.photo.url}
+                          alt="Foto"
+                          className="edit_document"
+                        />
+                      </div>
                     )}
                   </Form.Item>
                 </Col>
@@ -489,9 +505,19 @@ const AdminPatients = () => {
 
             {/* Botón de enviar */}
             <Form.Item>
-              <Button type="primary" htmlType="submit" block loading={loading}>
-                Actualizar Perfil
-              </Button>
+              <div className="btns_login">
+                <Button
+                  type="primary"
+                  htmlType="submit"
+                  block
+                  loading={loading}
+                >
+                  Actualizar Perfil
+                </Button>
+                <Button type="dashed" block onClick={CloseModal}>
+                  Cancelar
+                </Button>
+              </div>
             </Form.Item>
           </Form>
         )}

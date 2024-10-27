@@ -6,7 +6,6 @@ import { Patient } from "../models/patientSchema.js";
 import { generateToken } from "../utils/jwtToken.js";
 import { Cita } from "../models/citaSchema.js";
 import cloudinary from "cloudinary";
-import bcrypt from "bcrypt";
 
 export const login = async (req, res, next) => {
   const { email, password } = req.body;
@@ -99,6 +98,7 @@ export const createAdmin = async (req, res, next) => {
   }
 };
 
+//Admin crear dr
 export const createDoctor = async (req, res, next) => {
   try {
     const {
@@ -149,9 +149,14 @@ export const createDoctor = async (req, res, next) => {
       );
     }
 
+    const licenciaExist = await Doctor.findOne({ numero_licencia });
+    if (licenciaExist) {
+      return next(new ErrorHandler("Este número de licencia ya existe", 400));
+    }
+
     const isRegistered = await Doctor.findOne({ email });
     if (isRegistered) {
-      return next(new ErrorHandler("Doctor con este email ya existe"));
+      return next(new ErrorHandler("Doctor con este email ya existe", 400));
     }
 
     //Licencia
@@ -226,6 +231,9 @@ export const createDoctor = async (req, res, next) => {
       doctor,
     });
   } catch (error) {
+    if (error.code === 11000 && error.keyValue.numero_licencia) {
+      return next(new ErrorHandler("Este número de licencia ya existe", 400));
+    }
     next(error);
   }
 };
@@ -384,6 +392,16 @@ export const EditDoctorProfile = async (req, res, next) => {
       if (emailExist) {
         return next(
           new ErrorHandler("Email ya se encuentra en uso / registrado")
+        );
+      }
+    }
+
+    // Verificar # de licencia
+    if (numero_licencia && numero_licencia !== doctor.numero_licencia) {
+      const licenciaExist = await Doctor.findOne({ numero_licencia });
+      if (licenciaExist) {
+        return next(
+          new ErrorHandler("El número de licencia ya está en uso", 400)
         );
       }
     }

@@ -29,6 +29,19 @@
   gap: 20px;
   margin: 10px;
 }
+#il {
+  display: flex;
+  flex-direction: row;
+
+  gap: 10px;
+}
+#ct {
+  text-align: center;
+  margin: 10px;
+}
+#mg {
+  margin: 10px;
+}
 .edit_photo {
   width: 80%;
   margin-top: 10px;
@@ -163,10 +176,9 @@
 }
 
 .register-banner {
-  width: 80%; /* Ajusta el ancho de la imagen */
   object-fit: fill;
   overflow-y: hidden;
-  height: 90%;
+  height: 100%;
 }
 
 /* Estilos para la página de perfil del paciente */

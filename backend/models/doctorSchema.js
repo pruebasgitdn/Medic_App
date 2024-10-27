@@ -49,6 +49,7 @@ const doctorSchema = new mongoose.Schema({
   numero_licencia: {
     type: String,
     required: true,
+    unique: true,
     minLength: [5, "El número de licencia debe tener al menos 5 caracteres"],
   },
   licencia: {

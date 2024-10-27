@@ -102,10 +102,12 @@ const DoctorSupports = () => {
       if (response.status === 201) {
         message.success("Ticket del Doctor enviado con éxito");
         setLoading(false);
-        navigate("/doctorpanel/profile");
         setFile(null); // Reiniciar el archivo
+        navigate("/doctorpanel/profile");
       }
+      setLoading(false);
     } catch (error) {
+      setLoading(false);
       if (
         error.response ||
         error.response.data ||
@@ -113,7 +115,7 @@ const DoctorSupports = () => {
       ) {
         message.error(error.response.data.message || error.response.data);
       }
-      setLoading(false);
+
       console.error("Error al enviar el formulario:", error);
       message.error("Error en la solicitud, intente nuevamente");
     }
@@ -222,7 +224,9 @@ const DoctorSupports = () => {
       <div>
         <Row gutter={[16, 16]}>
           <Col span={12}>
-            <h3>Solicitudes Pendientes</h3>
+            <h3 className="nooverflow" id="ct">
+              Solicitudes Pendientes
+            </h3>
             {pendientes.length > 0 ? (
               <List
                 itemLayout="vertical"
@@ -264,7 +268,7 @@ const DoctorSupports = () => {
                     <br />
                     <div className="nooverflow">
                       <Popconfirm
-                        title="¿Estás seguro de que quieres eliminar esta solicitud?"
+                        title="¿Estás seguro de que quieres cancelar esta solicitud?"
                         onConfirm={() => handleDeleteTicket(pendiente._id)}
                         okText="Sí"
                         cancelText="No"
@@ -284,11 +288,15 @@ const DoctorSupports = () => {
                 )}
               />
             ) : (
-              <p className="nooverflow">No hay solicitudes pendientes</p>
+              <p className="nooverflow" id="ct">
+                No hay solicitudes pendientes
+              </p>
             )}
           </Col>
           <Col span={12}>
-            <h3>Solicitudes Resueltas</h3>
+            <h3 className="nooverflow" id="ct">
+              Solicitudes Resueltas
+            </h3>
             {resueltos.length > 0 ? (
               <List
                 itemLayout="vertical"
@@ -333,7 +341,9 @@ const DoctorSupports = () => {
                 )}
               />
             ) : (
-              <p className="nooverflow">No hay solicitudes resueltas</p>
+              <p className="nooverflow" id="ct">
+                No hay solicitudes resueltas
+              </p>
             )}
           </Col>
         </Row>

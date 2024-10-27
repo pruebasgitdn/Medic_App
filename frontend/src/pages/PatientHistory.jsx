@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Card, List, Spin, Alert, Select } from "antd";
+import { Card, List, Spin, Alert, Select, Row, Col, Avatar } from "antd";
 import axios from "axios";
 
 const { Option } = Select;
@@ -85,11 +85,21 @@ const PatientHistory = () => {
             }}
             renderItem={(reporte, index) => (
               <List.Item>
-                <Card title={`Reporte ${index + 1}`} className="card_adv">
-                  <p>
-                    <strong>Doctor:</strong>{" "}
-                    {`${reporte.idDoctor.nombre} ${reporte.idDoctor.apellido_pat}`}
-                  </p>
+                <Card title={`Reporte ${index + 1}`} className="card_appont">
+                  <Row gutter={[0]}>
+                    <div id="il">
+                      <Col xs={12} sm={12} md={12} lg={12}>
+                        <p>
+                          <strong>Doctor:</strong>{" "}
+                          {`${reporte.idDoctor.nombre} ${reporte.idDoctor.apellido_pat}`}
+                        </p>
+                      </Col>
+                      <Col xs={12} sm={12} md={12} lg={12}>
+                        <Avatar size={35} src={reporte?.idDoctor?.photo?.url} />
+                      </Col>
+                    </div>
+                  </Row>
+
                   <p>
                     <strong>Fecha:</strong>{" "}
                     {new Date(reporte.fecha).toLocaleDateString()}

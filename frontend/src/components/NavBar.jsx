@@ -17,7 +17,6 @@ const NavBar = () => {
     try {
       let logoutUrl;
 
-      // Determina la URL de cierre de sesión dependiendo del rol
       if (role === "doctor") {
         logoutUrl = "http://localhost:4000/api/doctor/logout";
       } else if (role === "admin") {
@@ -46,7 +45,7 @@ const NavBar = () => {
   };
 
   const toggleMenu = () => {
-    setMenuVisible(!menuVisible); // Alternar menú
+    setMenuVisible(!menuVisible);
   };
 
   return (

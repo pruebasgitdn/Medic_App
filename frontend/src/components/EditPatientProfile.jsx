@@ -260,27 +260,32 @@ const EditPatientProfile = () => {
               </>
             )}
 
-            {/* Dirección */}
-            <Form.Item
-              name="direccion"
-              className="form-item"
-              label="Dirección"
-              rules={[{ min: 8, message: "Mayor a 8 digitos" }]}
-            >
-              <Input placeholder="Dirección" />
-            </Form.Item>
+            <Row>
+              <Col xs={12} sm={12} md={12} lg={12}>
+                {/* Dirección */}
+                <Form.Item
+                  name="direccion"
+                  className="form-item"
+                  label="Dirección"
+                  rules={[{ min: 8, message: "Mayor a 8 digitos" }]}
+                >
+                  <Input placeholder="Dirección" />
+                </Form.Item>
+              </Col>
+              <Col xs={12} sm={12} md={12} lg={12}>
+                {/* Género */}
+                <Form.Item name="genero" className="form-item" label="Género">
+                  <Select placeholder="Seleccione su género">
+                    <Option value="HOMBRE">Hombre</Option>
+                    <Option value="MUJER">Mujer</Option>
+                    <Option value="OTRO">Otro</Option>
+                  </Select>
+                </Form.Item>
+              </Col>
+            </Row>
 
             <Form.Item name="alergias" label="Alergias" className="form-item">
               <Input.TextArea rows={3} />
-            </Form.Item>
-
-            {/* Género */}
-            <Form.Item name="genero" className="form-item" label="Género">
-              <Select placeholder="Seleccione su género">
-                <Option value="HOMBRE">Hombre</Option>
-                <Option value="MUJER">Mujer</Option>
-                <Option value="OTRO">Otro</Option>
-              </Select>
             </Form.Item>
 
             {/* ARCHIVOS */}

@@ -54,7 +54,7 @@ const AdminSupport = () => {
         }
       } catch (error) {
         console.error(error);
-        message.error("Error al cargar los soportes.");
+        message.error("No se encontraron registros");
       }
     };
 
@@ -122,13 +122,13 @@ const AdminSupport = () => {
 
   return (
     <div>
-      <h2 className="nooverflow" id="txt_center">
+      <h4 className="nooverflow" id="txt_center">
         Soportes para Pacientes y Doctores del Sistema
-      </h2>
+      </h4>
       <Row gutter={16}>
         <Col span={12}>
           {doctorSupports.length === 0 ? (
-            <p className="nooverflow">
+            <p className="nooverflow" id="ct">
               No se encontraron registros para soportes de doctores.
             </p>
           ) : (
@@ -219,7 +219,7 @@ const AdminSupport = () => {
         </Col>
         <Col span={12}>
           {patientSupports.length === 0 ? (
-            <p className="nooverflow">
+            <p className="nooverflow" id="ct">
               No se encontraron registros para soportes de pacientes.
             </p>
           ) : (

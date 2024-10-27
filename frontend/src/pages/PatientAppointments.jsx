@@ -131,13 +131,17 @@ const PatientAppointments = () => {
                 <strong>Motivo:</strong> {cita.motivo}
               </p>
 
-              <div className="mini">
-                <p>
-                  <strong>Doctor:</strong>{" "}
-                  {`${cita.idDoctor.nombre} ${cita.idDoctor.apellido_pat} ${cita.idDoctor.apellido_mat}`}
-                </p>
-                <Avatar size={35} src={cita?.idDoctor?.photo?.url} />
-              </div>
+              <Row>
+                <Col xs={12} sm={12} md={12} lg={12}>
+                  <p>
+                    <strong>Doctor:</strong>{" "}
+                    {`${cita.idDoctor.nombre} ${cita.idDoctor.apellido_pat} ${cita.idDoctor.apellido_mat}`}
+                  </p>
+                </Col>
+                <Col xs={12} sm={12} md={12} lg={12}>
+                  <Avatar size={35} src={cita?.idDoctor?.photo?.url} />
+                </Col>
+              </Row>
 
               <p>
                 <strong>Fecha:</strong>{" "}
@@ -198,22 +202,24 @@ const PatientAppointments = () => {
                   key={index}
                   title={`Cita ${index + 1}`}
                   bordered={false}
-                  className="card_adv"
+                  className="card_appont"
                 >
                   <p>
                     <strong>Motivo:</strong> {cita.motivo}
                   </p>
-                  <div className="mini">
-                    <p>
-                      <strong>Doctor:</strong>{" "}
-                      {`${cita.idDoctor.nombre} ${cita.idDoctor.apellido_pat} ${cita.idDoctor.apellido_mat}`}
-                    </p>
-                    <Avatar size={35} src={cita?.idDoctor?.photo?.url} />
-                  </div>
-                  <p>
-                    <strong>Doctor:</strong>{" "}
-                    {`${cita.idDoctor.nombre} ${cita.idDoctor.apellido_pat} ${cita.idDoctor.apellido_mat}`}
-                  </p>
+
+                  <Row gutter={[0]}>
+                    <Col xs={12} sm={12} md={12} lg={12}>
+                      <p>
+                        <strong>Doctor:</strong>{" "}
+                        {`${cita.idDoctor.nombre} ${cita.idDoctor.apellido_pat} ${cita.idDoctor.apellido_mat}`}
+                      </p>
+                    </Col>
+                    <Col xs={12} sm={12} md={12} lg={12}>
+                      <Avatar size={35} src={cita?.idDoctor?.photo?.url} />
+                    </Col>
+                  </Row>
+
                   <p>
                     <strong>Especialidad del Doctor:</strong>{" "}
                     {cita.idDoctor.especialidad}

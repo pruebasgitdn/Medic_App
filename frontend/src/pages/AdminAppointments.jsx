@@ -232,6 +232,7 @@ const AdminAppointments = () => {
 
   return (
     <div>
+      <h4 className="nooverflow">Administrar Citas </h4>
       <Row style={{ marginBottom: "16px" }} gutter={16}>
         <Col>
           <Select
@@ -259,7 +260,6 @@ const AdminAppointments = () => {
         </Col>
       </Row>
 
-      <h4 className="nooverflow">Administrar Citas </h4>
       <Table
         dataSource={filteredAppointments}
         columns={columns}

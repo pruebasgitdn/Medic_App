@@ -210,7 +210,9 @@ const PatientSupport = () => {
       <div>
         <Row gutter={[16, 16]}>
           <Col span={12}>
-            <h3>Solicitudes Pendientes</h3>
+            <h3 className="nooverflow" id="ct">
+              Solicitudes Pendientes
+            </h3>
             {pendientes.length > 0 ? (
               <List
                 itemLayout="vertical"
@@ -277,11 +279,15 @@ const PatientSupport = () => {
                 )}
               />
             ) : (
-              <p className="nooverflow">No hay solicitudes pendientes</p>
+              <p className="nooverflow" id="ct">
+                No hay solicitudes pendientes
+              </p>
             )}
           </Col>
           <Col span={12}>
-            <h3>Solicitudes Resueltas</h3>
+            <h3 className="nooverflow" id="ct">
+              Solicitudes Resueltas
+            </h3>
             {resueltos.length > 0 ? (
               <List
                 itemLayout="vertical"
@@ -330,7 +336,9 @@ const PatientSupport = () => {
                 )}
               />
             ) : (
-              <p className="nooverflow">No hay solicitudes resueltas</p>
+              <p className="nooverflow" id="ct">
+                No hay solicitudes resueltas
+              </p>
             )}
           </Col>
         </Row>

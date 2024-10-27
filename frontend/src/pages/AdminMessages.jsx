@@ -62,7 +62,6 @@ const AdminMessages = () => {
 
       if (response.status == 200) {
         message.success("Mensaje eliminado correctamente");
-        navigate("/adminpanel/profile");
         setMessages((prev) => prev.filter((doctor) => doctor._id !== id));
       }
     } catch (error) {
@@ -102,12 +101,14 @@ const AdminMessages = () => {
       key: "actions",
       render: (record) => (
         <Popconfirm
-          title="Are you sure to delete this message?"
+          title="¿Estás seguro de eliminar este registro?"
           okText="Yes"
           onConfirm={() => handleDelete(record._id)}
           cancelText="No"
         >
-          <Button danger>Eliminar</Button>
+          <Button size="small" danger>
+            Eliminar
+          </Button>
         </Popconfirm>
       ),
     },
@@ -115,11 +116,20 @@ const AdminMessages = () => {
 
   return (
     <div>
+      <h4 className="nooverflow">Bandeja de entrada mensajes de contacto</h4>
       {messages && messages.length > 0 ? (
         <>
-          <Button danger onClick={handleClearAll}>
-            Limpiar / Borrar Mensajes
-          </Button>
+          <Popconfirm
+            title="¿Estás seguro de que quieres eliminar todos los mensajes de contacto?"
+            onConfirm={handleClearAll}
+            okText="Sí"
+            cancelText="No"
+          >
+            <Button danger size="small" id="mg">
+              Limpiar / Borrar Mensajes
+            </Button>
+          </Popconfirm>
+
           <Table
             columns={columns}
             rowKey={(record) => record._id}
@@ -128,7 +138,9 @@ const AdminMessages = () => {
         </>
       ) : (
         <>
-          <h3>No se registran mensajes enviados</h3>
+          <p className="nooverflow" id="ct">
+            No se registran mensajes enviados
+          </p>
         </>
       )}
     </div>

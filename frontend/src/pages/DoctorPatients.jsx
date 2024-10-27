@@ -395,8 +395,8 @@ const DoctorPatients = () => {
           onFinish={handleMail}
         >
           <Form.Item
-            className="fom-item"
-            label="Asunto"
+            label="Asunto:"
+            className="form-item"
             name="asunto"
             rules={[
               {
