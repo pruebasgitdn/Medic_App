@@ -84,8 +84,9 @@ const EditAdminProfile = () => {
       if (message === "Email ya se encuentra en uso / registrado") {
         setEmailError("Email ya se encuentra en uso / registrado");
       } else {
-        message.error(message);
+        tt.error(message);
       }
+      console.log(error);
     }
     console.log(values);
   };
@@ -179,11 +180,13 @@ const EditAdminProfile = () => {
                     </Button>
                   </Dragger>
                   {user?.photo?.url && (
-                    <img
-                      src={user.photo.url}
-                      alt="Foto"
-                      style={{ width: "80%", marginTop: "10px" }}
-                    />
+                    <div className="docu_cc">
+                      <img
+                        src={user.photo.url}
+                        alt="Foto"
+                        className="edit_document"
+                      />
+                    </div>
                   )}
                 </Form.Item>
               </Col>

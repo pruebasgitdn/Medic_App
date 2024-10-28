@@ -7,6 +7,9 @@
   font-family: "Montserrat", sans-serif;
 }
 
+/* .modal_e {
+  min-height: 650px;
+} */
 .btns_login {
   overflow: hidden;
   gap: 8px;

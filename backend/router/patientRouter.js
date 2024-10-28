@@ -11,6 +11,7 @@ import {
 import { verifyPatientToken } from "../middlewares/authMiddleware.js";
 import {
   checkAppointments,
+  editAppointment,
   getAppointmentsByDate,
 } from "../controller/appointmentController.js";
 import {
@@ -33,5 +34,6 @@ router.post("/support", verifyPatientToken, createSupport);
 router.get("/mysupports", verifyPatientToken, getPatientTickets);
 router.delete("/deletesupport/:id", verifyPatientToken, deleteSupportById);
 router.get("/appointmentoday", verifyPatientToken, getAppointmentsByDate);
+router.put("/editappointment/:id", verifyPatientToken, editAppointment);
 
 export default router;

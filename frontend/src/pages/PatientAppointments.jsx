@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import axios from "axios";
 import {
   Row,
@@ -11,8 +11,21 @@ import {
   Select,
   List,
   Avatar,
+  Modal,
+  Input,
+  Form,
 } from "antd";
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
+
 const { Option } = Select;
+import {
+  DeleteOutlined,
+  EditOutlined,
+  CloseCircleOutlined,
+  CheckCircleOutlined,
+} from "@ant-design/icons";
+import { useNavigate } from "react-router-dom";
 
 const PatientAppointments = () => {
   const [historial, setHistorial] = useState([]);
@@ -20,6 +33,21 @@ const PatientAppointments = () => {
   const [error, setError] = useState(null);
   const [pendientes, setPendientes] = useState("recent");
   const [realizadas, setRealizadas] = useState("recent");
+  const [visible, setVisible] = useState(false);
+  const [selectedAppointment, setSelectedAppointment] = useState(null);
+  const [form] = Form.useForm();
+  const [startDate, setStartDate] = useState(new Date());
+  const navigate = useNavigate();
+
+  const showAppointment = (cita) => {
+    setVisible(true);
+    setSelectedAppointment(cita);
+    console.log(visible);
+  };
+  const closeAppointment = () => {
+    setVisible(false);
+    setSelectedAppointment(null);
+  };
 
   useEffect(() => {
     const fetchHistory = async () => {
@@ -106,6 +134,45 @@ const PatientAppointments = () => {
     console.log(id);
   };
 
+  const handleEdit = async () => {
+    const fecha = startDate.toISOString(); // Formato ISO 8601
+
+    if (!fecha) {
+      message.error("Para editar la cita porfavor envie una fecha");
+      return;
+    }
+
+    try {
+      setLoading(true);
+      const payload = { fecha: startDate.toISOString() };
+      const response = await axios.put(
+        `http://localhost:4000/api/patient/editappointment/${selectedAppointment._id}`,
+        payload,
+        {
+          headers: { "Content-Type": "application/json" },
+          withCredentials: true,
+        }
+      );
+
+      if (response.data.success) {
+        message.success("Fecha editada correctamente");
+        navigate("/userpanel/appointment");
+      }
+      setLoading(false);
+    } catch (error) {
+      if (
+        error.response ||
+        error.response.data ||
+        error.response.data.message
+      ) {
+        message.error(error.response.data.message);
+      }
+      message.error("Error editar la cita ");
+      console.error("Error:", error);
+      setLoading(false);
+    }
+  };
+
   return (
     <Row gutter={16}>
       {/* Sección de Citas Pendientes */}
@@ -154,7 +221,7 @@ const PatientAppointments = () => {
               <p>
                 <strong>Detalles:</strong> {cita.detallesAdicionales}
               </p>
-              <div className="nooverflow">
+              <div className="nooverflow btns_flex">
                 <Popconfirm
                   title="¿Estás seguro de que quieres eliminar esta cita?"
                   okText="Sí"
@@ -162,16 +229,80 @@ const PatientAppointments = () => {
                   cancelText="No"
                 >
                   <Button danger block size="small" type="primary">
-                    Cancelar cita
+                    Cancelar cita <DeleteOutlined />
                   </Button>
                 </Popconfirm>
+                <Button
+                  onClick={() => showAppointment(cita)}
+                  block
+                  size="small"
+                  type="primary"
+                >
+                  Modificar fecha <EditOutlined />
+                </Button>
               </div>
+              <Modal
+                open={visible}
+                title="Detalles de la Cita"
+                onCancel={closeAppointment}
+                footer={[]}
+              >
+                <Form className="modal_e" form={form} onFinish={handleEdit}>
+                  <Form.Item name="motivo" label="Motivo">
+                    <Input disabled placeholder={selectedAppointment?.motivo} />
+                  </Form.Item>
+                  <Row className="centere">
+                    <h4>Fecha: </h4>
+
+                    <DatePicker
+                      selected={startDate}
+                      onChange={(date) => setStartDate(date)}
+                      showTimeInput
+                    />
+
+                    <p id="no_img_supp">
+                      Re programe el día y la hora de su cita, si así lo
+                      requiere.
+                    </p>
+                  </Row>
+
+                  <Form.Item name="detalles" label="Detalles">
+                    <Input.TextArea
+                      placeholder={selectedAppointment?.detallesAdicionales}
+                      rows={3}
+                      disabled
+                    />
+                  </Form.Item>
+
+                  <div className="btns_flex">
+                    <Button
+                      htmlType="submit"
+                      size="small"
+                      type="primary"
+                      block
+                      loading={loading}
+                    >
+                      Confirmar <CheckCircleOutlined />
+                    </Button>
+                    <Button
+                      size="small"
+                      danger
+                      block
+                      onClick={() => closeAppointment()}
+                    >
+                      Cancelar <CloseCircleOutlined />
+                    </Button>
+                  </div>
+                </Form>
+              </Modal>
             </Card>
           ))
         ) : (
           <Alert message="No tienes citas pendientes." type="info" />
         )}
       </Col>
+
+      <></>
 
       {/* Sección de Citas Realizadas */}
       <Col span={12}>

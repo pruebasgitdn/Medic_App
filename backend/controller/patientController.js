@@ -225,7 +225,7 @@ export const getHistory = async (req, res, next) => {
     //Buscar por el id del autenticado
     const patient = await Patient.findById(req.user.id).populate({
       path: "reporte_historial.idDoctor",
-      select: "nombre apellido_pat apellido_mat",
+      select: "nombre apellido_pat apellido_mat photo",
     });
 
     // Verificar si el paciente existe

@@ -20,12 +20,13 @@ const UserPanel = () => {
           <Menu.Item key="2" icon={<CalendarOutlined />}>
             <Link to="appointment">Agendar Cita</Link>
           </Menu.Item>
-          <Menu.Item key="3" icon={<HistoryOutlined />}>
-            <Link to="history">Ver Historial</Link>
-          </Menu.Item>
           <Menu.Item key="4" icon={<EyeOutlined />}>
             <Link to="appointments">Ver Citas</Link>
           </Menu.Item>
+          <Menu.Item key="3" icon={<HistoryOutlined />}>
+            <Link to="history">Ver Historial</Link>
+          </Menu.Item>
+
           <Menu.Item key="8" icon={<ToolOutlined />}>
             <Link to="support">Solicitar Soporte</Link>
           </Menu.Item>

@@ -157,7 +157,7 @@ export const login = async (req, res, next) => {
     // Verificar Contraseña
     const isMatch = await doctor.comparePassword(password);
     if (!isMatch) {
-      return res.status(400).json({ message: "Credenciales incorrectas" });
+      return next(new ErrorHandler("Credenciales incorrectas", 400));
     }
 
     generateToken(

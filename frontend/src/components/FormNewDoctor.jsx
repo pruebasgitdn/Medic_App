@@ -35,7 +35,7 @@ const FormNewDoctor = () => {
     formData.append("email", values.email);
     formData.append("apellido_pat", values.apellido_pat);
     formData.append("apellido_mat", values.apellido_mat);
-    formData.append("password", values.contraseña);
+    formData.append("password", values.password);
     formData.append("telefono", phone);
     formData.append("especialidad", values.especialidad);
     formData.append("numero_licencia", values.numero_licencia);

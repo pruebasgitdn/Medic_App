@@ -5,7 +5,6 @@ import { Patient } from "../models/patientSchema.js";
 import transporter from "../utils/nodeMailerConfig.js";
 
 // PACIENTE AGENDA UNA CITA
-
 export const createAppointment = async (req, res, next) => {
   try {
     const { fecha, motivo, idDoctor, detallesAdicionales } = req.body;
@@ -507,6 +506,111 @@ export const getAppointmentsByDate = async (req, res, next) => {
       success: true,
       appointments,
     });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const editAppointment = async (req, res, next) => {
+  try {
+    const { fecha } = req.body;
+    const idPaciente = req.user.id; //paciente autenticado
+    const nombrePati = req.user.nombre;
+    const id = req.params.id; // ID CITA URL
+
+    if (!fecha) {
+      return next(new ErrorHandler("Ingrese la fecha", 400));
+    }
+
+    // cit apor id
+    const appointment = await Cita.findById(id).populate("idDoctor");
+
+    if (!appointment || appointment.idPaciente.toString() !== idPaciente) {
+      return next(
+        new ErrorHandler("Cita no encontrada o no pertenece al paciente", 404)
+      );
+    }
+
+    // validar fecha y horario labor
+    const newAppointmentDate = new Date(fecha);
+    const appointmentHour = newAppointmentDate.getHours();
+    if (appointmentHour < 6 || appointmentHour >= 23) {
+      return next(
+        new ErrorHandler(
+          "Las citas solo pueden programarse entre las 6:00 AM y las 11:00 PM.",
+          400
+        )
+      );
+    }
+
+    // no fecha anterior
+    const today = new Date();
+    if (newAppointmentDate < today) {
+      return next(new ErrorHandler("Ingrese una fecha futura válida", 400));
+    }
+
+    // Definir el rango de tiempo de la nueva cita
+    const startDate = new Date(fecha);
+    const endDate = new Date(startDate.getTime() + 40 * 60000); // 40 minutos
+
+    /*
+nin not in excluir las cancelada y realziada
+ne not equal no igual a esa exlcuir tambien
+lt mens que, gt mas que => verifica el solapamientod  citas en 40 min
+*/
+    const conflictExists = await Cita.find({
+      idDoctor: appointment.idDoctor,
+      estado: { $nin: ["CANCELADA", "REALIZADA"] },
+      _id: { $ne: id },
+      $or: [
+        { fecha: { $gte: startDate, $lt: endDate } },
+        {
+          fecha: {
+            $lte: startDate,
+            $gte: new Date(startDate.getTime() - 40 * 60000),
+          },
+        },
+      ],
+    });
+
+    if (conflictExists.length > 0) {
+      return next(
+        new ErrorHandler(
+          "El doctor ya tiene una cita agendada para esa hora.",
+          400
+        )
+      );
+    }
+    // Correo  doctor
+    const mailOptionsDoctor = {
+      from: "<medelinknotificaciones@gmail.com>",
+      to: appointment.idDoctor.email,
+      subject: "Modificacion de Cita",
+      text: `Hola Dr. ${
+        appointment.idDoctor.nombre
+      }.\n\nSe le informa que el paciente: ${nombrePati} ha modificado la fecha de la cita para el día: ${new Date(
+        fecha
+      ).toLocaleString()}.\n\nSaludos.\nEquipo de administración.`,
+    };
+
+    transporter.sendMail(mailOptionsDoctor, (errorDoctor, infoDoctor) => {
+      if (errorDoctor) {
+        return res.status(500).json({
+          message: "Error al enviar el correo al doctor",
+          error: errorDoctor,
+        });
+      }
+
+      res.status(200).json({
+        success: true,
+        message: "Cita actualizada exitosamente.",
+        appointment,
+      });
+    });
+
+    // actualizar
+    appointment.fecha = fecha;
+    await appointment.save();
   } catch (error) {
     next(error);
   }
