@@ -293,7 +293,7 @@ export const EditProfile = async (req, res, next) => {
   try {
     const adminId = req.user.id; // ID del admin autenticado
 
-    const { email, newPassword, currentPassword } = req.body;
+    const { email, newPassword, currentPassword, removePhoto } = req.body;
 
     const { photo } = req.files || {};
 
@@ -316,6 +316,12 @@ export const EditProfile = async (req, res, next) => {
     // Verificar la contraseña actual
     if (currentPassword && !(await admin.comparePassword(currentPassword))) {
       return next(new ErrorHandler("La contraseña actual es incorrecta", 400));
+    }
+
+    if (removePhoto === "true" && admin.photo.public_id) {
+      // Borrar la foto en Cloudinary si existe
+      await cloudinary.uploader.destroy(admin.photo.public_id);
+      admin.photo = {}; // Limpiar  la foto en la bd
     }
 
     // Actualizar la foto de perfil si se envio no obligatorio porque arriba se inicializa como vacio si no tan

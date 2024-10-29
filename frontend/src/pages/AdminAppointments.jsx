@@ -154,7 +154,7 @@ const AdminAppointments = () => {
 
       if (response.status == 200) {
         message.success("Cita eliminada correctamente");
-        navigate("/adminpanel/profile");
+        // navigate("/adminpanel/profile");
         setFilteredAppointments((prev) =>
           prev.filter((cita) => cita._id !== id)
         );

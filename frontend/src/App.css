@@ -6,7 +6,12 @@
   overflow-x: hidden;
   font-family: "Montserrat", sans-serif;
 }
-
+#el {
+  margin-top: 5px;
+  display: flex;
+  margin-left: auto;
+  margin-right: auto;
+}
 /* .modal_e {
   min-height: 650px;
 } */

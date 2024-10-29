@@ -10,11 +10,12 @@ import {
   Card,
   Switch,
   message as tt,
+  Popconfirm,
 } from "antd";
 import "react-phone-number-input/style.css";
 import PhoneInput from "react-phone-number-input";
 import { Context } from "../main";
-import { UploadOutlined } from "@ant-design/icons";
+import { UploadOutlined, DeleteOutlined } from "@ant-design/icons";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 
@@ -29,15 +30,22 @@ const EditPatientProfile = () => {
   const { Dragger } = Upload;
   const { Option } = Select;
   const [changingPassword, setChangingPassword] = useState(false);
+  const [removePhoto, setRemovePhoto] = useState(false);
 
   // Manejar el archivo de foto
   const handlePhotoUpload = (file) => {
     setPhoto(file);
+    setRemovePhoto(false);
     return false;
   };
   const handleDocumentUpload = (file) => {
     setDocument(file);
     return false;
+  };
+
+  const handleDeletePhoto = () => {
+    setPhoto(null);
+    setRemovePhoto(true);
   };
 
   // Rellenar el formulario con la información del usuario actual
@@ -79,6 +87,10 @@ const EditPatientProfile = () => {
       if (photo) {
         formData.append("photo", photo);
       }
+      if (removePhoto) {
+        formData.append("removePhoto", "true");
+      }
+
       if (document) {
         formData.append("document_id", document);
       }
@@ -308,14 +320,16 @@ const EditPatientProfile = () => {
                         Seleccionar Documento
                       </Button>
                     </Dragger>
-                    {user?.document_id?.url && (
-                      <div className="docu_cc">
-                        <img
-                          src={user.document_id.url}
-                          alt="Foto"
-                          className="edit_document"
-                        />
-                      </div>
+                    {user.document_id?.url && (
+                      <>
+                        <div className="docu_cc">
+                          <img
+                            src={user.document_id.url}
+                            alt="Licencia"
+                            className="edit_photo"
+                          />
+                        </div>
+                      </>
                     )}
                   </Form.Item>
                 </Col>
@@ -329,14 +343,52 @@ const EditPatientProfile = () => {
                         Seleccionar Foto
                       </Button>
                     </Dragger>
-                    {user?.photo?.url && (
-                      <div className="docu_cc">
-                        <img
-                          src={user.photo.url}
-                          alt="Foto"
-                          className="edit_photo"
-                        />
-                      </div>
+                    {user.photo?.url && (
+                      <>
+                        <div className="docu_cc">
+                          {removePhoto ? (
+                            <></>
+                          ) : (
+                            <>
+                              {" "}
+                              <img
+                                src={user.photo.url}
+                                alt="Foto"
+                                className="edit_photo"
+                              />
+                            </>
+                          )}
+                        </div>
+                        {removePhoto ? (
+                          <>
+                            {" "}
+                            <p className="nooverflow" id="no_img_supp">
+                              <strong>
+                                Has seleccionado la imagen para eliminar
+                              </strong>
+                              <br />
+                              Pero no se elimará la imagen hasta que proporcione
+                              la contraseña para actualizar los cambios.
+                            </p>
+                          </>
+                        ) : (
+                          <>
+                            <Popconfirm
+                              title="Seguro de eliminar la foto?"
+                              onConfirm={handleDeletePhoto}
+                            >
+                              <Button
+                                danger
+                                type="primary"
+                                size="small"
+                                id="el"
+                              >
+                                <DeleteOutlined />
+                              </Button>
+                            </Popconfirm>
+                          </>
+                        )}
+                      </>
                     )}
                   </Form.Item>
                 </Col>

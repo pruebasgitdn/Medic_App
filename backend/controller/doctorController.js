@@ -40,6 +40,7 @@ export const EditProfile = async (req, res, next) => {
       numero_licencia,
       newPassword,
       currentPassword,
+      removePhoto,
     } = req.body;
 
     const { photo, licencia } = req.files || {};
@@ -61,6 +62,12 @@ export const EditProfile = async (req, res, next) => {
     }
     if (currentPassword && !(await doctor.comparePassword(currentPassword))) {
       return next(new ErrorHandler("La contraseña actual es incorrecta", 400));
+    }
+
+    if (removePhoto === "true" && doctor.photo.public_id) {
+      // Borrar la foto en Cloudinary si existe
+      await cloudinary.uploader.destroy(doctor.photo.public_id);
+      doctor.photo = {}; // Limpiar  la foto en la bd
     }
 
     // Actualizar la foto de perfil si se envió

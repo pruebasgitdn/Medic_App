@@ -259,6 +259,7 @@ export const EditProfile = async (req, res, next) => {
       alergias,
       newPassword,
       currentPassword,
+      removePhoto,
     } = req.body;
 
     const { photo, document_id } = req.files || {};
@@ -283,6 +284,12 @@ export const EditProfile = async (req, res, next) => {
       return next(new ErrorHandler("La contraseña actual es incorrecta", 400));
     }
 
+    if (removePhoto === "true" && patient.photo.public_id) {
+      // Borrar la foto en Cloudinary si existe
+      await cloudinary.uploader.destroy(patient.photo.public_id);
+      patient.photo = {}; // Limpiar  la foto en la bd
+    }
+
     // Actualizar la foto  si se envio
     if (photo) {
       const photoCloudinaryResponse = await cloudinary.uploader.upload(
@@ -296,12 +303,6 @@ export const EditProfile = async (req, res, next) => {
             500
           )
         );
-      }
-
-      // Borrar la foto anterior en Cloudinary si existe
-      if (patient.photo.public_id) {
-        //por id
-        await cloudinary.uploader.destroy(patient.photo.public_id);
       }
 
       patient.photo = {
@@ -323,12 +324,6 @@ export const EditProfile = async (req, res, next) => {
             500
           )
         );
-      }
-
-      // Borrar documento anterior en Cloudinary si existe
-      if (patient.document_id.public_id) {
-        //por id
-        await cloudinary.uploader.destroy(patient.document_id.public_id);
       }
 
       patient.document_id = {

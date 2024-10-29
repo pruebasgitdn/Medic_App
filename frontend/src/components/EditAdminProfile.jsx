@@ -9,9 +9,10 @@ import {
   Card,
   message as tt,
   Switch,
+  Popconfirm,
 } from "antd";
 import { Context } from "../main";
-import { UploadOutlined } from "@ant-design/icons";
+import { UploadOutlined, DeleteOutlined } from "@ant-design/icons";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 const { Dragger } = Upload;
@@ -24,6 +25,7 @@ const EditAdminProfile = () => {
   const [photo, setPhoto] = useState(null); // Foto del paciente
   const [emailError, setEmailError] = useState("");
   const [changingPassword, setChangingPassword] = useState(false);
+  const [removePhoto, setRemovePhoto] = useState(false);
 
   useEffect(() => {
     form.setFieldsValue({
@@ -45,6 +47,9 @@ const EditAdminProfile = () => {
 
       if (photo) {
         formData.append("photo", photo);
+      }
+      if (removePhoto) {
+        formData.append("removePhoto", "true");
       }
 
       if (changingPassword && values.newPassword) {
@@ -94,6 +99,11 @@ const EditAdminProfile = () => {
   const handlePasswordChange = () => {
     setChangingPassword(!changingPassword);
     form.resetFields(["newPassword", "yourPassword"]);
+  };
+
+  const handleDeletePhoto = () => {
+    setPhoto(null);
+    setRemovePhoto(true);
   };
 
   return (
@@ -179,14 +189,47 @@ const EditAdminProfile = () => {
                       Seleccionar Foto
                     </Button>
                   </Dragger>
-                  {user?.photo?.url && (
-                    <div className="docu_cc">
-                      <img
-                        src={user.photo.url}
-                        alt="Foto"
-                        className="edit_document"
-                      />
-                    </div>
+                  {user.photo?.url && (
+                    <>
+                      <div className="docu_cc">
+                        {removePhoto ? (
+                          <></>
+                        ) : (
+                          <>
+                            {" "}
+                            <img
+                              src={user.photo.url}
+                              alt="Foto"
+                              className="edit_photo"
+                            />
+                          </>
+                        )}
+                      </div>
+                      {removePhoto ? (
+                        <>
+                          {" "}
+                          <p className="nooverflow" id="no_img_supp">
+                            <strong>
+                              Has seleccionado la imagen para eliminar
+                            </strong>
+                            <br />
+                            Pero no se elimará la imagen hasta que proporcione
+                            la contraseña para actualizar los cambios.
+                          </p>
+                        </>
+                      ) : (
+                        <>
+                          <Popconfirm
+                            title="Seguro de eliminar la foto?"
+                            onConfirm={handleDeletePhoto}
+                          >
+                            <Button danger type="primary" size="small" id="el">
+                              <DeleteOutlined />
+                            </Button>
+                          </Popconfirm>
+                        </>
+                      )}
+                    </>
                   )}
                 </Form.Item>
               </Col>
