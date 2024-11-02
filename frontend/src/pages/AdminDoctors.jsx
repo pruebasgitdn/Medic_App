@@ -356,7 +356,7 @@ const AdminDoctors = () => {
           ...doctor,
           key: doctor._id,
         }))}
-        pagination={{ pageSize: 5 }} // Número de filas por página
+        pagination={{ pageSize: 6 }} // Número de filas por página
       />
 
       {/* MODAL DOCTOR EDITAR */}
