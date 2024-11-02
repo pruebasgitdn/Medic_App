@@ -51,7 +51,7 @@ const DoctorAppointments = () => {
         }
       } catch (error) {
         console.log(error);
-        message.error("No se encontraron citas.");
+        message.info("No se encontraron citas.");
       }
     };
     fetchAppointment();

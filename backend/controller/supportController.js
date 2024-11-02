@@ -212,7 +212,7 @@ export const getPatientTickets = async (req, res, next) => {
   if (!tickets || tickets.length === 0) {
     return res.status(404).json({
       success: false,
-      message: "No se encontraron tickets para este paciente.",
+      message: "No se encontraron tickets.",
     });
   }
 

@@ -54,7 +54,7 @@ const AdminSupport = () => {
         }
       } catch (error) {
         console.error(error);
-        message.error("No se encontraron registros");
+        message.info("No se encontraron registros");
       }
     };
 

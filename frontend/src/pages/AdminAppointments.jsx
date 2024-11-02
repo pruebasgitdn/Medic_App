@@ -45,7 +45,7 @@ const AdminAppointments = () => {
       setFilteredAppointments(response.data.citas);
       setLoading(false);
     } catch (error) {
-      message.error("No se encontraron citas.");
+      message.info("No se encontraron citas.");
       setLoading(false);
       console.log(error);
     }
@@ -154,7 +154,6 @@ const AdminAppointments = () => {
 
       if (response.status == 200) {
         message.success("Cita eliminada correctamente");
-        // navigate("/adminpanel/profile");
         setFilteredAppointments((prev) =>
           prev.filter((cita) => cita._id !== id)
         );

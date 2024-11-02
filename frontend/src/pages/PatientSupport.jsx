@@ -71,7 +71,7 @@ const PatientSupport = () => {
           error.response.data ||
           error.response.data.message
         ) {
-          message.error(error.response.data.message || error.response.data);
+          message.info(error.response.data.message || error.response.data);
         }
         console.log(error);
       }
