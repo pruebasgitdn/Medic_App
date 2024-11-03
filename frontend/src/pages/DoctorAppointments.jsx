@@ -174,8 +174,8 @@ const DoctorAppointments = () => {
         onChange={(value) => setOrder(value)}
         style={{ width: 200, marginBottom: "16px" }}
       >
-        <Option value="recent">Antiguas</Option>
-        <Option value="oldest">Recientes</Option>
+        <Option value="recent">Recientes</Option>
+        <Option value="oldest">Antiguas</Option>
       </Select>
       {citasOrdenadas.length > 0 ? (
         <List
@@ -185,7 +185,7 @@ const DoctorAppointments = () => {
             onChange: (page) => {
               console.log(page);
             },
-            pageSize: 10,
+            pageSize: 2,
           }}
           dataSource={citasOrdenadas}
           renderItem={(appointment) => (

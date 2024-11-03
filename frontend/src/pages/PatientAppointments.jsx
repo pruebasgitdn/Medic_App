@@ -202,7 +202,7 @@ const PatientAppointments = () => {
                 <Col xs={12} sm={12} md={12} lg={12}>
                   <p>
                     <strong>Doctor:</strong>{" "}
-                    {`${cita.idDoctor.nombre} ${cita.idDoctor.apellido_pat} ${cita.idDoctor.apellido_mat}`}
+                    {`${cita?.idDoctor?.nombre} ${cita?.idDoctor?.apellido_pat} ${cita?.idDoctor?.apellido_mat}`}
                   </p>
                 </Col>
                 <Col xs={12} sm={12} md={12} lg={12}>

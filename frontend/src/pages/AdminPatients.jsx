@@ -334,7 +334,7 @@ const AdminPatients = () => {
           ...patient,
           key: patient._id,
         }))}
-        pagination={{ pageSize: 5 }} // Numero de filas por página
+        pagination={{ pageSize: 6 }} // Numero de filas por página
       />
 
       <Modal

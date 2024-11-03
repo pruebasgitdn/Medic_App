@@ -151,7 +151,8 @@ const AppointmentForm = () => {
                   {doctores.map((doctor) => (
                     <Option key={doctor._id} value={doctor._id}>
                       {doctor.nombre} {doctor.apellido_pat}{" "}
-                      <Avatar size={20} src={doctor?.photo?.url || "nn"} />
+                      <Avatar size={20} src={doctor?.photo?.url || "nn"} />{" "}
+                      {doctor.especialidad}
                     </Option>
                   ))}
                 </Select>
