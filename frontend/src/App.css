@@ -131,6 +131,12 @@
   justify-content: center;
   gap: 10px;
 }
+.dblock {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
 .centere {
   display: flex;
   flex-wrap: wrap;

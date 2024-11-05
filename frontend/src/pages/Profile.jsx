@@ -25,7 +25,7 @@ const Profile = () => {
           {/* Información del Usuario */}
 
           <div className="card_info_user">
-            <div className="centere">
+            <div className="dblock">
               <h4>
                 {user.nombre} {user.apellido_pat}
               </h4>

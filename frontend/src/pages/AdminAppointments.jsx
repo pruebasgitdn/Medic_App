@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import {
   Table,
   Button,
@@ -17,7 +17,6 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 
 const { Option } = Select;
-const { TextArea } = Input;
 
 const AdminAppointments = () => {
   const [appointments, setAppointments] = useState([]);

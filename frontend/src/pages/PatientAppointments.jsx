@@ -187,116 +187,132 @@ const PatientAppointments = () => {
           <Option value="oldest">Recientes</Option>
         </Select>
         {sortedPendientes.length > 0 ? (
-          sortedPendientes.map((cita, index) => (
-            <Card
-              key={index}
-              title={`Cita ${index + 1}`}
-              bordered={false}
-              className="card_appont"
-            >
-              <p>
-                <strong>Motivo:</strong> {cita.motivo}
-              </p>
-
-              <Row>
-                <Col xs={12} sm={12} md={12} lg={12}>
+          <List
+            itemLayout="vertical"
+            size="large"
+            pagination={{
+              onChange: (page) => {
+                console.log(page);
+              },
+              pageSize: 2,
+            }}
+            dataSource={sortedPendientes}
+            renderItem={(cita, index) => (
+              <List.Item key={cita._id}>
+                <Card
+                  key={index}
+                  title={`Cita ${index + 1}`}
+                  bordered={false}
+                  className="card_appont"
+                >
                   <p>
-                    <strong>Doctor:</strong>{" "}
-                    {`${cita?.idDoctor?.nombre} ${cita?.idDoctor?.apellido_pat} ${cita?.idDoctor?.apellido_mat}`}
+                    <strong>Motivo:</strong> {cita.motivo}
                   </p>
-                </Col>
-                <Col xs={12} sm={12} md={12} lg={12}>
-                  <Avatar size={35} src={cita?.idDoctor?.photo?.url} />
-                </Col>
-              </Row>
 
-              <p>
-                <strong>Fecha:</strong>{" "}
-                {new Date(cita.fecha).toLocaleDateString()}
-              </p>
-              <p>
-                <strong>Hora:</strong>{" "}
-                {new Date(cita.fecha).toLocaleTimeString()}
-              </p>
-              <p>
-                <strong>Detalles:</strong> {cita.detallesAdicionales}
-              </p>
-              <div className="nooverflow btns_flex">
-                <Popconfirm
-                  title="¿Estás seguro de que quieres eliminar esta cita?"
-                  okText="Sí"
-                  onConfirm={() => handleCancel(cita)}
-                  cancelText="No"
-                >
-                  <Button danger block size="small" type="primary">
-                    Cancelar cita <DeleteOutlined />
-                  </Button>
-                </Popconfirm>
-                <Button
-                  onClick={() => showAppointment(cita)}
-                  block
-                  size="small"
-                  type="primary"
-                >
-                  Modificar fecha <EditOutlined />
-                </Button>
-              </div>
-              <Modal
-                open={visible}
-                title="Detalles de la Cita"
-                onCancel={closeAppointment}
-                footer={[]}
-              >
-                <Form className="modal_e" form={form} onFinish={handleEdit}>
-                  <Form.Item name="motivo" label="Motivo">
-                    <Input disabled placeholder={selectedAppointment?.motivo} />
-                  </Form.Item>
-                  <Row className="centere">
-                    <h4>Fecha: </h4>
-
-                    <DatePicker
-                      selected={startDate}
-                      onChange={(date) => setStartDate(date)}
-                      showTimeInput
-                    />
-
-                    <p id="no_img_supp">
-                      Re programe el día y la hora de su cita, si así lo
-                      requiere.
-                    </p>
+                  <Row>
+                    <Col xs={12} sm={12} md={12} lg={12}>
+                      <p>
+                        <strong>Doctor:</strong>{" "}
+                        {`${cita?.idDoctor?.nombre} ${cita?.idDoctor?.apellido_pat} ${cita?.idDoctor?.apellido_mat}`}
+                      </p>
+                    </Col>
+                    <Col xs={12} sm={12} md={12} lg={12}>
+                      <Avatar size={35} src={cita?.idDoctor?.photo?.url} />
+                    </Col>
                   </Row>
 
-                  <Form.Item name="detalles" label="Detalles">
-                    <Input.TextArea
-                      placeholder={selectedAppointment?.detallesAdicionales}
-                      rows={3}
-                      disabled
-                    />
-                  </Form.Item>
-
-                  <div className="btns_flex">
+                  <p>
+                    <strong>Fecha:</strong>{" "}
+                    {new Date(cita.fecha).toLocaleDateString()}
+                  </p>
+                  <p>
+                    <strong>Hora:</strong>{" "}
+                    {new Date(cita.fecha).toLocaleTimeString()}
+                  </p>
+                  <p>
+                    <strong>Detalles:</strong> {cita.detallesAdicionales}
+                  </p>
+                  <div className="nooverflow btns_flex">
+                    <Popconfirm
+                      title="¿Estás seguro de que quieres eliminar esta cita?"
+                      okText="Sí"
+                      onConfirm={() => handleCancel(cita)}
+                      cancelText="No"
+                    >
+                      <Button danger block size="small" type="primary">
+                        Cancelar cita <DeleteOutlined />
+                      </Button>
+                    </Popconfirm>
                     <Button
-                      htmlType="submit"
+                      onClick={() => showAppointment(cita)}
+                      block
                       size="small"
                       type="primary"
-                      block
-                      loading={loading}
                     >
-                      Confirmar <CheckCircleOutlined />
-                    </Button>
-                    <Button
-                      size="small"
-                      danger
-                      block
-                      onClick={() => closeAppointment()}
-                    >
-                      Cancelar <CloseCircleOutlined />
+                      Modificar fecha <EditOutlined />
                     </Button>
                   </div>
-                </Form>
-              </Modal>
-            </Card>
-          ))
+                  <Modal
+                    open={visible}
+                    title="Detalles de la Cita"
+                    onCancel={closeAppointment}
+                    footer={[]}
+                  >
+                    <Form className="modal_e" form={form} onFinish={handleEdit}>
+                      <Form.Item name="motivo" label="Motivo">
+                        <Input
+                          disabled
+                          placeholder={selectedAppointment?.motivo}
+                        />
+                      </Form.Item>
+                      <Row className="centere">
+                        <h4>Fecha: </h4>
+
+                        <DatePicker
+                          selected={startDate}
+                          onChange={(date) => setStartDate(date)}
+                          showTimeInput
+                        />
+
+                        <p id="no_img_supp">
+                          Re programe el día y la hora de su cita, si así lo
+                          requiere.
+                        </p>
+                      </Row>
+
+                      <Form.Item name="detalles" label="Detalles">
+                        <Input.TextArea
+                          placeholder={selectedAppointment?.detallesAdicionales}
+                          rows={3}
+                          disabled
+                        />
+                      </Form.Item>
+
+                      <div className="btns_flex">
+                        <Button
+                          htmlType="submit"
+                          size="small"
+                          type="primary"
+                          block
+                          loading={loading}
+                        >
+                          Confirmar <CheckCircleOutlined />
+                        </Button>
+                        <Button
+                          size="small"
+                          danger
+                          block
+                          onClick={() => closeAppointment()}
+                        >
+                          Cancelar <CloseCircleOutlined />
+                        </Button>
+                      </div>
+                    </Form>
+                  </Modal>
+                </Card>
+              </List.Item>
+            )}
+          />
         ) : (
           <Alert message="No tienes citas pendientes." type="info" />
         )}
@@ -324,7 +340,7 @@ const PatientAppointments = () => {
               onChange: (page) => {
                 console.log(page);
               },
-              pageSize: 10,
+              pageSize: 2,
             }}
             dataSource={sortedRealizadas}
             renderItem={(cita, index) => (

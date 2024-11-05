@@ -33,30 +33,27 @@ const DoctorProfile = () => {
           {/* Información del Usuario */}
 
           <div className="card_info_user">
-            <Row gutter={20}>
-              <Col xs={12} sm={12} md={12} lg={12}>
-                <h4>
-                  Dr.{user.nombre} {user.apellido_pat}
-                </h4>
-                <h4>Especialista: {user.especialidad}</h4>
-                <h4>Licencia: {user.numero_licencia}</h4>
-              </Col>
-              <Col xs={12} sm={12} md={12} lg={12}>
-                <p>
-                  <MailTwoTone /> {user.email}
-                </p>
-                <p>
-                  <PhoneTwoTone />
-                  {user.telefono}
-                </p>
-                <p>
-                  <CalendarTwoTone />
-                  {user && user.dot?.length > 0
-                    ? new Date(user?.dot).toLocaleDateString()
-                    : "15/23/2004"}
-                </p>
-              </Col>
-            </Row>
+            <div className="dblock">
+              <h4>
+                Dr.{user.nombre} {user.apellido_pat}
+              </h4>
+              <h4>Especialista: {user.especialidad}</h4>
+              <h4>Licencia: {user.numero_licencia}</h4>
+
+              <p>
+                <MailTwoTone /> {user.email}
+              </p>
+              <p>
+                <PhoneTwoTone />
+                {user.telefono}
+              </p>
+              <p>
+                <CalendarTwoTone />
+                {user && user.dot?.length > 0
+                  ? new Date(user?.dot).toLocaleDateString()
+                  : "15/23/2004"}
+              </p>
+            </div>
           </div>
           {/* Botones de Acciones */}
           <div className="adminperfil_btns">

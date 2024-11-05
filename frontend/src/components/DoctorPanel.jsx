@@ -1,9 +1,7 @@
-import React from "react";
 import { Layout, Menu } from "antd";
 const { Sider, Content } = Layout;
 import {
   UserOutlined,
-  InsertRowAboveOutlined,
   CalendarOutlined,
   HistoryOutlined,
   TeamOutlined,

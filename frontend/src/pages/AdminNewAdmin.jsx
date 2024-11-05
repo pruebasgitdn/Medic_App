@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { Form, Input, Card, Button, Row, Col, Upload, message } from "antd";
 import axios from "axios";
 import { UploadOutlined } from "@ant-design/icons";

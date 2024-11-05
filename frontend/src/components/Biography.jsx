@@ -1,5 +1,4 @@
 import { Button, Card } from "antd";
-import React from "react";
 
 const Biography = ({ imageURL }) => {
   return (

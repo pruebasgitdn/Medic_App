@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import {
   Card,
   message,
@@ -198,6 +198,12 @@ const DoctorPatients = () => {
           itemLayout="vertical"
           size="large"
           dataSource={patients}
+          pagination={{
+            onChange: (page) => {
+              console.log(page);
+            },
+            pageSize: 2,
+          }}
           renderItem={(patient) => (
             <List.Item key={patient._id}>
               <Card
@@ -247,7 +253,7 @@ const DoctorPatients = () => {
                             onClick={() => showReportModal(patient)}
                             // Seteamos el estado del paciente para el moda
                           >
-                            Reporte Historial
+                            Historial
                           </Button>
                           <Button
                             block
@@ -360,21 +366,45 @@ const DoctorPatients = () => {
         {selectedPatient &&
         selectedPatient.reporte_historial &&
         selectedPatient.reporte_historial.length > 0 ? (
-          <ul>
-            {selectedPatient.reporte_historial.map((reporte, index) => (
-              <Card key={index}>
-                <strong>Motivo: </strong> {reporte.motivo}
-                <br />
-                <strong>Fecha: </strong>
-                {new Date(reporte.fecha).toDateString()}
-                <br />
-                <strong>Diagnostico del doctor: </strong>
-                {reporte.detallesDiagnostico}
-                <hr />
-              </Card>
-            ))}
-          </ul>
+          <List
+            itemLayout="vertical"
+            size="small"
+            pagination={{
+              onChange: (page) => {
+                console.log(page);
+              },
+              pageSize: 2,
+            }}
+            dataSource={selectedPatient.reporte_historial}
+            renderItem={(item) => (
+              <List.Item>
+                <Card>
+                  <strong>Motivo: </strong> {item.motivo}
+                  <br />
+                  <strong>Fecha: </strong>
+                  {new Date(item.fecha).toDateString()}
+                  <br />
+                  <strong>Diagnostico del doctor: </strong>
+                  {item.detallesDiagnostico}
+                </Card>
+              </List.Item>
+            )}
+          />
         ) : (
+          // <ul>
+          //   {selectedPatient.reporte_historial.map((reporte, index) => (
+          //     <Card key={index}>
+          //       <strong>Motivo: </strong> {reporte.motivo}
+          //       <br />
+          //       <strong>Fecha: </strong>
+          //       {new Date(reporte.fecha).toDateString()}
+          //       <br />
+          //       <strong>Diagnostico del doctor: </strong>
+          //       {reporte.detallesDiagnostico}
+          //       <hr />
+          //     </Card>
+          //   ))}
+          // </ul>
           <p>
             <b>No hay reportes en el historial.</b>
           </p>

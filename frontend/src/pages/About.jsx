@@ -1,5 +1,4 @@
-import React from "react";
-import { Row, Col, Image, Card, Button } from "antd";
+import { Row, Col, Card, Button } from "antd";
 import { Link } from "react-router-dom";
 
 const About = () => {
