@@ -302,7 +302,7 @@ const AdminAppointments = () => {
                       marginRight: 10,
                     }}
                   />
-                  <br /> {selectedAppointment.idDoctor.email}
+                  <br /> {selectedAppointment?.idDoctor?.email}
                 </p>
               </Col>
               <Col xs={24} md={12}>
@@ -319,7 +319,7 @@ const AdminAppointments = () => {
                     }}
                   />
                   <br />
-                  {selectedAppointment.idPaciente.email}
+                  {selectedAppointment?.idPaciente?.email}
                 </p>
               </Col>
             </Row>
